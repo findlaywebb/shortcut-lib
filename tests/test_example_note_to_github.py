@@ -23,14 +23,24 @@ def test_workflow_emits_expected_action_sequence() -> None:
     actions = workflow["WFWorkflowActions"]
     identifiers = [a["WFWorkflowActionIdentifier"] for a in actions]
 
-    assert "is.workflow.actions.gettext" in identifiers
-    assert "is.workflow.actions.setvariable" in identifiers
-    assert "is.workflow.actions.getclipboard" in identifiers
-    assert "is.workflow.actions.format.date" in identifiers
-    assert "is.workflow.actions.base64encode" in identifiers
-    assert "is.workflow.actions.text.replace" in identifiers
-    assert "is.workflow.actions.downloadurl" in identifiers
-    assert "is.workflow.actions.notification" in identifiers
+    # gettext/setvariable appear several times by design (multi-step pipeline).
+    # The actions below run exactly once — using ``count`` catches regressions
+    # where a refactor accidentally double-emits one of them.
+    expected_once = [
+        "is.workflow.actions.getclipboard",
+        "is.workflow.actions.format.date",
+        "is.workflow.actions.base64encode",
+        "is.workflow.actions.text.replace",
+        "is.workflow.actions.downloadurl",
+        "is.workflow.actions.notification",
+    ]
+    for ident in expected_once:
+        assert identifiers.count(ident) == 1, (
+            f"expected {ident} exactly once, got {identifiers.count(ident)}"
+        )
+    # gettext and setvariable are present multiple times — assert "at least one".
+    for ident in ("is.workflow.actions.gettext", "is.workflow.actions.setvariable"):
+        assert ident in identifiers
 
 
 def _find(actions: list[dict[str, Any]], identifier: str) -> dict[str, Any]:

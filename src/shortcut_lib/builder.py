@@ -35,6 +35,12 @@ SURFACE_TO_TYPE: dict[str, str] = {
     "sleep": "Sleep",
 }
 
+# WFWorkflowClientVersion shipped with the iOS / macOS Shortcuts client used
+# to extract our reference samples (iOS 26.x / macOS 26.x). Apple historically
+# tolerates older client-version strings on import; bump this if a future
+# release starts rejecting stale values. Tracked as FU-2 in docs/handoff.md.
+_CLIENT_VERSION = "4033.0.4.3"
+
 
 @dataclass
 class Shortcut:
@@ -101,6 +107,17 @@ class Shortcut:
             raise SchemaError(
                 f"Shortcut.add expects an Action, got {type(action).__name__}"
             )
+        # Reject re-adds: each Action carries a UUID that's used for
+        # output-reference resolution, so adding the same instance twice (or
+        # adding it to a second Shortcut) silently produces a workflow with
+        # duplicate UUIDs. Construct fresh Action instances per add site.
+        for existing in self.actions:
+            if existing is action:
+                raise SchemaError(
+                    f"Action instances aren't shareable: this "
+                    f"{type(action).__name__} (uuid={action.uuid}) is already in "
+                    f"this shortcut. Construct a new instance per add site."
+                )
         # Bind any Self sentinel (including ones nested in control-flow
         # bodies) to this containing shortcut so emit doesn't need a second
         # pass over the action dicts.
@@ -150,7 +167,7 @@ class Shortcut:
         types = [SURFACE_TO_TYPE.get(s, s) for s in self.surfaces]
         out: dict[str, Any] = {
             "WFWorkflowMinimumClientVersion": self.min_client,
-            "WFWorkflowClientVersion": "4033.0.4.3",
+            "WFWorkflowClientVersion": _CLIENT_VERSION,
             "WFWorkflowIcon": {
                 "WFWorkflowIconGlyphNumber": self.icon_glyph,
                 "WFWorkflowIconStartColor": self.icon_color,
@@ -179,9 +196,27 @@ class Shortcut:
         """Encode as a binary plist (unsigned)."""
         return encode_to_bplist(self.to_workflow())
 
-    def save_signed(self, path: Path | str, *, mode: SignMode = "anyone") -> None:
-        """Encode, sign via the macOS shortcuts CLI, and write to disk."""
+    def save_signed(
+        self, path: Path | str | None = None, *, mode: SignMode = "anyone"
+    ) -> Path:
+        """Encode, sign via the macOS shortcuts CLI, and write to disk.
+
+        Args:
+            path: Where to write the signed file. Defaults to
+                ``~/Desktop/<name>.shortcut`` so the filename matches the
+                shortcut's display name. Pass an explicit path to override.
+            mode: Signing mode passed to ``shortcuts sign`` (``anyone`` for
+                share-sheet imports, ``people-who-know-me`` for stricter
+                distribution).
+
+        Returns the resolved output path.
+        """
+        if path is None:
+            path = Path.home() / "Desktop" / f"{self.name}.shortcut"
+        else:
+            path = Path(path)
         sign_to_file(self.to_workflow(), path, mode=mode)
+        return path
 
     @classmethod
     def from_file(cls, path: Path | str, *, name: str | None = None) -> Shortcut:
