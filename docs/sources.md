@@ -1,36 +1,59 @@
 # Prior reverse-engineering work
 
-Attributions and notes on what we've drawn from each. None of these is
+Attributions and notes on three public projects evaluated as wrapper
+candidates before this lib was written, plus the smaller community
+write-ups that informed the file format work. None of these is
 authoritative; Apple has never published a shortcut format spec.
+
+The original hope was that one of the three projects below would suffice
+as the schema layer — either as a thin Python wrapper, or as a port. None
+of them did, for reasons noted per project. The lib's schema source code
+is hand-written; references to upstream projects in the source are
+labelled hints, validated against decoded samples.
 
 ## [Open-Jellycore](https://github.com/OpenJelly/Open-Jellycore) — OpenJelly, GPL-3.0
 
-The Jellycuts compiler. Highest-fidelity public action database we've found:
-**288 first-party actions** with hand-curated typed parameter schemas, **77
-typed enums**, plus a Compiler.swift that emits 5 control-flow primitives
+The Jellycuts compiler. Highest-fidelity public action database evaluated:
+288 first-party actions with hand-curated typed parameter schemas, 77
+typed enums, plus a Compiler.swift that emits 5 control-flow primitives
 (`is.workflow.actions.conditional`, `choosefrommenu`, `repeat.each`,
 `repeat.count`, `comment`) as language constructs rather than lookup-table
 entries. Includes `lowestCompatibleHost` per action — neither shortcuts-js
 nor sebj's reference has equivalent OS-min metadata.
 
-**License-clean extraction**: GPL-3.0 source can't be vendored, but facts
-about Apple's API (identifier strings, parameter key names, enum members,
-OS-min) aren't copyrightable expression. `scripts/extract_jellycore.py`
-reads the Swift sources, emits `data/jellycore_facts.json` with only the
-factual fields, and deliberately omits Jellycore's description prose,
-DSL function names, and presets (those *are* original expression).
+Wrapper-candidate verdict: the Swift compiler-frontend shape doesn't port
+to Python ergonomics, and the iOS-26-era actions (`UseModel`, Writing
+Tools) post-date Open-Jellycore's last update. Used instead as a
+bootstrapping fact source for an initial coverage check
+(`docs/coverage_dictionary.md`) and as one of several hint sources when
+authoring schema dataclasses.
 
-Dictionary.shortcut coverage check: Jellycore covers ~62% of identifiers
-(231 via lookup table + 7 via language constructs), missing ~50 first-party
-identifiers that appear to be post-2023 additions or omissions
-(`addnewreminder`, `appendvariable`, `getvariable`, `addnewevent`,
-maps actions, etc.) and ~100 third-party app-intent identifiers. The
-~150 gaps are the schema work we'd own.
+`scripts/extract_jellycore.py` parses Open-Jellycore's Swift sources and
+emits `data/jellycore_facts.json` containing only Apple-side facts
+(identifier strings, display names, parameter WF* key names, OS-min
+metadata, and the typed-enum members Apple's API accepts). The script
+deliberately omits upstream original expression: description prose, the
+Jellycuts DSL function names, the upstream Swift parameter-struct names,
+and presets.
 
-**Caveat on parameter keys**: Jellycore's Swift fields don't always match
-Apple's WF* keys 1:1 (e.g. `AskForInputParameter` declares `var type:
-Jelly_WFInputType?` but Apple's plist uses `WFInputType`). Treat extracted
-parameter names as hints; validate against decoded shortcuts before trusting.
+This lib's licence is GPL-3.0, so the JSON's status as a derivative
+compilation of Open-Jellycore's curation is the natural fit and triggers
+no licence conflict. The lib at large continues to evolve via
+sample-grounded authoring; the JSON is a development-time bootstrapping
+artefact rather than a runtime dependency. The current packaging
+configuration (`pyproject.toml`) excludes `data/` from the wheel.
+
+Dictionary.shortcut coverage check: the action-fact dataset covers ~62%
+of identifiers (231 via lookup table + 7 via language constructs),
+missing ~50 first-party identifiers that appear to be post-2023 additions
+or omissions (`addnewreminder`, `appendvariable`, `getvariable`,
+`addnewevent`, maps actions, etc.) and ~100 third-party app-intent
+identifiers. The ~150 gaps are the schema work this lib owns.
+
+**Caveat on parameter keys**: external catalogue field names don't always
+match Apple's WF* keys 1:1 (e.g. an `AskForInputParameter` field labelled
+`type` is `WFInputType` on the wire). Treat extracted parameter names as
+hints; validate against decoded shortcuts before trusting.
 
 ## [shortcuts-js](https://github.com/joshfarrant/shortcuts-js) — Josh Farrant, MIT
 
@@ -40,18 +63,23 @@ since (e.g. `WFCondition` shifted from string `"Equals"` to integer `0`),
 so treat as a hint rather than truth — verify against a current decoded
 sample before trusting.
 
-Patterns worth borrowing:
-- Per-action TS module with a small typed factory function returning the
-  WFWorkflow action dict.
-- `withActionOutput` HOF that auto-mints an output UUID and lets the action
-  be used as a variable reference downstream.
+Wrapper-candidate verdict: TypeScript-first, schema is iOS-12-era and
+drifted from current Shortcuts; the per-action factory pattern doesn't
+map cleanly to Python dataclasses. Patterns borrowed conceptually rather
+than mechanically:
+
+- Per-action module with a small typed factory function returning the
+  WFWorkflow action dict (mirrored as Python dataclasses).
+- A "use this action's output as a variable downstream" pattern (the
+  Python lib auto-mints a UUID per `Action` and exposes `.output()`).
 - Variable type taxonomy: `Ask`, `Clipboard`, `CurrentDate`, `ExtensionInput`,
-  named `Variable`.
+  named `Variable` — same names used in this lib's `values.py`.
 
 ## [iOS-Shortcuts-Reference](https://github.com/sebj/iOS-Shortcuts-Reference) — sebj, archived 2022
 
 Pre-iOS-15. The action coverage is thin (one example) but the
-**workflow-level reference data is the best single source**:
+workflow-level reference data is the best single source for the
+top-level metadata enums:
 
 - `WFWorkflowImportQuestions` schema
 - `WFWorkflowInputContentItemClasses` enum (17 values)
@@ -59,7 +87,9 @@ Pre-iOS-15. The action coverage is thin (one example) but the
 - Icon colour palette (15 named colours, RGBA-8 ints)
 - URL schemes (`shortcuts://import-shortcut/?url=…`, etc.)
 
-Worth lifting these enums wholesale into our schema layer.
+Wrapper-candidate verdict: not a library, just a reference data
+repository — never a wrapper candidate, only an enum source. Useful
+for top-level metadata enums when modelling those becomes priority.
 
 ## [shortcuts-toolkit](https://github.com/drewburchfield/shortcuts-toolkit) — Drew Burchfield, MIT
 

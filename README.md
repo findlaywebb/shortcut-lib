@@ -44,4 +44,10 @@ for action in decoded.workflow["WFWorkflowActions"]:
 ## See also
 
 - `docs/format.md` — what we know about the file format
-- `docs/sources.md` — attributions to prior reverse-engineering work
+- `docs/sources.md` — narrative attribution to prior reverse-engineering work
+- `NOTICE` — formal third-party acknowledgements
+
+## Licence
+
+GPL-3.0-or-later. See `LICENSE` for the full text and `NOTICE` for
+attribution of upstream public projects examined while building this lib.
