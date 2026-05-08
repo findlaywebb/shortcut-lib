@@ -62,6 +62,7 @@ ignore = [
 [tool.ruff.lint.per-file-ignores]
 "src/shortcut_lib/cli.py" = ["T201"]  # CLI tooling, print to stdout/stderr is expected
 "scripts/**" = ["T201", "E402"]        # scripts use print; sys.path tweak before import is intentional
+"examples/**" = ["T201"]               # examples are runnable scripts; print is fine
 "tests/**" = ["S101"]                  # assert is fine in tests
 
 [tool.ruff.lint.isort]

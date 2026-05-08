@@ -1,15 +1,20 @@
 """Leaf-action implementations.
 
-Each action lives in its own module and registers itself via the
-``@register`` decorator. Importing this package side-effect-imports every
-submodule so the registry is populated.
-
-Tier 0 actions live here (the ones C1 needs to round-trip a synthetic
-shortcut). Tier 1+ actions are added by C2-* tasks.
+Auto-discovers every module in this package and imports it for its
+side-effect of calling ``@register``. Add a new action by dropping a
+``.py`` file here — no edits needed to this ``__init__``.
 """
 
 from __future__ import annotations
 
-from shortcut_lib.schema.actions import dictate_text, set_clipboard
+import importlib
+import pkgutil
+from pathlib import Path
 
-__all__ = ["dictate_text", "set_clipboard"]
+_pkg_path = Path(__file__).parent
+for _mod in pkgutil.iter_modules([str(_pkg_path)]):
+    if _mod.name.startswith("_"):
+        continue
+    importlib.import_module(f"{__name__}.{_mod.name}")
+
+del importlib, pkgutil, Path, _pkg_path, _mod
