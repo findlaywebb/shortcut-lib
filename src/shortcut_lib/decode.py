@@ -15,7 +15,6 @@ from __future__ import annotations
 
 import plistlib
 import struct
-import subprocess
 from dataclasses import dataclass
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -24,6 +23,8 @@ from typing import Any
 from cryptography import x509
 from cryptography.hazmat.primitives.asymmetric import ec
 from cryptography.hazmat.primitives.serialization import Encoding, PublicFormat
+
+from shortcut_lib._subprocess import run_cli
 
 AEA_MAGIC = b"AEA1"
 AEA_HEADER_LEN = 12  # magic(4) + profile(4) + auth_size(4)
@@ -79,11 +80,18 @@ def decode_bytes(data: bytes) -> DecodedShortcut:
         raise DecodeError("AEA auth data missing SigningCertificateChain")
 
     leaf_der: bytes = chain[0]
-    cert = x509.load_der_x509_certificate(leaf_der)
-    pub = cert.public_key()
-    if not isinstance(pub, ec.EllipticCurvePublicKey):
-        raise DecodeError(f"expected EC public key, got {type(pub).__name__}")
-    pub_x963 = pub.public_bytes(Encoding.X962, PublicFormat.UncompressedPoint)
+    try:
+        cert = x509.load_der_x509_certificate(leaf_der)
+        pub = cert.public_key()
+        if not isinstance(pub, ec.EllipticCurvePublicKey):
+            raise DecodeError(f"expected EC public key, got {type(pub).__name__}")
+        pub_x963 = pub.public_bytes(Encoding.X962, PublicFormat.UncompressedPoint)
+    except DecodeError:
+        raise
+    except Exception as exc:
+        raise DecodeError(
+            "could not parse signing certificate from AEA auth data"
+        ) from exc
 
     workflow_dict = _aea_decrypt_then_extract(data, pub_x963)
 
@@ -111,7 +119,7 @@ def _aea_decrypt_then_extract(data: bytes, pub_x963: bytes) -> dict[str, Any]:
         keyfile.write_text(f"hex:{pub_x963.hex()}")
 
         aa_path = tmp / "payload.aa"
-        _run(
+        run_cli(
             [
                 "aea",
                 "decrypt",
@@ -123,13 +131,15 @@ def _aea_decrypt_then_extract(data: bytes, pub_x963: bytes) -> dict[str, Any]:
                 str(keyfile),
             ],
             stage="aea decrypt",
+            error_cls=DecodeError,
         )
 
         extract_dir = tmp / "extracted"
         extract_dir.mkdir()
-        _run(
+        run_cli(
             ["aa", "extract", "-i", str(aa_path), "-d", str(extract_dir)],
             stage="aa extract",
+            error_cls=DecodeError,
         )
 
         wflow_files = list(extract_dir.glob("*.wflow"))
@@ -139,18 +149,6 @@ def _aea_decrypt_then_extract(data: bytes, pub_x963: bytes) -> dict[str, Any]:
             )
 
         return plistlib.loads(wflow_files[0].read_bytes())
-
-
-def _run(cmd: list[str], *, stage: str) -> None:
-    """Run a subprocess and surface any failure with its stderr."""
-    # cmd is constructed locally with literal binaries (aea/aa) and paths
-    # under a TemporaryDirectory, so untrusted-input concerns don't apply.
-    result = subprocess.run(cmd, capture_output=True, check=False)  # noqa: S603
-    if result.returncode != 0:
-        raise DecodeError(
-            f"{stage} failed (rc={result.returncode}): "
-            f"{result.stderr.decode(errors='replace').strip()}"
-        )
 
 
 def _first_cn(name: x509.Name) -> str:

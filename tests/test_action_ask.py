@@ -42,16 +42,52 @@ def test_ask_number_includes_decimal_negative_flags() -> None:
     assert params["WFAskActionAllowsNegativeNumbers"] is False
 
 
-def test_ask_text_excludes_number_flags() -> None:
-    """Text type omits decimal/negative flags even if set on the instance."""
-    action = AskForInput(
-        input_type="Text",
-        allows_decimal=True,
-        allows_negative=True,
-    )
-    params = action.to_action_dict()["WFWorkflowActionParameters"]
-    assert "WFAskActionAllowsDecimalNumbers" not in params
-    assert "WFAskActionAllowsNegativeNumbers" not in params
+def test_ask_text_with_number_flags_raises() -> None:
+    """allows_decimal/allows_negative are Number-only — caller mistake should fail loudly."""
+    import pytest
+
+    from shortcut_lib.schema import SchemaError
+
+    with pytest.raises(SchemaError, match="only applies to input_type='Number'"):
+        AskForInput(input_type="Text", allows_decimal=True)
+
+
+def test_ask_invalid_input_type_raises() -> None:
+    """Typo or unsupported value should fail at construction."""
+    import pytest
+
+    from shortcut_lib.schema import SchemaError
+
+    with pytest.raises(SchemaError, match=r"not a.*valid Apple input type"):
+        AskForInput(input_type="number")  # lowercase typo
+
+
+def test_ask_date_and_time_routes_default_to_dedicated_key() -> None:
+    """Verified via samples/decoded/add_expiry_reminder.xml."""
+    params = AskForInput(
+        prompt="What is the expiry date?",
+        input_type="Date and Time",
+        default_answer="2026-12-31 14:00",
+    ).to_action_dict()["WFWorkflowActionParameters"]
+    assert params["WFAskActionDefaultAnswerDateAndTime"] == "2026-12-31 14:00"
+    assert "WFAskActionDefaultAnswer" not in params
+    assert "WFAskActionDefaultAnswerNumber" not in params
+
+
+def test_ask_date_routes_default_to_date_key() -> None:
+    """Date and Time use WFAskActionDefaultAnswerDate (inferred — flag if a real sample contradicts)."""
+    params = AskForInput(
+        input_type="Date", default_answer="2026-05-08"
+    ).to_action_dict()["WFWorkflowActionParameters"]
+    assert params["WFAskActionDefaultAnswerDate"] == "2026-05-08"
+
+
+def test_ask_url_uses_text_default_key() -> None:
+    """URL type shares the Text answer key."""
+    params = AskForInput(
+        input_type="URL", default_answer="https://example.com"
+    ).to_action_dict()["WFWorkflowActionParameters"]
+    assert params["WFAskActionDefaultAnswer"] == "https://example.com"
 
 
 def test_ask_registered() -> None:

@@ -103,11 +103,16 @@ def test_dictionary_with_variable_value() -> None:
     assert inner["OutputName"] == "Text"
 
 
-def test_dictionary_empty() -> None:
-    """An empty Dictionary still emits WFItems with an empty items list."""
-    d = Dictionary()
-    items = _items(d)
-    assert items == []
+def test_dictionary_empty_omits_wfitems() -> None:
+    """An empty Dictionary emits no params at all — matches Apple GUI emission.
+
+    Verified via samples/decoded/dictionary.xml. Older versions of this
+    schema always emitted WFItems with an empty list, which broke
+    wire-format equivalence with GUI-authored shortcuts.
+    """
+    params = Dictionary().to_action_dict()["WFWorkflowActionParameters"]
+    assert "WFItems" not in params
+    assert set(params) == {"UUID"}
 
 
 def test_dictionary_with_nested_dict() -> None:

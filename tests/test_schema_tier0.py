@@ -97,6 +97,48 @@ def test_if_emits_flat_grouping_with_close() -> None:
     assert body["WFWorkflowActionIdentifier"] == "is.workflow.actions.setclipboard"
 
 
+def test_if_with_number_value_emits_wf_number_value() -> None:
+    """RHS=int routes to WFNumberValue, not WFConditionalActionString."""
+    s = Shortcut(name="Number compare")
+    s.add(If(operand=NamedVar("x"), op="<", value=42))
+    head = s.to_workflow()["WFWorkflowActions"][0]["WFWorkflowActionParameters"]
+    assert head["WFNumberValue"] == "42"
+    assert "WFConditionalActionString" not in head
+
+
+def test_if_with_bool_and_valueless_op_emits_no_rhs() -> None:
+    """is-true takes no RHS; bool value is allowed and produces no key."""
+    s = Shortcut(name="Truthy")
+    s.add(If(operand=NamedVar("flag"), op="is-true", value=True))
+    head = s.to_workflow()["WFWorkflowActions"][0]["WFWorkflowActionParameters"]
+    assert "WFNumberValue" not in head
+    assert "WFConditionalActionString" not in head
+
+
+def test_if_with_bool_and_arithmetic_op_raises() -> None:
+    """Regression: bool RHS with `==`/`<` etc. used to silently drop the value."""
+    import pytest as _pytest
+
+    from shortcut_lib.schema import SchemaError
+
+    s = Shortcut(name="Bad bool")
+    bad_if = If(operand=NamedVar("x"), op="==", value=True)
+    s.add(bad_if)
+    with _pytest.raises(SchemaError, match="boolean"):
+        s.to_workflow()
+
+
+def test_if_with_unknown_op_raises() -> None:
+    import pytest as _pytest
+
+    from shortcut_lib.schema import SchemaError
+
+    s = Shortcut(name="Unknown op")
+    s.add(If(operand=NamedVar("x"), op="not-a-real-op", value="y"))
+    with _pytest.raises(SchemaError, match="unknown condition op"):
+        s.to_workflow()
+
+
 def test_if_else_includes_middle_marker() -> None:
     """If with otherwise emits open + then-body + else-marker + else-body + close."""
     s = Shortcut(name="If/Else")

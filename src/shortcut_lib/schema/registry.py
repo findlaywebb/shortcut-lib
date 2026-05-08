@@ -13,7 +13,7 @@ from __future__ import annotations
 
 import inspect
 import typing
-from dataclasses import fields
+from dataclasses import MISSING, fields
 from typing import Any
 
 from shortcut_lib.schema.base import Action
@@ -79,12 +79,17 @@ def describe_action(name_or_identifier: str) -> dict[str, Any]:
         if f.name in {"uuid", "custom_output_name"}:
             continue
         resolved = hints.get(f.name, f.type)
+        # NB: dataclass fields use ``dataclasses.MISSING`` as the
+        # "no default" sentinel, NOT ``inspect.Parameter.empty``. The
+        # earlier comparison was always True, so every parameter looked
+        # optional to the LLM author — including required slots like
+        # DownloadURL.url.
+        has_default = f.default is not MISSING or f.default_factory is not MISSING
         params.append(
             {
                 "name": f.name,
                 "type": _format_type(resolved),
-                "has_default": f.default is not inspect.Parameter.empty
-                or f.default_factory is not inspect.Parameter.empty,  # type: ignore[misc]
+                "has_default": has_default,
             }
         )
     return {

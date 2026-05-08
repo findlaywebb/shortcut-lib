@@ -164,7 +164,15 @@ class Dictionary(Action):
     entries: list[tuple[str, Any]] = field(default_factory=list)
 
     def _params(self) -> dict[str, Any]:
-        """Return WFItems as a WFDictionaryFieldValue-serialised parameter."""
+        """Return WFItems as a WFDictionaryFieldValue-serialised parameter.
+
+        Apple's Shortcuts.app omits ``WFItems`` entirely for an empty
+        dictionary (verified via ``samples/decoded/dictionary.xml``);
+        we match that to keep wire-format equivalence with GUI-authored
+        shortcuts.
+        """
+        if not self.entries:
+            return {}
         items = [_encode_entry(key, value) for key, value in self.entries]
         return {
             "WFItems": {

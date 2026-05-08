@@ -105,7 +105,7 @@ class If(_ControlAction):
             "WFInput": _wrap_variable_input(self.operand),
         }
         if self.value is not None:
-            head_params.update(_condition_rhs(self.value))
+            head_params.update(_condition_rhs(self.value, self.op))
 
         out: list[dict[str, Any]] = [
             {
@@ -320,10 +320,26 @@ def _coerce_param(x: Any) -> Any:
     return coerce_value(x)
 
 
-def _condition_rhs(value: Any) -> dict[str, Any]:
-    """Map a condition right-hand side to the right WF* parameter key."""
+_VALUELESS_OPS = frozenset({"is-true", "is-not-true", "exists", "does-not-exist"})
+
+
+def _condition_rhs(value: Any, op: str) -> dict[str, Any]:
+    """Map a condition right-hand side to the right WF* parameter key.
+
+    Some operators ("is-true", "is-not-true", "exists", "does-not-exist")
+    take no RHS — calling code passes ``value=None`` for those, so this
+    function never sees them in practice. We still guard the bool case
+    against the wrong operator to catch caller mistakes early.
+    """
+    # bool is a subclass of int, so this branch must come before int|float.
     if isinstance(value, bool):
-        return {}  # is-true / is-not-true don't take a value
+        if op not in _VALUELESS_OPS:
+            raise SchemaError(
+                f"If(value={value!r}) is a boolean, only valid for valueless "
+                f"operators ({sorted(_VALUELESS_OPS)}). For comparing against "
+                f"a string 'true'/'false', wrap it: value='true'."
+            )
+        return {}
     if isinstance(value, int | float):
         return {"WFNumberValue": str(value)}
     if isinstance(value, str):

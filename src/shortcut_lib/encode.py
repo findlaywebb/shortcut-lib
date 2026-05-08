@@ -15,10 +15,11 @@ re-implementing that in Python would add weeks for no behavioural gain.
 from __future__ import annotations
 
 import plistlib
-import subprocess
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import Any, Literal
+
+from shortcut_lib._subprocess import run_cli
 
 SignMode = Literal["anyone", "people-who-know-me"]
 
@@ -57,7 +58,7 @@ def sign_to_file(
         tmp = Path(tmp_str)
         unsigned = tmp / "unsigned.shortcut"
         unsigned.write_bytes(bplist)
-        _run(
+        run_cli(
             [
                 "shortcuts",
                 "sign",
@@ -69,16 +70,5 @@ def sign_to_file(
                 str(output),
             ],
             stage="shortcuts sign",
-        )
-
-
-def _run(cmd: list[str], *, stage: str) -> None:
-    """Run a subprocess and surface any failure with its stderr."""
-    # cmd is a literal binary plus paths under TemporaryDirectory; no
-    # untrusted-input concern.
-    result = subprocess.run(cmd, capture_output=True, check=False)  # noqa: S603
-    if result.returncode != 0:
-        raise EncodeError(
-            f"{stage} failed (rc={result.returncode}): "
-            f"{result.stderr.decode(errors='replace').strip()}"
+            error_cls=EncodeError,
         )
