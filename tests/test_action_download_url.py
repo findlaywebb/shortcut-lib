@@ -161,17 +161,25 @@ def test_post_with_headers() -> None:
 
 
 def test_url_with_variable() -> None:
-    """Passing an Action's output as url emits a WFTextTokenAttachment envelope."""
+    """An Action output as url is wrapped as a single-attachment WFTextTokenString.
+
+    Apple's runtime reads ``WFURL`` as a WFTextTokenString and shows
+    "No URL Specified" if it gets a bare WFTextTokenAttachment envelope.
+    The schema promotes a lone Action/Value reference into a templated-
+    string envelope with one attachment so the URL slot connects cleanly.
+    """
     url_text = GetText(text="https://api.github.com/repos/owner/repo/contents/f.md")
     action = DownloadURL(url=url_text, method="GET")
     params = _params(action)
 
     url_param = params["WFURL"]
-    # coerce_value on an Action → its output → WFTextTokenAttachment
     assert isinstance(url_param, dict)
-    assert url_param["WFSerializationType"] == "WFTextTokenAttachment"
-    assert url_param["Value"]["OutputUUID"] == url_text.uuid
-    assert url_param["Value"]["Type"] == "ActionOutput"
+    assert url_param["WFSerializationType"] == "WFTextTokenString"
+    assert url_param["Value"]["string"] == "￼"
+    attachments = url_param["Value"]["attachmentsByRange"]
+    assert list(attachments) == ["{0, 1}"]
+    assert attachments["{0, 1}"]["OutputUUID"] == url_text.uuid
+    assert attachments["{0, 1}"]["Type"] == "ActionOutput"
 
 
 # ---------------------------------------------------------------------------
@@ -180,13 +188,14 @@ def test_url_with_variable() -> None:
 
 
 def test_header_value_as_named_var() -> None:
-    """A NamedVar as a header value produces a WFTextTokenAttachment inside WFValue.
+    """A NamedVar header value is promoted to a single-attachment WFTextTokenString.
 
-    This mirrors the ``Authorization: Bearer {Token}`` pattern in
-    voice_note_to_github.xml where the bearer token is a named variable.
-    In that sample the value is a Text template (WFTextTokenString with
-    attachmentsByRange). Here we test a plain NamedVar which becomes
-    WFTextTokenAttachment — a simpler variant.
+    Apple's wire format puts dictionary slot values (header values, JSON body
+    values) inside a WFTextTokenString envelope — even when the value is "just
+    a variable reference". A bare WFTextTokenAttachment in this slot imports
+    as a disconnected field (cf. the same bug pattern on ``WFURL``). The
+    schema rewraps the NamedVar's WFTextTokenAttachment as a one-attachment
+    WFTextTokenString so it matches Apple's emission.
     """
     token_var = NamedVar("Token")
     action = DownloadURL(
@@ -200,10 +209,12 @@ def test_header_value_as_named_var() -> None:
     assert len(items) == 1
     wf_value = items[0]["WFValue"]
 
-    # NamedVar.to_param() → WFTextTokenAttachment envelope.
-    assert wf_value["WFSerializationType"] == "WFTextTokenAttachment"
-    assert wf_value["Value"]["Type"] == "Variable"
-    assert wf_value["Value"]["VariableName"] == "Token"
+    assert wf_value["WFSerializationType"] == "WFTextTokenString"
+    assert wf_value["Value"]["string"] == "￼"
+    attachments = wf_value["Value"]["attachmentsByRange"]
+    assert list(attachments) == ["{0, 1}"]
+    assert attachments["{0, 1}"]["Type"] == "Variable"
+    assert attachments["{0, 1}"]["VariableName"] == "Token"
 
 
 # ---------------------------------------------------------------------------

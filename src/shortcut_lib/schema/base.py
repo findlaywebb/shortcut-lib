@@ -179,6 +179,58 @@ def coerce_value(x: object) -> Any:
     return x
 
 
+# Object Replacement Character (U+FFFC) — Apple uses this single 1-UTF-16-unit
+# codepoint as the placeholder slot for an attachment inside WFTextTokenString.
+_OBJECT_REPLACEMENT = "￼"
+
+
+def coerce_text_field(x: object) -> Any:
+    """Coerce a value for a parameter slot that Apple reads as WFTextTokenString.
+
+    Several Apple parameter slots — ``WFURL``, ``WFDate``, JSON body /
+    header dict values — refuse to read a bare ``WFTextTokenAttachment``
+    envelope and present as empty / disconnected at runtime ("No URL
+    Specified", an empty formatted date, etc.). Apple's wire format wraps
+    even single variable references as a one-attachment ``WFTextTokenString``.
+
+    This helper takes the raw Python value (Action, Value, str, scalar, or
+    pre-built envelope) and returns the wire form Apple expects for those
+    slots:
+
+    - ``Action`` / ``Value`` → single-attachment WFTextTokenString.
+    - ``str`` → bare string (matches Apple's emission for static URLs and
+      similar; the runtime is permissive at that layer).
+    - Pre-built ``WFTextTokenString`` envelope → passed through.
+    - Pre-built ``WFTextTokenAttachment`` envelope → rewrapped as a
+      one-attachment WFTextTokenString.
+    - Other scalars / pre-built envelopes → returned as-is.
+
+    Args:
+        x: A raw parameter value or a coerced wire-format dict.
+
+    Returns:
+        The wire-format value safe to drop into a text-token-string slot.
+    """
+    if isinstance(x, str):
+        return x
+    coerced = coerce_value(x)
+    if (
+        isinstance(coerced, dict)
+        and coerced.get("WFSerializationType") == "WFTextTokenAttachment"
+    ):
+        # Rewrap a single variable reference as a one-attachment templated
+        # string. Text.to_param() already returns WFTextTokenString and
+        # passes through unchanged.
+        return {
+            "Value": {
+                "string": _OBJECT_REPLACEMENT,
+                "attachmentsByRange": {"{0, 1}": coerced["Value"]},
+            },
+            "WFSerializationType": "WFTextTokenString",
+        }
+    return coerced
+
+
 def coerce_token(x: object) -> dict[str, Any]:
     """Coerce to a *token* dict — the inner form usable inside templated strings.
 

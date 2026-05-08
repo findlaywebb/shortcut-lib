@@ -5,7 +5,12 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
-from shortcut_lib.schema.base import Action, ParamValue, SchemaError, coerce_value
+from shortcut_lib.schema.base import (
+    Action,
+    ParamValue,
+    SchemaError,
+    coerce_text_field,
+)
 from shortcut_lib.schema.registry import register
 
 _VALID_DATE_STYLES = frozenset(
@@ -59,7 +64,9 @@ class FormatDate(Action):
     def _params(self) -> dict[str, Any]:
         out: dict[str, Any] = {}
         if self.input is not None:
-            out["WFDate"] = coerce_value(self.input)
+            # WFDate is a WFTextTokenString slot — a bare WFTextTokenAttachment
+            # imports as no-input and produces an empty formatted string.
+            out["WFDate"] = coerce_text_field(self.input)
         out["WFDateFormatStyle"] = self.date_style
         if self.time_style is not None:
             out["WFTimeFormatStyle"] = self.time_style

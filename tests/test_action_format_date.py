@@ -11,17 +11,24 @@ from shortcut_lib.schema.values import CurrentDate
 
 
 def test_format_date_short_style() -> None:
-    """FormatDate emits WFDate, WFDateFormatStyle with default Short style."""
+    """FormatDate emits WFDate, WFDateFormatStyle with default Short style.
+
+    WFDate must arrive as a single-attachment WFTextTokenString — Apple's
+    runtime treats a bare WFTextTokenAttachment as no input and produces an
+    empty formatted string.
+    """
     action = FormatDate(input=CurrentDate, date_style="Short", time_style="None")
     result = action.to_action_dict()
     assert result["WFWorkflowActionIdentifier"] == "is.workflow.actions.format.date"
     params = result["WFWorkflowActionParameters"]
     assert params["WFDateFormatStyle"] == "Short"
     assert params["WFTimeFormatStyle"] == "None"
-    # WFDate is present — coerce_value on a MagicVar produces WFTextTokenAttachment
     wf_date = params["WFDate"]
-    assert wf_date["WFSerializationType"] == "WFTextTokenAttachment"
-    assert wf_date["Value"] == {"Type": "CurrentDate"}
+    assert wf_date["WFSerializationType"] == "WFTextTokenString"
+    assert wf_date["Value"]["string"] == "￼"
+    attachments = wf_date["Value"]["attachmentsByRange"]
+    assert list(attachments) == ["{0, 1}"]
+    assert attachments["{0, 1}"] == {"Type": "CurrentDate"}
 
 
 def test_format_date_custom_requires_format_string() -> None:
@@ -43,13 +50,18 @@ def test_format_date_custom_with_format_string() -> None:
 
 
 def test_format_date_with_currentdate_magic_var() -> None:
-    """Passing CurrentDate magic var emits the correct WFTextTokenAttachment token."""
+    """CurrentDate as input produces a single-attachment WFTextTokenString.
+
+    Confirmed against ``samples/decoded/rename_files.xml`` where the
+    ``WFDate`` slot for a CurrentDate-only input is a WFTextTokenString
+    with one attachment of type ``CurrentDate``.
+    """
     action = FormatDate(input=CurrentDate)
     params = action.to_action_dict()["WFWorkflowActionParameters"]
     wf_date = params["WFDate"]
-    # coerce_value on MagicVar → WFTextTokenAttachment with inner token
-    assert wf_date["WFSerializationType"] == "WFTextTokenAttachment"
-    assert wf_date["Value"] == {"Type": "CurrentDate"}
+    assert wf_date["WFSerializationType"] == "WFTextTokenString"
+    attachments = wf_date["Value"]["attachmentsByRange"]
+    assert attachments["{0, 1}"] == {"Type": "CurrentDate"}
 
 
 def test_format_date_registered() -> None:

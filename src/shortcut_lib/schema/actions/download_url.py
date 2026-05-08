@@ -16,7 +16,13 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any, ClassVar, cast
 
-from shortcut_lib.schema.base import Action, ParamValue, SchemaError, coerce_value
+from shortcut_lib.schema.base import (
+    Action,
+    ParamValue,
+    SchemaError,
+    coerce_text_field,
+    coerce_value,
+)
 from shortcut_lib.schema.registry import register
 
 # Apple's default method; omitting WFHTTPMethod from the plist is equivalent to GET.
@@ -32,23 +38,18 @@ _WF_ITEM_TYPE_STRING = 0
 
 
 def _make_wf_text_token_string(value: Any) -> dict[str, Any]:
-    """Wrap a coerced value as a WFTextTokenString envelope.
+    """Wrap a *coerced* value as a WFTextTokenString envelope for a dict slot.
 
-    Plain strings need this wrapper to be valid inside WFDictionaryFieldValueItems.
-    If the value is already a serialised token envelope (dict with
-    WFSerializationType), return it as-is.
-
-    Args:
-        value: A coerced parameter value — either a plain Python scalar or a
-            ``{Value: …, WFSerializationType: …}`` dict from coerce_value.
-
-    Returns:
-        A dict in WFTextTokenString or WFTextTokenAttachment format.
+    Used inside ``WFHTTPHeaders``/``WFJSONValues`` where every slot — keys
+    and values alike — must be a WFTextTokenString. The value comes in
+    already coerced (via :func:`coerce_value`), so this helper handles
+    plain scalars by wrapping them as ``{string: str(value)}`` and defers
+    Action/Value handling to :func:`coerce_text_field`'s envelope rewrap.
     """
     if isinstance(value, dict) and "WFSerializationType" in value:
-        # Already a fully serialised envelope — pass through unchanged.
-        return value
-    # Plain string (or other scalar) — wrap in the simplest WFTextTokenString.
+        # Already an envelope — let coerce_text_field handle the
+        # WFTextTokenAttachment → WFTextTokenString rewrap path.
+        return coerce_text_field(value)
     return {
         "Value": {"string": str(value)},
         "WFSerializationType": "WFTextTokenString",
@@ -163,7 +164,9 @@ class DownloadURL(Action):
         out: dict[str, Any] = {}
 
         # --- URL ---
-        out["WFURL"] = coerce_value(self.url)
+        # Apple's runtime reads WFURL as a WFTextTokenString — a bare
+        # WFTextTokenAttachment imports as "No URL Specified".
+        out["WFURL"] = coerce_text_field(self.url)
 
         # --- Method ---
         # Apple omits WFHTTPMethod for GET (it is the default).
