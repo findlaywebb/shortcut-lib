@@ -12,3 +12,5 @@ samples/decoded/
 samples/private/
 *.shortcut.bplist
 *.shortcut.xml
+# scratch space for sub-agent research dumps (Apple docs etc.)
+docs/apple_raw/
