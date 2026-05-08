@@ -3,6 +3,63 @@
 Append-only record of substantive design decisions and surprises. New
 entries at the top.
 
+## 2026-05-08 — Overnight autonomous run (continued)
+
+After Phase A/B/C1/C2 landed earlier in the night, took a product-review
+pass via a sonnet sub-agent acting as a staff-engineer reviewer
+(`docs/product_review.md`). Acted on P1, P3, P4, P5 — skipped P2
+(UseModel needs an iOS 26 sample the user hasn't exported yet).
+
+**Tier 2 actions** (commit f3c6544): DownloadURL, Dictionary,
+Base64Encode. DownloadURL was the heavyweight: headers and JSON body
+both encoded as `WFDictionaryFieldValue` envelopes containing
+`WFDictionaryFieldValueItems` arrays. WFHTTPMethod is omitted for GET.
+ShowHeaders=True is needed when headers are present so the GUI renders
+the section expanded.
+
+**Lift / RawAction** (commit 2ba5deb): unblocks editing arbitrary
+shortcuts. Decoded workflow → Shortcut wrapper → mutate → re-encode
+works end-to-end for any identifier, modelled or not. Lift round-trip
+test parametrises over all 21 samples.
+
+**E1 example — note → GitHub** (commit 84978fb): clipboard → format
+date → base64-encode → strip whitespace → PUT to GitHub Files API with
+JSON body. Validates Tier 0/1/2 + Auth header + JSON body shape end to
+end. Three tests cover action sequence, PUT shape, and signed-file
+emission.
+
+**Audio actions** (commit c127d7f, P1): RecordAudio plus the
+first-party AppIntent-style TranscribeAudio (uses camelCase
+`audioFile` parameter rather than `WF*`-prefixed).
+
+**Helpers + registry visibility** (commit c127d7f, P3+P4):
+- `Shortcut.from_file(path, name=)` — sugar for the lift pattern.
+- `ExitShortcut`, `GetVariable`, `AppendVariable` — top-30 histogram
+  gaps; trivially simple to model, enable guard-clause patterns.
+- `list_values()`, `list_control_flow()` so an LLM running
+  `list_actions()` doesn't miss `If`, `Text`, `NamedVar`, `CurrentDate`
+  etc. — the most-used constructs.
+- `describe_action()` now uses `typing.get_type_hints()` to resolve
+  forward-ref strings into real types (`dict[str, Any] | None`,
+  `str | None` etc.). Was returning `"Any"` for everything.
+- `scripts/print_actions.py` prints all three sections.
+
+**Composition example** (commit c127d7f, P5):
+`examples/vault_note_to_git.py` — a polish helper, a push helper, and
+an orchestrator linked via RunWorkflow with real Shortcut instances.
+LLM step is a placeholder pending UseModel.
+
+**Skill updates** (~/.claude/skills/, not in this repo):
+- make-shortcut points to `print_actions.py` for the full surface.
+- mentions `open ~/Desktop/<Name>.shortcut` as the quickest macOS import.
+- Composition pattern now references the worked example.
+
+**Final state**: 170 tests pass, 19 registered actions across Tier 0/1/2,
+3 skills written (make/edit/decode), 8 vault notes documenting Apple's
+design intent. The vault → LLM → git goal shortcut is now scaffolded —
+real LLM integration waits on the user exporting a Use Model sample for
+schema verification.
+
 ## 2026-05-08 — Overnight autonomous run
 
 **Phase A complete.** Decode + encode + round-trip + LLM-readable buzz
