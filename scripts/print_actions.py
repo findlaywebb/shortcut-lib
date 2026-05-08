@@ -14,22 +14,41 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
-from shortcut_lib.schema import describe_action, list_actions
+from shortcut_lib.schema import (
+    describe_action,
+    list_actions,
+    list_control_flow,
+    list_values,
+)
 
 
 def main() -> None:
-    rows = list_actions()
-    print(f"# {len(rows)} registered actions\n")
-    for row in rows:
+    actions = list_actions()
+    print(f"# Authoring surface — {len(actions)} actions\n")
+    print("## Leaf actions\n")
+    for row in actions:
         desc = describe_action(row["identifier"])
-        params = ", ".join(p["name"] for p in desc["parameters"]) or "(none)"
+        sig = (
+            ", ".join(f"{p['name']}: {p['type']}" for p in desc["parameters"])
+            or "(none)"
+        )
         out = f" → {desc['default_output_name']}" if desc["default_output_name"] else ""
-        print(f"## {desc['name']}{out}")
+        print(f"### {desc['name']}{out}")
         print(f"`{desc['identifier']}`")
         if desc["doc"]:
             first_line = desc["doc"].splitlines()[0].strip()
             print(f"_{first_line}_")
-        print(f"Parameters: {params}\n")
+        print(f"Parameters: {sig}\n")
+
+    print("## Control flow\n")
+    for row in list_control_flow():
+        print(f"### {row['name']}")
+        print(f"_{row['doc']}_\n")
+
+    print("## Values\n")
+    for row in list_values():
+        print(f"### {row['name']}")
+        print(f"_{row['doc']}_\n")
 
 
 if __name__ == "__main__":

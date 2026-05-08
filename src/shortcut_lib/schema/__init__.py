@@ -32,7 +32,13 @@ from shortcut_lib.schema.control import (
     RepeatCount,
     RepeatEach,
 )
-from shortcut_lib.schema.registry import describe_action, list_actions, register
+from shortcut_lib.schema.registry import (
+    describe_action,
+    list_actions,
+    list_control_flow,
+    list_values,
+    register,
+)
 from shortcut_lib.schema.values import (
     Ask,
     Clipboard,
@@ -72,5 +78,7 @@ __all__ = [
     "Value",
     "describe_action",
     "list_actions",
+    "list_control_flow",
+    "list_values",
     "register",
 ]

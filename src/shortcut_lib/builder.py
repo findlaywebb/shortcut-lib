@@ -114,6 +114,23 @@ class Shortcut:
         sign_to_file(self.to_workflow(), path, mode=mode)
 
     @classmethod
+    def from_file(cls, path: Path | str, *, name: str | None = None) -> Shortcut:
+        """Load a signed `.shortcut` file as an editable Shortcut wrapper.
+
+        Convenience for ``decode_file(path).workflow → from_workflow(...)``.
+
+        Args:
+            path: Path to the signed `.shortcut` file.
+            name: Display name for the resulting wrapper. Defaults to the
+                file's stem.
+        """
+        from shortcut_lib.decode import decode_file
+
+        path = Path(path)
+        decoded = decode_file(path)
+        return cls.from_workflow(decoded.workflow, name=name or path.stem)
+
+    @classmethod
     def from_workflow(
         cls, workflow: dict[str, Any], *, name: str = "Lifted"
     ) -> Shortcut:
