@@ -1,0 +1,30 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.12.0
+    hooks:
+      - id: ruff
+        name: ruff lint
+        args: [--fix]
+      - id: ruff-format
+        name: ruff format
+  - repo: https://github.com/astral-sh/uv-pre-commit
+    rev: 0.9.6
+    hooks:
+      - id: uv-lock
+  - repo: local
+    hooks:
+      - id: ty
+        name: ty
+        # Astral hasn't published an official ty pre-commit repo yet; run via uv
+        # against the project's pinned dev dep to keep CI/local versions aligned.
+        entry: uv run ty check
+        language: system
+        types: [python]
+        pass_filenames: false

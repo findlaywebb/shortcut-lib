@@ -1,0 +1,79 @@
+[project]
+name = "shortcut-lib"
+version = "0.0.1"
+description = "Decode and (eventually) author Apple Shortcuts files."
+requires-python = ">=3.13"
+authors = [{ name = "Findlay Webb" }]
+dependencies = [
+    "cryptography>=44",
+]
+
+[project.scripts]
+shortcut-decode = "shortcut_lib.cli:decode_main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/shortcut_lib"]
+
+[tool.uv]
+dev-dependencies = [
+    "pytest>=8",
+    "ruff>=0.12",
+    "ty>=0.0.34",
+]
+
+# ── Ruff ─────────────────────────────────────────────────────────────
+
+[tool.ruff]
+line-length = 88
+target-version = "py313"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = [
+    "E",      # pycodestyle errors
+    "W",      # pycodestyle warnings
+    "F",      # pyflakes
+    "UP",     # pyupgrade
+    "B",      # flake8-bugbear
+    "SIM",    # flake8-simplify
+    "I",      # isort
+    "N",      # pep8-naming
+    "S",      # flake8-bandit (security)
+    "A",      # flake8-builtins
+    "C4",     # flake8-comprehensions
+    "DTZ",    # flake8-datetimez
+    "T20",    # flake8-print
+    "RET",    # flake8-return
+    "PTH",    # flake8-use-pathlib
+    "ERA",    # eradicate (commented-out code)
+    "RUF",    # ruff-specific rules
+    "PERF",   # perflint
+    "FURB",   # refurb
+]
+ignore = [
+    "E501",   # line too long — formatter handles this
+    "RET504", # unnecessary assignment before return
+]
+
+[tool.ruff.lint.per-file-ignores]
+"src/shortcut_lib/cli.py" = ["T201"]  # CLI tooling, print to stdout/stderr is expected
+"scripts/**" = ["T201", "E402"]        # scripts use print; sys.path tweak before import is intentional
+"tests/**" = ["S101"]                  # assert is fine in tests
+
+[tool.ruff.lint.isort]
+known-first-party = ["shortcut_lib"]
+
+# ── ty ───────────────────────────────────────────────────────────────
+
+[tool.ty.environment]
+root = ["src", "tests"]
+python-version = "3.13"
+
+# ── pytest ───────────────────────────────────────────────────────────
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
