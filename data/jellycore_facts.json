@@ -2502,6 +2502,7 @@
   "deliberately_omitted": [
     "Jellycore description prose (original expression)",
     "Jellycore DSL function names",
+    "Jellycore Swift parameter-struct names",
     "presets"
   ],
   "enums": {
@@ -3800,7 +3801,7 @@
     "is.workflow.actions.repeat.count",
     "is.workflow.actions.repeat.each",
     "is.workflow.actions.setvariable",
-    "buzz.config.color",
-    "buzz.config.icon"
+    "jelly.config.color",
+    "jelly.config.icon"
   ]
 }

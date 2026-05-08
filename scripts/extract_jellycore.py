@@ -100,9 +100,10 @@ def main() -> int:
         "deliberately_omitted": [
             "Jellycore description prose (original expression)",
             "Jellycore DSL function names",
+            "Jellycore Swift parameter-struct names",
             "presets",
         ],
-        "actions": actions,
+        "actions": _strip_internals(actions),
         "structural_identifiers": structural,
         "enums": enums,
     }
@@ -189,8 +190,13 @@ def _extract_enums(enums_dir: Path) -> dict[str, list[str]]:
 
 
 def _strip_internals(actions: Iterable[dict[str, object]]) -> list[dict[str, object]]:
-    """Drop underscore-prefixed cross-ref keys before output. (Currently kept
-    for traceability; called only in tests.)"""
+    """Drop underscore-prefixed cross-ref keys before output.
+
+    ``_dsl_name`` (Jellycore's DSL function names) and ``_parameter_struct``
+    (Jellycore's Swift struct names) are deliberately omitted from the
+    shipped JSON — those are upstream original expression. Only Apple-side
+    facts (identifier, display name, OS-min, parameter keys) survive.
+    """
     keep = ("display_name", "identifier", "lowest_compatible_host", "parameter_keys")
     return [{k: a[k] for k in keep if k in a} for a in actions]
 
