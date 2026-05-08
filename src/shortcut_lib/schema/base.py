@@ -120,6 +120,37 @@ class Action(ABC):
         return Output(uuid=self.uuid, name=resolved)
 
 
+@dataclass
+class RawAction(Action):
+    """Pass-through action for identifiers we don't have a typed class for.
+
+    Holds the action's identifier and parameters dict verbatim. Round-trips
+    exactly, can be inspected and mutated, but offers no parameter validation.
+    Used by ``Shortcut.from_workflow`` to lift a decoded dict back into a
+    Shortcut wrapper, and for hand-authoring against any identifier.
+
+    The class-level :attr:`Action.identifier` stays empty; the real
+    identifier is stored on the instance as ``raw_identifier`` and emitted
+    by the overridden :meth:`to_action_dict`.
+    """
+
+    raw_identifier: str = ""
+    raw_params: dict[str, Any] = field(default_factory=dict)
+
+    def to_action_dict(self) -> dict[str, Any]:
+        # raw_params already contains UUID and any other Apple-side keys —
+        # return as-is rather than going through _params + injection.
+        if not self.raw_identifier:
+            raise SchemaError("RawAction needs raw_identifier")
+        return {
+            "WFWorkflowActionIdentifier": self.raw_identifier,
+            "WFWorkflowActionParameters": dict(self.raw_params),
+        }
+
+    def _params(self) -> dict[str, Any]:
+        return self.raw_params
+
+
 def coerce_value(x: object) -> Any:
     """Coerce a Python primitive, Action, or Value to a parameter value.
 

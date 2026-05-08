@@ -8,7 +8,7 @@ from typing import Any
 from uuid import uuid4
 
 from shortcut_lib.encode import SignMode, encode_to_bplist, sign_to_file
-from shortcut_lib.schema.base import Action, SchemaError
+from shortcut_lib.schema.base import Action, RawAction, SchemaError
 
 
 def _new_workflow_uuid() -> str:
@@ -112,6 +112,51 @@ class Shortcut:
     def save_signed(self, path: Path | str, *, mode: SignMode = "anyone") -> None:
         """Encode, sign via the macOS shortcuts CLI, and write to disk."""
         sign_to_file(self.to_workflow(), path, mode=mode)
+
+    @classmethod
+    def from_workflow(
+        cls, workflow: dict[str, Any], *, name: str = "Lifted"
+    ) -> Shortcut:
+        """Lift a decoded workflow dict into a Shortcut for round-trip / edit.
+
+        Each action in ``WFWorkflowActions`` becomes a :class:`RawAction`
+        — bypasses the typed schema layer entirely so this works for
+        any identifier, modelled or not. Use ``shortcut_lib.decode`` to
+        get the source dict.
+
+        Args:
+            workflow: A decoded WFWorkflow* dict.
+            name: Display name for the resulting Shortcut wrapper. The
+                source dict doesn't carry a name (Apple uses the
+                filename), so the caller passes one for our composition
+                bookkeeping.
+        """
+        types = workflow.get("WFWorkflowTypes") or []
+        icon = workflow.get("WFWorkflowIcon") or {}
+        # Some gallery samples store min_client=0; preserve literal-zero
+        # rather than coercing to the default.
+        min_client = workflow.get("WFWorkflowMinimumClientVersion", 900)
+        out = cls(
+            name=name,
+            surfaces=list(types),
+            min_client=int(min_client),
+            icon_glyph=icon.get("WFWorkflowIconGlyphNumber", 61512),
+            icon_color=icon.get("WFWorkflowIconStartColor", 4282601983),
+            accepted_input=list(
+                workflow.get("WFWorkflowInputContentItemClasses") or []
+            ),
+            output_classes=list(
+                workflow.get("WFWorkflowOutputContentItemClasses") or []
+            ),
+        )
+        for action in workflow.get("WFWorkflowActions") or []:
+            ident = action.get("WFWorkflowActionIdentifier", "")
+            params = action.get("WFWorkflowActionParameters") or {}
+            uuid = params.get("UUID", "")
+            out.actions.append(
+                RawAction(uuid=uuid, raw_identifier=ident, raw_params=dict(params))
+            )
+        return out
 
     def _resolve_self_refs(self, action_dicts: list[dict[str, Any]]) -> None:
         """Replace `__SELF__` markers from RunWorkflow(target='self')."""
