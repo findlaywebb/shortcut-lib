@@ -1,80 +1,40 @@
 shortcut-lib
 Copyright (c) 2026 Findlay Webb
 
-This program is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License version 3 (or, at your
-option, any later version) as published by the Free Software Foundation.
-The full licence text is in LICENSE.
+Released under GPL-3.0-or-later. See LICENSE.
 
 ================================================================================
-Third-party work evaluated and acknowledged
+Third-party acknowledgements
 ================================================================================
 
-Three existing public projects were examined as wrapper candidates before
-this library was written. None of them ported cleanly to current Apple
-Shortcuts, current Python ergonomics, or both, so a hand-written schema
-layer was developed. Each project still informed parts of the design:
-
+Open-Jellycore — https://github.com/OpenJelly/Open-Jellycore (GPL-3.0)
 --------------------------------------------------------------------------------
-Open-Jellycore — https://github.com/OpenJelly/Open-Jellycore
-Copyright the Open-Jellycore contributors. Licensed under GPL-3.0.
+A Swift compiler-frontend for Apple Shortcuts.
+
+`data/jellycore_facts.json` is projected from Open-Jellycore's catalogue
+by `scripts/extract_jellycore.py`. Per action it carries: identifier,
+Apple display name, parameter key names, OS-min. Plus Apple-namespace
+control-flow structural identifiers from Compiler.swift.
+
+Modifications:
+- 2026-05-08: subset projection to JSON.
+- 2026-05-08: `/usr/bin/pearl` → `/usr/bin/perl` in the Shell enum.
+- 2026-05-08: dropped the upstream `enums` section (unused here).
+- 2026-05-08: filtered out `jelly.*`-prefixed identifiers.
+
+shortcuts-js — https://github.com/joshfarrant/shortcuts-js (MIT)
 --------------------------------------------------------------------------------
+A TypeScript library for building shortcuts (~iOS 12). Informed this
+project's per-action factory pattern, the output-UUID-per-action
+convention, and the variable type taxonomy (`Ask`, `Clipboard`,
+`CurrentDate`, `ExtensionInput`, `Variable`). Not vendored.
 
-A Swift compiler-frontend for Apple Shortcuts (the Jellycuts language).
-The most comprehensive open catalogue of first-party action identifiers,
-parameter key names, OS-min metadata, and typed enums.
-
-`data/jellycore_facts.json` in this repository is a derivative compilation
-of Open-Jellycore's curated lookup tables, produced by
-`scripts/extract_jellycore.py` walking an Open-Jellycore checkout and
-projecting it to JSON. It is licensed under GPL-3.0-or-later (the same
-licence as this project at large). The derivative status of the JSON is
-the basis for this project's choice of GPL-3.0-or-later. The dataset is
-a development-time bootstrapping artefact for
-`scripts/coverage_report.py` and is excluded from the built wheel
-(`pyproject.toml` `[tool.hatch.build.targets.wheel] exclude = ["data/"]`).
-
-Modifications to the upstream catalogue (per GPL-3.0 §5(a)):
-
-- 2026-05-08: subset projection to JSON via
-  `scripts/extract_jellycore.py`. Only Apple-side facts are emitted —
-  identifier strings, Apple display names, parameter WF* key names, and
-  OS-min metadata. Upstream original expression (description prose, the
-  Jellycuts DSL function names, upstream Swift parameter-struct names,
-  presets) is filtered out.
-- 2026-05-08: typo fix — `WFShell` enum value `/usr/bin/pearl` corrected
-  to `/usr/bin/perl`. Worth upstreaming back to Open-Jellycore.
-- 2026-05-08: filtered out Open-Jellycore-invented identifiers
-  (`jelly.config.*`) from `structural_identifiers`.
-- 2026-05-08: dropped the unused `enums` section (Open-Jellycore's
-  typed-enum extraction was bootstrapping data that this library never
-  consumed at runtime).
-
---------------------------------------------------------------------------------
-shortcuts-js — https://github.com/joshfarrant/shortcuts-js
-Copyright (c) Josh Farrant. Licensed under MIT.
---------------------------------------------------------------------------------
-
-A TypeScript library for building shortcuts (~iOS 12 era). Informed this
-project's per-action factory pattern, the auto-mint-output-UUID convention,
-and the variable type taxonomy (`Ask`, `Clipboard`, `CurrentDate`,
-`ExtensionInput`, `Variable`). Not vendored — the schema source code is
-hand-written from decoded Apple samples; shortcuts-js was a hint source.
-
---------------------------------------------------------------------------------
 iOS-Shortcuts-Reference — https://github.com/sebj/iOS-Shortcuts-Reference
-Copyright (c) sebj. Archived 2022; licence not declared.
 --------------------------------------------------------------------------------
+A reference data repository (archived 2022; licence not declared). Source
+of top-level metadata enums — `WFWorkflowImportQuestions`,
+`WFWorkflowInputContentItemClasses`, `WFWorkflowTypes`, the icon-colour
+palette, `shortcuts://` URL schemes. Not vendored.
 
-A reference data repository (not a library). Informed top-level metadata
-enum modelling — `WFWorkflowImportQuestions`, `WFWorkflowInputContentItemClasses`,
-`WFWorkflowTypes`, the icon-colour palette, `shortcuts://` URL schemes.
-Not vendored.
-
---------------------------------------------------------------------------------
-Smaller community write-ups
---------------------------------------------------------------------------------
-
-`docs/sources.md` lists additional smaller references consulted —
-zachary7829's file-format notes, apple-shortcuts-jgstew, shortcuts-toolkit.
-None contributed code or data; they're attributed for context.
+`docs/sources.md` lists smaller community write-ups consulted in
+addition.

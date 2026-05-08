@@ -1,64 +1,44 @@
 # Prior reverse-engineering work
 
-Attributions and notes on three public projects evaluated as wrapper
-candidates before this lib was written, plus the smaller community
-write-ups that informed the file format work. None of these is
-authoritative; Apple has never published a shortcut format spec.
+Three public projects were evaluated as wrapper candidates; this lib was
+written when none of them fit. Plus smaller community write-ups that
+informed the file-format work. Apple has never published a shortcut
+format spec.
 
-The original hope was that one of the three projects below would suffice
-as the schema layer — either as a thin Python wrapper, or as a port. None
-of them did, for reasons noted per project. The lib's schema source code
-is hand-written; references to upstream projects in the source are
-labelled hints, validated against decoded samples.
+The schema source code is hand-written. References to upstream projects
+in the source are labelled hints, validated against decoded samples.
 
 ## [Open-Jellycore](https://github.com/OpenJelly/Open-Jellycore) — OpenJelly, GPL-3.0
 
-The Jellycuts compiler. Highest-fidelity public action database evaluated:
-288 first-party actions with hand-curated typed parameter schemas, 77
-typed enums, plus a Compiler.swift that emits 5 control-flow primitives
+The Jellycuts compiler. The most comprehensive public action catalogue:
+288 first-party actions with typed parameter schemas, 77 typed enums,
+plus a Compiler.swift that emits 5 control-flow primitives
 (`is.workflow.actions.conditional`, `choosefrommenu`, `repeat.each`,
 `repeat.count`, `comment`) as language constructs rather than lookup-table
 entries. Includes `lowestCompatibleHost` per action — neither shortcuts-js
 nor sebj's reference has equivalent OS-min metadata.
 
-Wrapper-candidate verdict: the Swift compiler-frontend shape doesn't port
-to Python ergonomics, and the iOS-26-era actions (`UseModel`, Writing
-Tools) post-date Open-Jellycore's last update. Used instead as a
-bootstrapping fact source for an initial coverage check
-(`docs/coverage_dictionary.md`) and as one of several hint sources when
-authoring schema dataclasses.
+Not viable as a wrapper: Swift compiler-frontend shape doesn't port to
+Python ergonomics, and the iOS-26-era actions (`UseModel`, Writing
+Tools) post-date its last update. Used as the bootstrapping fact source
+for `docs/coverage_dictionary.md` and as one of several hint sources
+during schema authoring.
 
-`scripts/extract_jellycore.py` parses Open-Jellycore's Swift sources and
-emits `data/jellycore_facts.json` containing only Apple-side facts
-(identifier strings, display names, parameter WF* key names, OS-min
-metadata, and the typed-enum members Apple's API accepts). The script
-deliberately omits upstream original expression: description prose, the
-Jellycuts DSL function names, the upstream Swift parameter-struct names,
-and presets.
+`scripts/extract_jellycore.py` projects an Open-Jellycore checkout to
+`data/jellycore_facts.json`: identifier, Apple display name, parameter
+key names, OS-min, plus Apple-namespace structural identifiers from
+Compiler.swift. The dataset is a development-time artefact;
+`pyproject.toml` excludes `data/` from the wheel. See `NOTICE` for
+attribution.
 
-The JSON is a derivative compilation of Open-Jellycore's curation —
-mechanical extraction by an in-repo script, restricted to Apple-side
-fields. It is licensed under GPL-3.0-or-later (matching the rest of
-this lib); the derivative status is the basis for this project's choice
-of licence. The lib at large continues to evolve via sample-grounded
-authoring; the JSON is a development-time bootstrapping artefact rather
-than a runtime dependency, and `pyproject.toml` excludes `data/` from
-the wheel.
+Dictionary.shortcut coverage check: covers ~62% of identifiers (231 via
+lookup table + 7 via language constructs); the rest are post-2023
+first-party additions and third-party app-intent identifiers.
 
-`NOTICE` carries the date-stamped modifications log for the JSON per
-GPL-3.0 §5(a).
-
-Dictionary.shortcut coverage check: the action-fact dataset covers ~62%
-of identifiers (231 via lookup table + 7 via language constructs),
-missing ~50 first-party identifiers that appear to be post-2023 additions
-or omissions (`addnewreminder`, `appendvariable`, `getvariable`,
-`addnewevent`, maps actions, etc.) and ~100 third-party app-intent
-identifiers. The ~150 gaps are the schema work this lib owns.
-
-**Caveat on parameter keys**: external catalogue field names don't always
-match Apple's WF* keys 1:1 (e.g. an `AskForInputParameter` field labelled
-`type` is `WFInputType` on the wire). Treat extracted parameter names as
-hints; validate against decoded shortcuts before trusting.
+External catalogue field names don't always match Apple's WF* keys 1:1
+(e.g. an `AskForInputParameter` field labelled `type` is `WFInputType`
+on the wire). Treat extracted parameter names as hints; validate against
+decoded shortcuts.
 
 ## [shortcuts-js](https://github.com/joshfarrant/shortcuts-js) — Josh Farrant, MIT
 

@@ -1,11 +1,8 @@
-"""Extract structural facts from an Open-Jellycore checkout.
+"""Project an Open-Jellycore checkout to a JSON action-fact dataset.
 
-Open-Jellycore (https://github.com/OpenJelly/Open-Jellycore) is GPL-3.0. We
-treat its lookup tables as a *reference* for Apple's Shortcuts action surface
-and extract only the factual data — identifier strings, Apple-side display
-names, parameter key names, enum members, OS-min metadata. We deliberately
-skip Jellycore's descriptions and DSL-name choices since those are original
-expression by the project author.
+Per action emits: identifier, Apple display name, parameter key names,
+OS-min metadata. Plus the control-flow structural identifiers from
+Compiler.swift, filtered to Apple's namespace.
 
 Run:
     uv run python scripts/extract_jellycore.py \\
@@ -157,13 +154,7 @@ def _extract_structural_identifiers(compiler_path: Path) -> list[str]:
 
 
 def _strip_internals(actions: Iterable[dict[str, object]]) -> list[dict[str, object]]:
-    """Drop underscore-prefixed cross-ref keys before output.
-
-    ``_dsl_name`` (Jellycore's DSL function names) and ``_parameter_struct``
-    (Jellycore's Swift struct names) are deliberately omitted from the
-    shipped JSON — those are upstream original expression. Only Apple-side
-    facts (identifier, display name, OS-min, parameter keys) survive.
-    """
+    """Keep only the four Apple-side fields; drop everything else."""
     keep = ("display_name", "identifier", "lowest_compatible_host", "parameter_keys")
     return [{k: a[k] for k in keep if k in a} for a in actions]
 
