@@ -65,3 +65,17 @@ def test_notification_registered() -> None:
     """ShowNotification is discoverable via the registry."""
     cls = lookup("is.workflow.actions.notification")
     assert cls is ShowNotification
+
+
+def test_show_notification_omits_empty_title() -> None:
+    action = ShowNotification(title="", body="Some body")
+    params = action.to_action_dict()["WFWorkflowActionParameters"]
+    assert "WFNotificationActionTitle" not in params
+    assert params["WFNotificationActionBody"] == "Some body"
+
+
+def test_show_notification_omits_empty_body() -> None:
+    action = ShowNotification(title="Hello", body="")
+    params = action.to_action_dict()["WFWorkflowActionParameters"]
+    assert params["WFNotificationActionTitle"] == "Hello"
+    assert "WFNotificationActionBody" not in params

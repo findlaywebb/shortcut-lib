@@ -316,3 +316,176 @@ def test_describe_action_returns_parameter_signature() -> None:
     param_names = {p["name"] for p in desc["parameters"]}
     assert "locale" in param_names
     assert "stop_listening" in param_names
+
+
+# ---------------------------------------------------------------------------
+# Shortcut.add / extend guards
+# ---------------------------------------------------------------------------
+
+
+def test_shortcut_add_rejects_non_action() -> None:
+    from shortcut_lib.schema import SchemaError
+
+    s = Shortcut(name="Guard")
+    bad: Any = "not an action"
+    with pytest.raises(SchemaError, match="expects an Action"):
+        s.add(bad)
+
+
+def test_shortcut_extend_rejects_non_action() -> None:
+    from shortcut_lib.schema import SchemaError
+
+    s = Shortcut(name="Guard")
+    bad: Any = ["not an action"]
+    with pytest.raises(SchemaError, match="expects an Action"):
+        s.extend(bad)
+
+
+def test_shortcut_add_rejects_duplicate_instance() -> None:
+    from shortcut_lib.schema import SchemaError
+
+    s = Shortcut(name="Dup")
+    action = DictateText()
+    s.add(action)
+    with pytest.raises(SchemaError, match="aren't shareable"):
+        s.add(action)
+
+
+# ---------------------------------------------------------------------------
+# DictateText non-default paths
+# ---------------------------------------------------------------------------
+
+
+def test_dictate_text_emits_locale() -> None:
+    action = DictateText(locale="en-GB")
+    params = action.to_action_dict()["WFWorkflowActionParameters"]
+    assert params["WFSpeechLanguage"] == "en-GB"
+
+
+def test_dictate_text_stop_listening_after_pause() -> None:
+    action = DictateText(stop_listening="After Pause")
+    params = action.to_action_dict()["WFWorkflowActionParameters"]
+    assert params["WFDictateTextStopListening"] == "After Pause"
+
+
+# ---------------------------------------------------------------------------
+# Action.custom_output_name propagation
+# ---------------------------------------------------------------------------
+
+
+def test_custom_output_name_in_params() -> None:
+    action = DictateText(custom_output_name="My Dictation")
+    params = action.to_action_dict()["WFWorkflowActionParameters"]
+    assert params["CustomOutputName"] == "My Dictation"
+
+
+def test_custom_output_name_used_in_output_reference() -> None:
+    action = DictateText(custom_output_name="My Dictation")
+    ref = action.output()
+    token = ref.to_token()
+    assert token["OutputName"] == "My Dictation"
+    assert token["OutputUUID"] == action.uuid
+
+
+# ---------------------------------------------------------------------------
+# RepeatCount with variable count
+# ---------------------------------------------------------------------------
+
+
+def test_repeat_count_with_variable() -> None:
+    n = NamedVar("IterCount")
+    s = Shortcut(name="VarRepeat")
+    s.add(RepeatCount(count=n, body=[]))
+    head_params = s.to_workflow()["WFWorkflowActions"][0]["WFWorkflowActionParameters"]
+    # Variable magnitude → coerce_token → NamedVar.to_token()
+    assert head_params["WFRepeatCount"] == {
+        "VariableName": "IterCount",
+        "Type": "Variable",
+    }
+
+
+# ---------------------------------------------------------------------------
+# RepeatEach without items raises
+# ---------------------------------------------------------------------------
+
+
+def test_repeat_each_without_items_raises() -> None:
+    from shortcut_lib.schema import SchemaError
+
+    s = Shortcut(name="BadEach")
+    s.add(RepeatEach(items=None, body=[]))
+    with pytest.raises(SchemaError, match="RepeatEach requires"):
+        s.to_workflow()
+
+
+# ---------------------------------------------------------------------------
+# RunWorkflow tuple target
+# ---------------------------------------------------------------------------
+
+
+def test_run_workflow_tuple_target() -> None:
+    s = Shortcut(name="TupleTarget")
+    s.add(RunWorkflow(target=("ABC-123", "Helper Name")))
+    wf = s.to_workflow()["WFWorkflowActions"][0]["WFWorkflowActionParameters"][
+        "WFWorkflow"
+    ]
+    assert wf["workflowIdentifier"] == "ABC-123"
+    assert wf["workflowName"] == "Helper Name"
+    assert wf["isSelf"] is False
+
+
+# ---------------------------------------------------------------------------
+# coerce_token rejects plain scalars
+# ---------------------------------------------------------------------------
+
+
+def test_coerce_token_rejects_scalar() -> None:
+    from shortcut_lib.schema import SchemaError
+    from shortcut_lib.schema.base import coerce_token
+
+    with pytest.raises(SchemaError, match="cannot coerce"):
+        coerce_token("plain string")
+
+    with pytest.raises(SchemaError, match="cannot coerce"):
+        coerce_token(42)
+
+
+# ---------------------------------------------------------------------------
+# Text edge cases
+# ---------------------------------------------------------------------------
+
+
+def test_text_empty_template() -> None:
+    t = Text("")
+    param = t.to_param()
+    assert param["WFSerializationType"] == "WFTextTokenString"
+    assert param["Value"]["string"] == ""
+    assert param["Value"]["attachmentsByRange"] == {}
+
+
+def test_text_no_substitutions() -> None:
+    t = Text("hello world")
+    param = t.to_param()
+    assert param["Value"]["string"] == "hello world"
+    assert param["Value"]["attachmentsByRange"] == {}
+
+
+def test_text_repeated_substitution_name() -> None:
+    var = NamedVar("V")
+    t = Text("{x} and {x}", substitutions={"x": var})
+    param = t.to_param()
+    value = param["Value"]
+    # Two attachments — one at offset 0, one later
+    attachments = value["attachmentsByRange"]
+    assert len(attachments) == 2
+    offsets = sorted(int(k.strip("{}").split(",")[0]) for k in attachments)
+    assert offsets[0] == 0
+    assert offsets[1] > 0
+
+
+def test_text_to_token_raises() -> None:
+    from shortcut_lib.schema import SchemaError
+
+    t = Text("some text")
+    with pytest.raises(SchemaError, match="Text cannot be used as a token"):
+        t.to_token()
