@@ -561,5 +561,5 @@ real iOS 26 export that uses ChatGPT before adding.
 - `~/Documents/FMP/tech/Apple_Shortcuts/*.md` — 8 vault notes
   capturing Apple's design intent (distilled from
   `docs/apple_raw/`).
-- `data/jellycore_facts.json` — extracted action facts from
-  Open-Jellycore (GPL-clean: facts only, no description prose).
+- `data/jellycore_facts.json` — action-fact dataset projected from
+  Open-Jellycore. See `NOTICE`.
