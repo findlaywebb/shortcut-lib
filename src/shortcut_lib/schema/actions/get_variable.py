@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, ClassVar
 
-from shortcut_lib.schema.base import Action
+from shortcut_lib.schema.base import Action, SchemaError
 from shortcut_lib.schema.registry import register
 from shortcut_lib.schema.values import NamedVar
 
@@ -27,7 +27,5 @@ class GetVariable(Action):
 
     def _params(self) -> dict[str, Any]:
         if not self.name:
-            from shortcut_lib.schema.base import SchemaError
-
             raise SchemaError("GetVariable requires `name`")
         return {"WFVariable": NamedVar(self.name).to_param()}

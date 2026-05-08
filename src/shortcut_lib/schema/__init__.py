@@ -28,7 +28,6 @@ from shortcut_lib.schema.compose import RunWorkflow, Self
 from shortcut_lib.schema.control import (
     ChooseFromMenu,
     If,
-    Otherwise,
     RepeatCount,
     RepeatEach,
 )
@@ -63,7 +62,6 @@ __all__ = [
     "If",
     "MagicVar",
     "NamedVar",
-    "Otherwise",
     "Output",
     "Quantity",
     "RepeatCount",

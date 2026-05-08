@@ -14,7 +14,6 @@ from shortcut_lib.schema import (
     CurrentDate,
     If,
     NamedVar,
-    Otherwise,  # noqa: F401  — kept for explicit-import discoverability
     Output,
     Quantity,
     RepeatCount,

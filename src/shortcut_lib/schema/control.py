@@ -13,14 +13,14 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from typing import Any, ClassVar
-from uuid import uuid4
 
-from shortcut_lib.schema.base import Action, SchemaError, coerce_token, fresh_uuid
-
-
-def _grouping_uuid() -> str:
-    return str(uuid4()).upper()
-
+from shortcut_lib.schema.base import (
+    Action,
+    SchemaError,
+    coerce_token,
+    coerce_value,
+    fresh_uuid,
+)
 
 # `WFCondition` enum — observed values, may be incomplete. See
 # docs/format.md "Open questions".
@@ -55,17 +55,6 @@ class _ControlAction(Action):
 
 
 @dataclass
-class Otherwise:
-    """Marker placed inside ``If`` to start the else branch.
-
-    Use as:  ``If(cond, [a, b], Otherwise(), [c, d])``  — but the
-    ``otherwise`` keyword on If is preferred for clarity.
-    """
-
-    body: list[Any] = field(default_factory=list)
-
-
-@dataclass
 class If(_ControlAction):
     """Conditional branching.
 
@@ -84,7 +73,7 @@ class If(_ControlAction):
     value: Any = None
     then: list[Any] = field(default_factory=list)
     otherwise: list[Any] = field(default_factory=list)
-    grouping_identifier: str = field(default_factory=_grouping_uuid)
+    grouping_identifier: str = field(default_factory=fresh_uuid)
 
     identifier: ClassVar[str] = "is.workflow.actions.conditional"
 
@@ -147,7 +136,7 @@ class RepeatCount(_ControlAction):
 
     count: Any = 1
     body: list[Any] = field(default_factory=list)
-    grouping_identifier: str = field(default_factory=_grouping_uuid)
+    grouping_identifier: str = field(default_factory=fresh_uuid)
 
     identifier: ClassVar[str] = "is.workflow.actions.repeat.count"
 
@@ -176,7 +165,7 @@ class RepeatEach(_ControlAction):
 
     items: Any = None
     body: list[Any] = field(default_factory=list)
-    grouping_identifier: str = field(default_factory=_grouping_uuid)
+    grouping_identifier: str = field(default_factory=fresh_uuid)
 
     identifier: ClassVar[str] = "is.workflow.actions.repeat.each"
 
@@ -210,7 +199,7 @@ class ChooseFromMenu(_ControlAction):
 
     prompt: Any = ""
     cases: list[tuple[str, list[Any]]] = field(default_factory=list)
-    grouping_identifier: str = field(default_factory=_grouping_uuid)
+    grouping_identifier: str = field(default_factory=fresh_uuid)
 
     identifier: ClassVar[str] = "is.workflow.actions.choosefrommenu"
 
@@ -231,7 +220,7 @@ class ChooseFromMenu(_ControlAction):
             head_params["WFMenuPrompt"] = (
                 self.prompt
                 if isinstance(self.prompt, str)
-                else _coerce_param(self.prompt)
+                else coerce_value(self.prompt)
             )
         out: list[dict[str, Any]] = [
             {
@@ -282,6 +271,9 @@ def _close_grouping(
     body: list[Any],
     grouping_id: str,
 ) -> list[dict[str, Any]]:
+    # Only valid for simple open → body → close constructs (RepeatCount,
+    # RepeatEach). If and ChooseFromMenu have interleaved markers (an else
+    # mid-section, per-case markers) and emit their own three-action layout.
     out: list[dict[str, Any]] = [
         {
             "WFWorkflowActionIdentifier": identifier,
@@ -310,14 +302,7 @@ def _wrap_variable_input(operand: Any) -> dict[str, Any]:
     """
     if operand is None:
         raise SchemaError("control-flow input operand is required")
-    return {"Type": "Variable", "Variable": _coerce_param(operand)}
-
-
-def _coerce_param(x: Any) -> Any:
-    """Re-export of base.coerce_value, kept local to avoid a circular import."""
-    from shortcut_lib.schema.base import coerce_value
-
-    return coerce_value(x)
+    return {"Type": "Variable", "Variable": coerce_value(operand)}
 
 
 _VALUELESS_OPS = frozenset({"is-true", "is-not-true", "exists", "does-not-exist"})
@@ -345,4 +330,4 @@ def _condition_rhs(value: Any, op: str) -> dict[str, Any]:
     if isinstance(value, str):
         return {"WFConditionalActionString": value}
     # Variable / Output / Text on the RHS
-    return {"WFConditionalActionString": _coerce_param(value)}
+    return {"WFConditionalActionString": coerce_value(value)}
