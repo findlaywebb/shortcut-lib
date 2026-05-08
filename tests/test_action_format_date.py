@@ -69,3 +69,15 @@ def test_format_date_no_input_omits_wfdate() -> None:
     params = action.to_action_dict()["WFWorkflowActionParameters"]
     assert "WFDate" not in params
     assert params["WFDateFormatStyle"] == "Medium"
+
+
+def test_format_date_invalid_style_raises() -> None:
+    """An unrecognised date_style raises SchemaError naming the bad value."""
+    with pytest.raises(SchemaError, match="'Weekly'"):
+        FormatDate(date_style="Weekly")
+
+
+def test_format_date_invalid_time_style_raises() -> None:
+    """An unrecognised time_style raises SchemaError naming the bad value."""
+    with pytest.raises(SchemaError, match="'Extended'"):
+        FormatDate(time_style="Extended")

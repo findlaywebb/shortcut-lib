@@ -25,6 +25,14 @@ from typing import Any, ClassVar
 from shortcut_lib.schema.base import Action, SchemaError, coerce_value
 from shortcut_lib.schema.registry import register
 
+# Apple's Writing Tools tone values observed in samples and Apple UI (iOS 26+).
+# Only "professional" is confirmed from intelly.shortcut; the remaining three are
+# the other tones shown in the Writing Tools picker. Add here if more are
+# discovered in wild samples.
+_VALID_TONES: frozenset[str] = frozenset(
+    {"friendly", "professional", "concise", "casual"}
+)
+
 
 def _text_param(text: Any) -> dict[str, Any]:
     if text is None:
@@ -49,6 +57,13 @@ class AdjustTone(Action):
         "com.apple.WritingTools.WritingToolsAppIntentsExtension.AdjustToneIntent"
     )
     default_output_name: ClassVar[str] = "Adjusted Text"
+
+    def __post_init__(self) -> None:
+        if self.tone not in _VALID_TONES:
+            raise SchemaError(
+                f"AdjustTone.tone {self.tone!r} is not valid. "
+                f"Expected one of: {sorted(_VALID_TONES)}"
+            )
 
     def _params(self) -> dict[str, Any]:
         out = _text_param(self.text)

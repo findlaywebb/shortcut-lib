@@ -2,8 +2,11 @@
 
 from __future__ import annotations
 
+import pytest
+
 from shortcut_lib.schema.actions.dictionary import Dictionary
 from shortcut_lib.schema.actions.get_text import GetText
+from shortcut_lib.schema.base import SchemaError
 from shortcut_lib.schema.registry import list_actions
 from shortcut_lib.schema.values import NamedVar
 
@@ -147,3 +150,30 @@ def test_dictionary_registered() -> None:
     """Dictionary appears in the action registry with the correct identifier."""
     identifiers = {entry["identifier"] for entry in list_actions()}
     assert "is.workflow.actions.dictionary" in identifiers
+
+
+def test_dictionary_list_with_primitives_accepted() -> None:
+    """A list of primitive values (str, int, float, bool) is encoded correctly."""
+    d = Dictionary(entries=[("tags", ["alpha", "beta", "gamma"])])
+    items = _items(d)
+    assert items[0]["WFItemType"] == 4  # Array
+    # Values joined by newlines inside a WFTextTokenString.
+    wf_value = items[0]["WFValue"]
+    assert wf_value["WFSerializationType"] == "WFTextTokenString"
+    assert wf_value["Value"]["string"] == "alpha\nbeta\ngamma"
+
+
+def test_dictionary_list_with_non_primitive_raises() -> None:
+    """A list containing a NamedVar raises SchemaError with a helpful hint."""
+    var = NamedVar("MyVar")
+    d = Dictionary(entries=[("items", ["first", var])])
+    with pytest.raises(SchemaError, match="non-primitive"):
+        d.to_action_dict()
+
+
+def test_dictionary_list_with_action_raises() -> None:
+    """A list containing an Action raises SchemaError."""
+    action = GetText(text="dynamic")
+    d = Dictionary(entries=[("items", ["static", action])])
+    with pytest.raises(SchemaError, match="Text"):
+        d.to_action_dict()

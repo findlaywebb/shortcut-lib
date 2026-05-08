@@ -377,3 +377,23 @@ def test_put_matches_github_sample() -> None:
     # previously had a variable body and switched to JSON mode. We emit it here
     # only when the caller explicitly sets body_type to a non-dict type.)
     # This test does NOT assert WFRequestVariable since our API doesn't mix them.
+
+
+# ---------------------------------------------------------------------------
+# Test 14 — body_type='Form' raises until verified
+# ---------------------------------------------------------------------------
+
+
+def test_form_body_type_raises() -> None:
+    """body_type='Form' raises SchemaError with the exact unverified message."""
+    action = DownloadURL(
+        url="https://example.com/upload",
+        method="POST",
+        body={"field": "value"},
+        body_type="Form",
+    )
+    with pytest.raises(
+        SchemaError,
+        match="body_type='Form' is not yet verified against samples",
+    ):
+        action.to_action_dict()

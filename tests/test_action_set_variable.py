@@ -2,8 +2,11 @@
 
 from __future__ import annotations
 
+import pytest
+
 from shortcut_lib.schema.actions.dictate_text import DictateText
 from shortcut_lib.schema.actions.set_variable import SetVariable
+from shortcut_lib.schema.base import SchemaError
 from shortcut_lib.schema.registry import list_actions
 
 
@@ -39,3 +42,10 @@ def test_set_variable_registered() -> None:
     """SetVariable's identifier appears in the action registry."""
     identifiers = [entry["identifier"] for entry in list_actions()]
     assert "is.workflow.actions.setvariable" in identifiers
+
+
+def test_set_variable_empty_name_raises() -> None:
+    """SetVariable with an empty name raises SchemaError."""
+    action = SetVariable(name="", input="value")
+    with pytest.raises(SchemaError, match="name"):
+        action.to_action_dict()

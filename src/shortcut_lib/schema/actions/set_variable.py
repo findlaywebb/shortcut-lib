@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, ClassVar
 
-from shortcut_lib.schema.base import Action, coerce_value
+from shortcut_lib.schema.base import Action, SchemaError, coerce_value
 from shortcut_lib.schema.registry import register
 
 
@@ -30,6 +30,8 @@ class SetVariable(Action):
     identifier: ClassVar[str] = "is.workflow.actions.setvariable"
 
     def _params(self) -> dict[str, Any]:
+        if not self.name:
+            raise SchemaError("SetVariable requires `name`")
         out: dict[str, Any] = {"WFVariableName": self.name}
         if self.input is not None:
             out["WFInput"] = coerce_value(self.input)

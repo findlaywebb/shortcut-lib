@@ -154,6 +154,12 @@ class DownloadURL(Action):
                 "Use 'JSON', 'Form', 'Plain Text', or 'File'."
             )
 
+        if self.body_type == "Form":
+            raise SchemaError(
+                "body_type='Form' is not yet verified against samples; "
+                "use 'JSON' or 'Plain Text' instead"
+            )
+
         out: dict[str, Any] = {}
 
         # --- URL ---

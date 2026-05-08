@@ -59,3 +59,17 @@ def test_text_split_registered() -> None:
     """TextSplit appears in list_actions() with the correct identifier."""
     identifiers = {entry["identifier"] for entry in list_actions()}
     assert "is.workflow.actions.text.split" in identifiers
+
+
+def test_text_split_invalid_separator_raises() -> None:
+    """An unrecognised separator raises SchemaError naming the bad value."""
+    with pytest.raises(SchemaError, match="'Commas'"):
+        TextSplit(input="a,b,c", separator="Commas")
+
+
+def test_text_split_valid_separators_accepted() -> None:
+    """All four valid separators are accepted without error."""
+    for sep in ("New Lines", "Spaces", "Every Character"):
+        action = TextSplit(input="abc", separator=sep)
+        params = action.to_action_dict()["WFWorkflowActionParameters"]
+        assert params["separator"] == sep

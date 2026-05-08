@@ -9,16 +9,18 @@ entry is a ``WFDictionaryFieldValueItem`` with:
 - ``WFKey``  — always a ``WFTextTokenString`` (plain or templated).
 - ``WFValue`` — shape depends on ``WFItemType``.
 
-``WFItemType`` mapping (confirmed 0 from samples; 1-5 from Apple DSL):
+``WFItemType`` mapping (confirmed 0 from samples; 2-5 from Apple DSL):
 
   | Code | Python type          | Shortcuts label |
   |------|----------------------|-----------------|
   |  0   | str / Text / Value   | Text            |
-  |  1   | str (URL)            | URL             |
   |  2   | int / float          | Number          |
   |  3   | dict                 | Dictionary      |
   |  4   | list                 | Array           |
   |  5   | bool                 | Boolean         |
+
+Note: WFItemType 1 (URL) is not used. URL strings pass through as _TYPE_TEXT
+(WFItemType 0) — confirmed correct by sample round-trips.
 """
 
 from __future__ import annotations
@@ -29,9 +31,8 @@ from typing import Any, ClassVar
 from shortcut_lib.schema.base import Action, SchemaError, Value, coerce_value
 from shortcut_lib.schema.registry import register
 
-# WFItemType integer codes
+# WFItemType integer codes (WFItemType 1 / URL is unused — URL strings encode as _TYPE_TEXT)
 _TYPE_TEXT = 0
-_TYPE_URL = 1
 _TYPE_NUMBER = 2
 _TYPE_DICTIONARY = 3
 _TYPE_ARRAY = 4
@@ -120,9 +121,18 @@ def _encode_value(value: object, item_type: int) -> Any:
         # (Shortcuts' native list-to-text serialisation for array entries).
         if not isinstance(value, list):
             raise SchemaError(f"_TYPE_ARRAY but value is {type(value).__name__}")
+        non_primitives = [
+            el for el in value if not isinstance(el, str | int | float | bool)
+        ]
+        if non_primitives:
+            bad = type(non_primitives[0]).__name__
+            raise SchemaError(
+                f"Dictionary list entry contains a non-primitive value of type "
+                f"{bad!r}. Arrays in Dictionary entries must contain only str, "
+                f"int, float, or bool. To embed a variable reference, use a "
+                f"templated string (Text) instead."
+            )
         return _text_token_string("\n".join(str(el) for el in value))
-    if item_type == _TYPE_URL:
-        return _text_token_string(str(value))
     raise SchemaError(f"Unhandled WFItemType {item_type}")  # pragma: no cover
 
 

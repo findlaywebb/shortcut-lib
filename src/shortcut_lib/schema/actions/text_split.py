@@ -32,6 +32,13 @@ class TextSplit(Action):
     separator: str = "New Lines"
     custom_separator: str | None = None
 
+    def __post_init__(self) -> None:
+        if self.separator not in _VALID_SEPARATORS:
+            raise SchemaError(
+                f"TextSplit.separator {self.separator!r} is not valid. "
+                f"Expected one of: {sorted(_VALID_SEPARATORS)}"
+            )
+
     def _params(self) -> dict[str, Any]:
         """Emit ``text``, ``separator``, and optionally ``WFTextCustomSeparator``."""
         if self.separator == "Custom" and self.custom_separator is None:
