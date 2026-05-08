@@ -71,7 +71,7 @@ def describe_action(name_or_identifier: str) -> dict[str, Any]:
 
     try:
         hints = typing.get_type_hints(cls, include_extras=False)
-    except Exception:
+    except (NameError, AttributeError, TypeError):
         hints = {}
 
     params: list[dict[str, Any]] = []

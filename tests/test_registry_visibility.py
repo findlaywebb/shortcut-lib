@@ -90,6 +90,116 @@ def test_has_default_uses_dataclass_missing_sentinel() -> None:
 # probing or a class-level marker).
 
 
+def test_register_collision_raises() -> None:
+    """Registering a different class under an existing identifier raises ValueError."""
+    from dataclasses import dataclass
+    from typing import Any, ClassVar
+
+    from shortcut_lib.schema.base import Action
+    from shortcut_lib.schema.registry import _REGISTRY, register
+
+    _ident = "shortcut_lib.test.collision_probe"
+
+    @register
+    @dataclass
+    class _First(Action):
+        identifier: ClassVar[str] = _ident
+
+        def _params(self) -> dict[str, Any]:
+            return {}
+
+    try:
+        import pytest
+
+        @dataclass
+        class _Second(Action):
+            identifier: ClassVar[str] = _ident
+
+            def _params(self) -> dict[str, Any]:
+                return {}
+
+        with pytest.raises(ValueError, match=_ident):
+            register(_Second)
+    finally:
+        _REGISTRY.pop(_ident, None)
+
+
+def test_register_empty_identifier_raises() -> None:
+    """Registering a class with an empty identifier raises ValueError."""
+    from dataclasses import dataclass
+    from typing import Any, ClassVar
+
+    import pytest
+
+    from shortcut_lib.schema.base import Action
+    from shortcut_lib.schema.registry import register
+
+    @dataclass
+    class _NoIdent(Action):
+        identifier: ClassVar[str] = ""
+
+        def _params(self) -> dict[str, Any]:
+            return {}
+
+    with pytest.raises(ValueError, match="identifier"):
+        register(_NoIdent)
+
+
+def test_describe_action_handles_unresolvable_forward_ref() -> None:
+    """describe_action returns a result even when a type annotation can't be resolved.
+
+    If get_type_hints raises NameError (unresolvable forward reference), the
+    function falls back to the raw field type strings — no exception should
+    bubble to the caller, and ``parameters`` must still be populated.
+    """
+    import dataclasses
+    from typing import Any, cast
+
+    from shortcut_lib.schema.base import Action
+    from shortcut_lib.schema.registry import _REGISTRY, describe_action, register
+
+    _ident = "shortcut_lib.test.bad_ref_probe"
+
+    # Build the class dynamically so we control exactly which annotation
+    # string is stored. "SomeForwardRefThatDoesntExist" will never resolve,
+    # causing typing.get_type_hints to raise NameError. describe_action must
+    # absorb that and fall back to the raw string annotation.
+    _bad_ref = cast(
+        type[Action],
+        dataclasses.make_dataclass(
+            "_BadRef",
+            [
+                (
+                    "ghost_field",
+                    Any,
+                    dataclasses.field(default=None),
+                )
+            ],
+            bases=(Action,),
+            namespace={
+                "identifier": _ident,
+                "default_output_name": "",
+                "_params": lambda self: {},
+            },
+        ),
+    )
+    # Replace the resolved annotation with an unresolvable string so that
+    # typing.get_type_hints will raise NameError when it tries to evaluate it.
+    _bad_ref.__annotations__["ghost_field"] = "SomeForwardRefThatDoesntExist"
+
+    register(_bad_ref)
+
+    try:
+        desc = describe_action(_ident)
+        # The call must succeed (no exception).
+        assert desc["parameters"] is not None
+        # ghost_field must still appear — type rendered as raw string is fine.
+        names = {p["name"] for p in desc["parameters"]}
+        assert "ghost_field" in names
+    finally:
+        _REGISTRY.pop(_ident, None)
+
+
 def test_doc_non_empty_for_every_value() -> None:
     """Every list_values() entry has a non-empty doc string for LLM use."""
     assert all(row["doc"] for row in list_values())
