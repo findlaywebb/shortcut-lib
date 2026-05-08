@@ -1,0 +1,3806 @@
+{
+  "actions": [
+    {
+      "display_name": "Facetime",
+      "identifier": "com.apple.facetime.facetime",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "type",
+        "WFFaceTimeContact"
+      ]
+    },
+    {
+      "display_name": "Move Notes To Folder",
+      "identifier": "com.apple.mobilenotes.MoveNotesToFolderLinkAction",
+      "lowest_compatible_host": "iOS15",
+      "parameter_keys": [
+        "WFOutput",
+        "folder"
+      ]
+    },
+    {
+      "display_name": "Create Note",
+      "identifier": "com.apple.mobilenotes.SharingExtension",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFCreateNoteInput",
+        "ShowWhenRun"
+      ]
+    },
+    {
+      "display_name": "Call",
+      "identifier": "com.apple.mobilephone.call",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFCallContact"
+      ]
+    },
+    {
+      "display_name": "Upload Photos To Shared Album",
+      "identifier": "com.apple.mobileslideshow.StreamShareService",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "ImageInput"
+      ]
+    },
+    {
+      "display_name": "Get All Alarms",
+      "identifier": "com.apple.mobiletimer-framework.MobileTimerIntents.MTGetAlarmsIntent",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "ShowWhenRun"
+      ]
+    },
+    {
+      "display_name": "Add Frame To GIF",
+      "identifier": "is.workflow.actions.addframetogif",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFImage",
+        "WFInputGIF",
+        "WFGIFDelayTime",
+        "WFGIFAutoSize",
+        "WFGIFManualSizeWidth",
+        "WFGIFManualSizeHeight"
+      ]
+    },
+    {
+      "display_name": "Add Music Up Next",
+      "identifier": "is.workflow.actions.addmusictoupnext",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFMusic",
+        "place"
+      ]
+    },
+    {
+      "display_name": "Add New Calendar",
+      "identifier": "is.workflow.actions.addnewcalendar",
+      "lowest_compatible_host": "iOS15",
+      "parameter_keys": [
+        "CalendarName"
+      ]
+    },
+    {
+      "display_name": "Add to Playlist",
+      "identifier": "is.workflow.actions.addtoplaylist",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput",
+        "WFPlaylistName"
+      ]
+    },
+    {
+      "display_name": "Adjust Date",
+      "identifier": "is.workflow.actions.adjustdate",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "operation",
+        "WFDuration",
+        "WFDate"
+      ]
+    },
+    {
+      "display_name": "Airdrop",
+      "identifier": "is.workflow.actions.airdropdocument",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Set Airplane Mode",
+      "identifier": "is.workflow.actions.airplanemode.set",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "OnValue"
+      ]
+    },
+    {
+      "display_name": "Toggle Airplane Mode",
+      "identifier": "is.workflow.actions.airplanemode.set",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": []
+    },
+    {
+      "display_name": "Send Alert",
+      "identifier": "is.workflow.actions.alert",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFAlertActionMessage",
+        "WFAlertActionTitle",
+        "WFAlertActionCancelButtonShown"
+      ]
+    },
+    {
+      "display_name": "Set Device Appearance",
+      "identifier": "is.workflow.actions.appearance",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "style"
+      ]
+    },
+    {
+      "display_name": "Toggle Device Appearance",
+      "identifier": "is.workflow.actions.appearance",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": []
+    },
+    {
+      "display_name": "Append Note",
+      "identifier": "is.workflow.actions.appendnote",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput",
+        "WFNote"
+      ]
+    },
+    {
+      "display_name": "Ask for Input",
+      "identifier": "is.workflow.actions.ask",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFAskActionPrompt",
+        "type",
+        "WFAskActionDefaultAnswer",
+        "WFAskActionAllowsDecimalNumbers",
+        "WFAskActionAllowsNegativeNumbers"
+      ]
+    },
+    {
+      "display_name": "Markup",
+      "identifier": "is.workflow.actions.avairyeditphoto",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFDocument"
+      ]
+    },
+    {
+      "display_name": "Encode Base64",
+      "identifier": "is.workflow.actions.base64encode",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Decode Base64",
+      "identifier": "is.workflow.actions.base64encode",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Set Bluetooth",
+      "identifier": "is.workflow.actions.bluetooth.set",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "value"
+      ]
+    },
+    {
+      "display_name": "Calculate Expression",
+      "identifier": "is.workflow.actions.calculateexpression",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "Input"
+      ]
+    },
+    {
+      "display_name": "Set Voice Data",
+      "identifier": "is.workflow.actions.cellular.rat.set",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "mode",
+        "sim"
+      ]
+    },
+    {
+      "display_name": "Set Cellular",
+      "identifier": "is.workflow.actions.cellulardata.set",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "OnValue"
+      ]
+    },
+    {
+      "display_name": "Choose From List",
+      "identifier": "is.workflow.actions.choosefromlist",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput",
+        "WFChooseFromListActionPrompt",
+        "WFChooseFromListActionSelectMultiple",
+        "WFChooseFromListActionSelectAll"
+      ]
+    },
+    {
+      "display_name": "Clear Up Next",
+      "identifier": "is.workflow.actions.clearupnext",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": []
+    },
+    {
+      "display_name": "Connect To Servers",
+      "identifier": "is.workflow.actions.connecttoservers",
+      "lowest_compatible_host": "macOS12",
+      "parameter_keys": [
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Correct Spelling",
+      "identifier": "is.workflow.actions.correctspelling",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "text"
+      ]
+    },
+    {
+      "display_name": "Count",
+      "identifier": "is.workflow.actions.count",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "type",
+        "Input"
+      ]
+    },
+    {
+      "display_name": "Create Playlist",
+      "identifier": "is.workflow.actions.createplaylist",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFPlaylistName",
+        "WFPlaylistItems",
+        "WFPlaylistAuthor",
+        "WFPlaylistDescription"
+      ]
+    },
+    {
+      "display_name": "Date",
+      "identifier": "is.workflow.actions.date",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFDateActionDate"
+      ]
+    },
+    {
+      "display_name": "Debug Content Attribution",
+      "identifier": "is.workflow.actions.debug.contentattribution",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": []
+    },
+    {
+      "display_name": "Wait",
+      "identifier": "is.workflow.actions.delay",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFDelayTime"
+      ]
+    },
+    {
+      "display_name": "Delete Photos",
+      "identifier": "is.workflow.actions.deletephotos",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "photos"
+      ]
+    },
+    {
+      "display_name": "Get Address From Input",
+      "identifier": "is.workflow.actions.detect.address",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Get Contacts From Input",
+      "identifier": "is.workflow.actions.detect.contacts",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Get Date From Input",
+      "identifier": "is.workflow.actions.detect.date",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Get Dictionary From Input",
+      "identifier": "is.workflow.actions.detect.dictionary",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Get Email From Input",
+      "identifier": "is.workflow.actions.detect.emailaddress",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Get Images From Input",
+      "identifier": "is.workflow.actions.detect.images",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Get URLS From Input",
+      "identifier": "is.workflow.actions.detect.link",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Get Numbers From Input",
+      "identifier": "is.workflow.actions.detect.number",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Get Phone Numbers From Input",
+      "identifier": "is.workflow.actions.detect.phonenumber",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Get Text From Input",
+      "identifier": "is.workflow.actions.detect.text",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Detect Language",
+      "identifier": "is.workflow.actions.detectlanguage",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Dictate Text",
+      "identifier": "is.workflow.actions.dictatetext",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "language",
+        "endTrigger"
+      ]
+    },
+    {
+      "display_name": "Dictionary",
+      "identifier": "is.workflow.actions.dictionary",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFItems"
+      ]
+    },
+    {
+      "display_name": "Get current focus",
+      "identifier": "is.workflow.actions.dnd.getfocus",
+      "lowest_compatible_host": "iOS16",
+      "parameter_keys": []
+    },
+    {
+      "display_name": "Set Do Not Disturb",
+      "identifier": "is.workflow.actions.dnd.set",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "Enabled"
+      ]
+    },
+    {
+      "display_name": "Get File",
+      "identifier": "is.workflow.actions.documentpicker.open",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFShowFilePicker",
+        "WFGetFilePath",
+        "WFFileErrorIfNotFound",
+        "SelectMultiple"
+      ]
+    },
+    {
+      "display_name": "Save File",
+      "identifier": "is.workflow.actions.documentpicker.save",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput",
+        "WFAskWhereToSave",
+        "WFFileDestinationPath",
+        "WFSaveFileOverwrite"
+      ]
+    },
+    {
+      "display_name": "Get Contents of URL",
+      "identifier": "is.workflow.actions.downloadurl",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFURL",
+        "method",
+        "WFHTTPHeaders",
+        "requestType",
+        "WFJSONValues",
+        "WFRequestVariable"
+      ]
+    },
+    {
+      "display_name": "Save Dropbox File",
+      "identifier": "is.workflow.actions.dropbox.savefile",
+      "lowest_compatible_host": "iOS15",
+      "parameter_keys": [
+        "WFInput",
+        "WFAskWhereToSave",
+        "WFFileDestinationPath",
+        "WFSaveFileOverwrite"
+      ]
+    },
+    {
+      "display_name": "Eject Disk",
+      "identifier": "is.workflow.actions.ejectdisk",
+      "lowest_compatible_host": "macOS12",
+      "parameter_keys": [
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Encode Media",
+      "identifier": "is.workflow.actions.encodemedia",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFMedia",
+        "size",
+        "speed",
+        "WFMediaCustomSpeed",
+        "WFMetadataTitle",
+        "WFMetadataArtist",
+        "WFMetadataAlbum",
+        "WFMetadataGenre",
+        "WFMetadataYear",
+        "WFMetadataArtwork"
+      ]
+    },
+    {
+      "display_name": "Encode Audio",
+      "identifier": "is.workflow.actions.encodemedia",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFMedia",
+        "format",
+        "speed",
+        "WFMediaCustomSpeed",
+        "WFMetadataTitle",
+        "WFMetadataArtist",
+        "WFMetadataAlbum",
+        "WFMetadataGenre",
+        "WFMetadataYear",
+        "WFMetadataArtwork"
+      ]
+    },
+    {
+      "display_name": "Exit Shortcut",
+      "identifier": "is.workflow.actions.exit",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFResult"
+      ]
+    },
+    {
+      "display_name": "Select Song From Apple Music",
+      "identifier": "is.workflow.actions.exportsong",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFExportSongActionSelectMultiple"
+      ]
+    },
+    {
+      "display_name": "Extract Text From Image",
+      "identifier": "is.workflow.actions.extracttextfromimage",
+      "lowest_compatible_host": "macOS12",
+      "parameter_keys": [
+        "WFImage"
+      ]
+    },
+    {
+      "display_name": "File",
+      "identifier": "is.workflow.actions.file",
+      "lowest_compatible_host": "macOS12",
+      "parameter_keys": [
+        "WFFile"
+      ]
+    },
+    {
+      "display_name": "Append File",
+      "identifier": "is.workflow.actions.file.append",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "Value",
+        "WFFilePath",
+        "WFAppendOnNewLine"
+      ]
+    },
+    {
+      "display_name": "Prepend File",
+      "identifier": "is.workflow.actions.file.append",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "Value",
+        "WFFilePath",
+        "WFAppendOnNewLine"
+      ]
+    },
+    {
+      "display_name": "Create Folder",
+      "identifier": "is.workflow.actions.file.createfolder",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFFilePath"
+      ]
+    },
+    {
+      "display_name": "Delete File",
+      "identifier": "is.workflow.actions.file.delete",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput",
+        "WFDeleteFileConfirmDeletion"
+      ]
+    },
+    {
+      "display_name": "Get Contents of Folder",
+      "identifier": "is.workflow.actions.file.getfoldercontents",
+      "lowest_compatible_host": "iOS15",
+      "parameter_keys": [
+        "WFFolder",
+        "Recursive"
+      ]
+    },
+    {
+      "display_name": "Get File Link",
+      "identifier": "is.workflow.actions.file.getlink",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFFile"
+      ]
+    },
+    {
+      "display_name": "Label File",
+      "identifier": "is.workflow.actions.file.label",
+      "lowest_compatible_host": "macOS12",
+      "parameter_keys": [
+        "WFInput",
+        "WFLabelColorNumber"
+      ]
+    },
+    {
+      "display_name": "Move File",
+      "identifier": "is.workflow.actions.file.move",
+      "lowest_compatible_host": "macOS12",
+      "parameter_keys": [
+        "WFFile",
+        "WFFolder"
+      ]
+    },
+    {
+      "display_name": "Rename File",
+      "identifier": "is.workflow.actions.file.rename",
+      "lowest_compatible_host": "iOS15",
+      "parameter_keys": [
+        "WFFile",
+        "WFNewFilename"
+      ]
+    },
+    {
+      "display_name": "Reveal File in Finder",
+      "identifier": "is.workflow.actions.file.reveal",
+      "lowest_compatible_host": "macOS12",
+      "parameter_keys": [
+        "WFFile"
+      ]
+    },
+    {
+      "display_name": "Select File",
+      "identifier": "is.workflow.actions.file.select",
+      "lowest_compatible_host": "iOS15",
+      "parameter_keys": [
+        "type",
+        "SelectMultiple"
+      ]
+    },
+    {
+      "display_name": "Filter Articles",
+      "identifier": "is.workflow.actions.filter.articles",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": []
+    },
+    {
+      "display_name": "Filter Calendar Events",
+      "identifier": "is.workflow.actions.filter.calendarevents",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": []
+    },
+    {
+      "display_name": "Filter Contacts",
+      "identifier": "is.workflow.actions.filter.contacts",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": []
+    },
+    {
+      "display_name": "Filter Attendees",
+      "identifier": "is.workflow.actions.filter.eventattendees",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": []
+    },
+    {
+      "display_name": "Filter File",
+      "identifier": "is.workflow.actions.filter.files",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": []
+    },
+    {
+      "display_name": "Filter Images",
+      "identifier": "is.workflow.actions.filter.images",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": []
+    },
+    {
+      "display_name": "Filter Locations",
+      "identifier": "is.workflow.actions.filter.locations",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": []
+    },
+    {
+      "display_name": "Filter Music",
+      "identifier": "is.workflow.actions.filter.music",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": []
+    },
+    {
+      "display_name": "Filter Notes",
+      "identifier": "is.workflow.actions.filter.notes",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": []
+    },
+    {
+      "display_name": "Filter Photos",
+      "identifier": "is.workflow.actions.filter.photos",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": []
+    },
+    {
+      "display_name": "Filter Reminders",
+      "identifier": "is.workflow.actions.filter.reminders",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": []
+    },
+    {
+      "display_name": "Find Windows",
+      "identifier": "is.workflow.actions.filter.windows",
+      "lowest_compatible_host": "macOS12",
+      "parameter_keys": []
+    },
+    {
+      "display_name": "Get Selected Files",
+      "identifier": "is.workflow.actions.finder.getselectedfiles",
+      "lowest_compatible_host": "macOS12",
+      "parameter_keys": []
+    },
+    {
+      "display_name": "Set Flashlight",
+      "identifier": "is.workflow.actions.flashlight",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "state",
+        "WFFlashlightLevel"
+      ]
+    },
+    {
+      "display_name": "Toggle Flashlight",
+      "identifier": "is.workflow.actions.flashlight",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": []
+    },
+    {
+      "display_name": "Format Date",
+      "identifier": "is.workflow.actions.format.date",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFDate",
+        "WFDateFormatStyle",
+        "WFTimeFormatStyle",
+        "WFDateFormat",
+        "WFISO8601IncludeTime"
+      ]
+    },
+    {
+      "display_name": "Format Size",
+      "identifier": "is.workflow.actions.format.filesize",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "FormatSize",
+        "format",
+        "WFFileSizeIncludeUnits"
+      ]
+    },
+    {
+      "display_name": "Format Number",
+      "identifier": "is.workflow.actions.format.number",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFNumber",
+        "WFNumberFormatDecimalPlaces"
+      ]
+    },
+    {
+      "display_name": "Create QR Code",
+      "identifier": "is.workflow.actions.generatebarcode",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFText",
+        "correction"
+      ]
+    },
+    {
+      "display_name": "Get Playlist",
+      "identifier": "is.workflow.actions.get.playlist",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFPlaylistName"
+      ]
+    },
+    {
+      "display_name": "Get Article",
+      "identifier": "is.workflow.actions.getarticle",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFWebPage"
+      ]
+    },
+    {
+      "display_name": "Battery Level",
+      "identifier": "is.workflow.actions.getbatterylevel",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": []
+    },
+    {
+      "display_name": "Get Object of Class",
+      "identifier": "is.workflow.actions.getclassaction",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "Input",
+        "Class"
+      ]
+    },
+    {
+      "display_name": "Get Clipboard",
+      "identifier": "is.workflow.actions.getclipboard",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": []
+    },
+    {
+      "display_name": "Get Location",
+      "identifier": "is.workflow.actions.getcurrentlocation",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Get Current Song",
+      "identifier": "is.workflow.actions.getcurrentsong",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": []
+    },
+    {
+      "display_name": "Get Device Details",
+      "identifier": "is.workflow.actions.getdevicedetails",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "detail"
+      ]
+    },
+    {
+      "display_name": "Get Podcast Episodes",
+      "identifier": "is.workflow.actions.getepisodesforpodcast",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Send Message",
+      "identifier": "is.workflow.actions.getepisodesforpodcast",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFSendMessageContent",
+        "WFSendMessageActionRecipients",
+        "ShowWhenRun"
+      ]
+    },
+    {
+      "display_name": "Get Frames",
+      "identifier": "is.workflow.actions.getframesfromimage",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFImage"
+      ]
+    },
+    {
+      "display_name": "Make HTML From Rich Text",
+      "identifier": "is.workflow.actions.gethtmlfromrichtext",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput",
+        "WFMakeFullDocument"
+      ]
+    },
+    {
+      "display_name": "Get IP Address",
+      "identifier": "is.workflow.actions.getipaddress",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "source",
+        "type"
+      ]
+    },
+    {
+      "display_name": "Get Item From List",
+      "identifier": "is.workflow.actions.getitemfromlist",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput",
+        "type",
+        "WFItemIndex",
+        "WFItemRangeStart",
+        "WFItemRangeEnd"
+      ]
+    },
+    {
+      "display_name": "Get Name",
+      "identifier": "is.workflow.actions.getitemname",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "Input"
+      ]
+    },
+    {
+      "display_name": "Get Type",
+      "identifier": "is.workflow.actions.getitemtype",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Get Last Photo",
+      "identifier": "is.workflow.actions.getlastphoto",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFGetLatestPhotoCount",
+        "WFGetLatestPhotosActionIncludeScreenshots"
+      ]
+    },
+    {
+      "display_name": "Get Last Screenshots",
+      "identifier": "is.workflow.actions.getlastscreenshot",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFGetLatestPhotoCount"
+      ]
+    },
+    {
+      "display_name": "Get Last Video",
+      "identifier": "is.workflow.actions.getlastvideo",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFGetLatestPhotoCount"
+      ]
+    },
+    {
+      "display_name": "Get Last Bursts",
+      "identifier": "is.workflow.actions.getlatestbursts",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFGetLatestPhotoCount"
+      ]
+    },
+    {
+      "display_name": "Get Last Live Photos",
+      "identifier": "is.workflow.actions.getlatestlivephotos",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFGetLatestPhotoCount"
+      ]
+    },
+    {
+      "display_name": "Get Last Photo Import",
+      "identifier": "is.workflow.actions.getlatestphotoimport",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": []
+    },
+    {
+      "display_name": "Make Markdown From Rich Text",
+      "identifier": "is.workflow.actions.getmarkdownfromrichtext",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Get Shortcuts",
+      "identifier": "is.workflow.actions.getmyworkflows",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": []
+    },
+    {
+      "display_name": "Emoji Name",
+      "identifier": "is.workflow.actions.getnameofemoji",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Get Screen Context",
+      "identifier": "is.workflow.actions.getonscreencontent",
+      "lowest_compatible_host": "iOS15",
+      "parameter_keys": []
+    },
+    {
+      "display_name": "Get Parent Directory",
+      "identifier": "is.workflow.actions.getparentdirectory",
+      "lowest_compatible_host": "macOS12",
+      "parameter_keys": [
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Get Podcasts",
+      "identifier": "is.workflow.actions.getpodcastsfromlibrary",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": []
+    },
+    {
+      "display_name": "Make Rich Text From HTML",
+      "identifier": "is.workflow.actions.getrichtextfromhtml",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Make Rich Text From Markdown",
+      "identifier": "is.workflow.actions.getrichtextfrommarkdown",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Text",
+      "identifier": "is.workflow.actions.gettext",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFTextActionText"
+      ]
+    },
+    {
+      "display_name": "Get Text From PDF",
+      "identifier": "is.workflow.actions.gettextfrompdf",
+      "lowest_compatible_host": "iOS15",
+      "parameter_keys": [
+        "textType",
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Get Time Between Dates",
+      "identifier": "is.workflow.actions.gettimebetweendates",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput",
+        "WFTimeUntilFromDate",
+        "interval"
+      ]
+    },
+    {
+      "display_name": "Get File Of Type",
+      "identifier": "is.workflow.actions.gettypeaction",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput",
+        "WFFileType"
+      ]
+    },
+    {
+      "display_name": "Get Upcoming Reminders",
+      "identifier": "is.workflow.actions.getupcomingreminders",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFGetUpcomingItemCount",
+        "WFGetUpcomingItemCalendar"
+      ]
+    },
+    {
+      "display_name": "Get URL Component",
+      "identifier": "is.workflow.actions.geturlcomponent",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFURL",
+        "component"
+      ]
+    },
+    {
+      "display_name": "Get Value For Key",
+      "identifier": "is.workflow.actions.getvalueforkey",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFDictionaryKey",
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Get All Keys from Dictionary",
+      "identifier": "is.workflow.actions.getvalueforkey",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Get All Values from Dictionary",
+      "identifier": "is.workflow.actions.getvalueforkey",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Contents Of URL",
+      "identifier": "is.workflow.actions.getwebpagecontents",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Get Wi-Fi Details",
+      "identifier": "is.workflow.actions.getwifi",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "detail"
+      ]
+    },
+    {
+      "display_name": "Get Cellular Details",
+      "identifier": "is.workflow.actions.getwifi",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "detail"
+      ]
+    },
+    {
+      "display_name": "Continue In Shortcuts",
+      "identifier": "is.workflow.actions.handoff",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": []
+    },
+    {
+      "display_name": "Handoff Playback",
+      "identifier": "is.workflow.actions.handoffplayback",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFSourceMediaRoute",
+        "WFDestinationMediaRoute"
+      ]
+    },
+    {
+      "display_name": "Hash",
+      "identifier": "is.workflow.actions.hash",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput",
+        "type"
+      ]
+    },
+    {
+      "display_name": "Log Workout",
+      "identifier": "is.workflow.actions.health.workout.log",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "type",
+        "WFWorkoutDate",
+        "WFWorkoutDuration",
+        "WFWorkoutCaloriesQuantity",
+        "WFWorkoutDistanceQuantity"
+      ]
+    },
+    {
+      "display_name": "Hide App",
+      "identifier": "is.workflow.actions.hide.app",
+      "lowest_compatible_host": "macOS12",
+      "parameter_keys": [
+        "WFApp"
+      ]
+    },
+    {
+      "display_name": "Hide All Apps",
+      "identifier": "is.workflow.actions.hide.app",
+      "lowest_compatible_host": "macOS12",
+      "parameter_keys": [
+        "WFAppsExcept"
+      ]
+    },
+    {
+      "display_name": "Combine Image",
+      "identifier": "is.workflow.actions.image.combine",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput",
+        "mode",
+        "WFImageCombineSpacing"
+      ]
+    },
+    {
+      "display_name": "Convert Image",
+      "identifier": "is.workflow.actions.image.convert",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput",
+        "format",
+        "WFImagePreserveMetadata",
+        "WFImageCompressionQuality"
+      ]
+    },
+    {
+      "display_name": "Convert Image - Finder",
+      "identifier": "is.workflow.actions.image.convert.finder",
+      "lowest_compatible_host": "macOS12",
+      "parameter_keys": [
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Crop Image",
+      "identifier": "is.workflow.actions.image.crop",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput",
+        "position",
+        "WFImageCropHeight",
+        "WFImageCropWidth",
+        "WFImageCropX",
+        "WFImageCropY"
+      ]
+    },
+    {
+      "display_name": "Flip Image",
+      "identifier": "is.workflow.actions.image.flip",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput",
+        "mode"
+      ]
+    },
+    {
+      "display_name": "Mask Image",
+      "identifier": "is.workflow.actions.image.mask",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFImage",
+        "mode",
+        "WFCustomMaskImage"
+      ]
+    },
+    {
+      "display_name": "Resize Image",
+      "identifier": "is.workflow.actions.image.resize",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFImage",
+        "WFImageResizeHeight",
+        "WFImageResizeWidth"
+      ]
+    },
+    {
+      "display_name": "Rotate Image",
+      "identifier": "is.workflow.actions.image.rotate",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFImage",
+        "WFImageRotateAmount"
+      ]
+    },
+    {
+      "display_name": "Import Audio Files",
+      "identifier": "is.workflow.actions.importaudiofiles",
+      "lowest_compatible_host": "iOS15",
+      "parameter_keys": [
+        "WFInput",
+        "WFImportAudioFilesReencode",
+        "enoder"
+      ]
+    },
+    {
+      "display_name": "List",
+      "identifier": "is.workflow.actions.list",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFItems"
+      ]
+    },
+    {
+      "display_name": "Set Low Power Mode",
+      "identifier": "is.workflow.actions.lowpowermode.set",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "OnValue"
+      ]
+    },
+    {
+      "display_name": "Toggle Low Power Mode",
+      "identifier": "is.workflow.actions.lowpowermode.set",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": []
+    },
+    {
+      "display_name": "Make Disk Image",
+      "identifier": "is.workflow.actions.makediskimage",
+      "lowest_compatible_host": "macOS12",
+      "parameter_keys": [
+        "WFInput",
+        "VolumeName",
+        "EncryptImage",
+        "SizeToFit",
+        "ImageSize"
+      ]
+    },
+    {
+      "display_name": "Create GIF",
+      "identifier": "is.workflow.actions.makegif",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput",
+        "WFMakeGIFActionDelayTime",
+        "WFMakeGIFActionLoopEnabled",
+        "WFMakeGIFActionLoopCount",
+        "WFMakeGIFActionAutoSize",
+        "WFMakeGIFActionManualSizeHeight",
+        "WFMakeGIFActionManualSizeWidth"
+      ]
+    },
+    {
+      "display_name": "Make Image from PDF Page",
+      "identifier": "is.workflow.actions.makeimagefrompdfpage",
+      "lowest_compatible_host": "iOS15",
+      "parameter_keys": [
+        "WFInput",
+        "WFMakeImageFromPDFPageImageFormat",
+        "colorspace",
+        "WFMakeImageFromPDFPageResolution"
+      ]
+    },
+    {
+      "display_name": "Create PDF",
+      "identifier": "is.workflow.actions.makepdf",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput",
+        "WFPDFIncludeMargin",
+        "pages",
+        "WFPDFSinglePage",
+        "WFPDFPageRangeStart",
+        "WFPDFPageRangeEnd"
+      ]
+    },
+    {
+      "display_name": "Make Spoken Audio from Text",
+      "identifier": "is.workflow.actions.makespokenaudiofromtext",
+      "lowest_compatible_host": "iOS15",
+      "parameter_keys": [
+        "WFInput",
+        "language",
+        "WFSpeakTextPitch",
+        "WFSpeakTextRate",
+        "voice"
+      ]
+    },
+    {
+      "display_name": "Make Video from GIF",
+      "identifier": "is.workflow.actions.makevideofromgif",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInputGIF",
+        "WFMakeVideoFromGIFActionLoopCount"
+      ]
+    },
+    {
+      "display_name": "Make Archive",
+      "identifier": "is.workflow.actions.makezip",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput",
+        "type"
+      ]
+    },
+    {
+      "display_name": "Math",
+      "identifier": "is.workflow.actions.math",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput",
+        "WFMathOperation",
+        "WFMathOperand",
+        "scientific"
+      ]
+    },
+    {
+      "display_name": "Mount Disk Image",
+      "identifier": "is.workflow.actions.mountdiskimage",
+      "lowest_compatible_host": "macOS12",
+      "parameter_keys": [
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Move Window",
+      "identifier": "is.workflow.actions.movewindow",
+      "lowest_compatible_host": "macOS12",
+      "parameter_keys": [
+        "WFWindow",
+        "position",
+        "WFBringToFront",
+        "WFXCoordinate",
+        "WFYCoordinate"
+      ]
+    },
+    {
+      "display_name": "Nothing",
+      "identifier": "is.workflow.actions.nothing",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": []
+    },
+    {
+      "display_name": "Send Notification",
+      "identifier": "is.workflow.actions.notification",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFNotificationActionBody",
+        "WFNotificationActionTitle",
+        "WFNotificationActionSound",
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Number",
+      "identifier": "is.workflow.actions.number",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFNumberActionNumber"
+      ]
+    },
+    {
+      "display_name": "Random Number",
+      "identifier": "is.workflow.actions.number.random",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFRandomNumberMinimum",
+        "WFRandomNumberMaximum"
+      ]
+    },
+    {
+      "display_name": "Open App",
+      "identifier": "is.workflow.actions.openapp",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFAppIdentifier"
+      ]
+    },
+    {
+      "display_name": "Open In",
+      "identifier": "is.workflow.actions.openin",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput",
+        "WFOpenInAppIdentifier",
+        "WFOpenInAskWhenRun"
+      ]
+    },
+    {
+      "display_name": "Open URL",
+      "identifier": "is.workflow.actions.openurl",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Open Shortcut",
+      "identifier": "is.workflow.actions.openworkflow",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFWorkflow"
+      ]
+    },
+    {
+      "display_name": "Open X-Callback URL",
+      "identifier": "is.workflow.actions.openxcallbackurl",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFXCallbackURL",
+        "WFXCallbackCustomCallbackEnabled",
+        "WFXCallbackCustomSuccessKey",
+        "WFXCallbackCustomCancelKey",
+        "WFXCallbackCustomErrorKey",
+        "WFXCallbackCustomSuccessURLEnabled",
+        "WFXCallbackCustomSuccessURL"
+      ]
+    },
+    {
+      "display_name": "Toggle Orientation Lock",
+      "identifier": "is.workflow.actions.orientationlock.set",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": []
+    },
+    {
+      "display_name": "Set Orientation Lock",
+      "identifier": "is.workflow.actions.orientationlock.set",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "OnValue"
+      ]
+    },
+    {
+      "display_name": "Output",
+      "identifier": "is.workflow.actions.output",
+      "lowest_compatible_host": "iOS15",
+      "parameter_keys": [
+        "WFOutput",
+        "noResultBehavior",
+        "WFResponse"
+      ]
+    },
+    {
+      "display_name": "Overlay Image",
+      "identifier": "is.workflow.actions.overlayimageonimage",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFImage",
+        "WFInput",
+        "WFShouldShowImageEditor",
+        "WFImageHeight",
+        "WFImageWidth",
+        "WFImagePosition",
+        "WFOverlayImageOpacity",
+        "WFRotation"
+      ]
+    },
+    {
+      "display_name": "Overlay Text",
+      "identifier": "is.workflow.actions.overlaytext",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFImage",
+        "WFText",
+        "position",
+        "WFImageX",
+        "WFImageY"
+      ]
+    },
+    {
+      "display_name": "Play Music",
+      "identifier": "is.workflow.actions.pausemusic",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "behavior",
+        "WFMediaRoute"
+      ]
+    },
+    {
+      "display_name": "Create Photo Album",
+      "identifier": "is.workflow.actions.photos.createalbum",
+      "lowest_compatible_host": "iOS15",
+      "parameter_keys": [
+        "WFInput",
+        "AlbumName"
+      ]
+    },
+    {
+      "display_name": "Play Music",
+      "identifier": "is.workflow.actions.playmusic",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFMediaItems",
+        "shuffle"
+      ]
+    },
+    {
+      "display_name": "Play Podcast",
+      "identifier": "is.workflow.actions.playpodcast",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFPodcastShow"
+      ]
+    },
+    {
+      "display_name": "Play Sound",
+      "identifier": "is.workflow.actions.playsound",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Subscribe to Podcast",
+      "identifier": "is.workflow.actions.podcasts.subscribe",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Quicklook",
+      "identifier": "is.workflow.actions.previewdocument",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Print Document",
+      "identifier": "is.workflow.actions.print",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Get Appearance Detail",
+      "identifier": "is.workflow.actions.properties.appearance",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "detail",
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Get App Detail",
+      "identifier": "is.workflow.actions.properties.appstore",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "detail",
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Get Article Detail",
+      "identifier": "is.workflow.actions.properties.articles",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "detail",
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Get Event Detail",
+      "identifier": "is.workflow.actions.properties.calendarevents",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "detail",
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Get Contact Detail",
+      "identifier": "is.workflow.actions.properties.contacts",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "detail",
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Get Attendee Detail",
+      "identifier": "is.workflow.actions.properties.eventattendees",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "detail",
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Get File Details",
+      "identifier": "is.workflow.actions.properties.files",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput",
+        "property"
+      ]
+    },
+    {
+      "display_name": "Get Health Sample Detail",
+      "identifier": "is.workflow.actions.properties.health.quantity",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "detail",
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Get Image Detail",
+      "identifier": "is.workflow.actions.properties.images",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "detail",
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Get iTunes Artist Detail",
+      "identifier": "is.workflow.actions.properties.itunesartist",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "property",
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Get Product Detail",
+      "identifier": "is.workflow.actions.properties.itunesstore",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "detail",
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Get Location Detail",
+      "identifier": "is.workflow.actions.properties.locations",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "detail",
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Get Music Detail",
+      "identifier": "is.workflow.actions.properties.music",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "detail",
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Get Note Details",
+      "identifier": "is.workflow.actions.properties.note",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "property",
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Get Podcast Episode Detail",
+      "identifier": "is.workflow.actions.properties.podcast",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "detail",
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Get Podcast Show Detail",
+      "identifier": "is.workflow.actions.properties.podcastshow",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "detail",
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Get Reminder Detail",
+      "identifier": "is.workflow.actions.properties.reminders",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "detail",
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Get Page Detail",
+      "identifier": "is.workflow.actions.properties.safariwebpage",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "detail",
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Get Shazam Detail",
+      "identifier": "is.workflow.actions.properties.shazam",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "detail",
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Get Stock Detail",
+      "identifier": "is.workflow.actions.properties.stock",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "detail",
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Get Condition Details",
+      "identifier": "is.workflow.actions.properties.weather.conditions",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "detail",
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Get Shortcut Details",
+      "identifier": "is.workflow.actions.properties.workflow",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "detail",
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Quit App",
+      "identifier": "is.workflow.actions.quit.app",
+      "lowest_compatible_host": "macOS12",
+      "parameter_keys": [
+        "WFApp",
+        "WFAskToSaveChanges"
+      ]
+    },
+    {
+      "display_name": "Quit All Apps",
+      "identifier": "is.workflow.actions.quit.app",
+      "lowest_compatible_host": "macOS12",
+      "parameter_keys": [
+        "WFAppsExcept",
+        "WFAskToSaveChanges"
+      ]
+    },
+    {
+      "display_name": "Add to Reading List",
+      "identifier": "is.workflow.actions.readinglist",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFURL"
+      ]
+    },
+    {
+      "display_name": "Record Audio",
+      "identifier": "is.workflow.actions.recordaudio",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "quality",
+        "start",
+        "end",
+        "WFRecordingTimeInterval"
+      ]
+    },
+    {
+      "display_name": "Show Reminders List",
+      "identifier": "is.workflow.actions.reminders.showlist",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFList"
+      ]
+    },
+    {
+      "display_name": "Remove Events",
+      "identifier": "is.workflow.actions.removeevents",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInputEvents",
+        "WFCalendarIncludeFutureEvents"
+      ]
+    },
+    {
+      "display_name": "Remove From Album",
+      "identifier": "is.workflow.actions.removefromalbum",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput",
+        "WFRemoveAlbumSelectedGroup"
+      ]
+    },
+    {
+      "display_name": "Remove Reminders",
+      "identifier": "is.workflow.actions.removereminders",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInputReminders"
+      ]
+    },
+    {
+      "display_name": "Resize Window",
+      "identifier": "is.workflow.actions.resizewindow",
+      "lowest_compatible_host": "macOS12",
+      "parameter_keys": [
+        "WFWindow",
+        "config",
+        "WFBringToFront",
+        "WFHeight",
+        "WFWidth"
+      ]
+    },
+    {
+      "display_name": "Round Number",
+      "identifier": "is.workflow.actions.round",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput",
+        "roundTo",
+        "mode"
+      ]
+    },
+    {
+      "display_name": "Get RSS Items From Feed",
+      "identifier": "is.workflow.actions.rss",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFRSSFeedURL",
+        "WFRSSItemQuantity"
+      ]
+    },
+    {
+      "display_name": "Get RSS From Page",
+      "identifier": "is.workflow.actions.rss.extract",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFURLs"
+      ]
+    },
+    {
+      "display_name": "Run Apple Script",
+      "identifier": "is.workflow.actions.runapplescript",
+      "lowest_compatible_host": "macOS12",
+      "parameter_keys": [
+        "Input",
+        "Script"
+      ]
+    },
+    {
+      "display_name": "Share With Extensions",
+      "identifier": "is.workflow.actions.runextension",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Run Javascript For Automation",
+      "identifier": "is.workflow.actions.runjavascriptforautomation",
+      "lowest_compatible_host": "macOS12",
+      "parameter_keys": [
+        "Input",
+        "Script"
+      ]
+    },
+    {
+      "display_name": "Run Javascript on Webpage",
+      "identifier": "is.workflow.actions.runjavascriptonwebpage",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput",
+        "WFJavaScript"
+      ]
+    },
+    {
+      "display_name": "Run Shell Script",
+      "identifier": "is.workflow.actions.runshellscript",
+      "lowest_compatible_host": "macOS12",
+      "parameter_keys": [
+        "Input",
+        "Script",
+        "shell",
+        "inputMode"
+      ]
+    },
+    {
+      "display_name": "Run Script Over SSH",
+      "identifier": "is.workflow.actions.runsshscript",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFSSHHost",
+        "WFSSHPort",
+        "WFSSHUser",
+        "auth",
+        "WFSSHPassword",
+        "WFInput",
+        "WFSSHScript"
+      ]
+    },
+    {
+      "display_name": "Run Shortcut",
+      "identifier": "is.workflow.actions.runworkflow",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFWorkflowName",
+        "WFInput",
+        "WFShowWorkflow"
+      ]
+    },
+    {
+      "display_name": "Get URL",
+      "identifier": "is.workflow.actions.safari.geturl",
+      "lowest_compatible_host": "macOS12",
+      "parameter_keys": []
+    },
+    {
+      "display_name": "Save to Camera Roll",
+      "identifier": "is.workflow.actions.savetocameraroll",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput",
+        "WFCameraRollSelectedGroup"
+      ]
+    },
+    {
+      "display_name": "Scan QR Code",
+      "identifier": "is.workflow.actions.scanbarcode",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": []
+    },
+    {
+      "display_name": "Search App Store",
+      "identifier": "is.workflow.actions.searappstore",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFSearchTerm",
+        "by",
+        "region",
+        "device",
+        "WFItemLimit"
+      ]
+    },
+    {
+      "display_name": "Search iTunes",
+      "identifier": "is.workflow.actions.searchitunes",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFSearchTerm",
+        "category",
+        "by",
+        "results",
+        "WFItemLimit"
+      ]
+    },
+    {
+      "display_name": "Search Podcasts",
+      "identifier": "is.workflow.actions.searchpodcasts",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFSearchTerm",
+        "by",
+        "results",
+        "country",
+        "WFItemLimit"
+      ]
+    },
+    {
+      "display_name": "Search Web",
+      "identifier": "is.workflow.actions.searchweb",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInputText",
+        "destination"
+      ]
+    },
+    {
+      "display_name": "Seek Media",
+      "identifier": "is.workflow.actions.seek",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "behavior",
+        "WFTimeInterval"
+      ]
+    },
+    {
+      "display_name": "Select Contact",
+      "identifier": "is.workflow.actions.selectcontacts",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFSelectMultiple"
+      ]
+    },
+    {
+      "display_name": "Select Email",
+      "identifier": "is.workflow.actions.selectemail",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": []
+    },
+    {
+      "display_name": "Select Phone Number",
+      "identifier": "is.workflow.actions.selectphone",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": []
+    },
+    {
+      "display_name": "Select Photo",
+      "identifier": "is.workflow.actions.selectphoto",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFPhotoPickerTypes",
+        "WFSelectMultiplePhotos"
+      ]
+    },
+    {
+      "display_name": "Set Brightness",
+      "identifier": "is.workflow.actions.setbrightness",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFBrightness"
+      ]
+    },
+    {
+      "display_name": "Set Clipboard",
+      "identifier": "is.workflow.actions.setclipboard",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput",
+        "WFLocalOnly",
+        "WFExpirationDate"
+      ]
+    },
+    {
+      "display_name": "Set Name",
+      "identifier": "is.workflow.actions.setitemname",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput",
+        "WFName",
+        "WFDontIncludeFileExtension"
+      ]
+    },
+    {
+      "display_name": "Set Media Destination",
+      "identifier": "is.workflow.actions.setplaybackdestination",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFMediaRoute"
+      ]
+    },
+    {
+      "display_name": "Set Dictionary Value",
+      "identifier": "is.workflow.actions.setvalueforkey",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFDictionaryKey",
+        "WFDictionaryValue",
+        "WFDictionary"
+      ]
+    },
+    {
+      "display_name": "Set Volume",
+      "identifier": "is.workflow.actions.setvolume",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFVolume"
+      ]
+    },
+    {
+      "display_name": "Share",
+      "identifier": "is.workflow.actions.share",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Shazam It",
+      "identifier": "is.workflow.actions.shazamMedia",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": []
+    },
+    {
+      "display_name": "Show Definition",
+      "identifier": "is.workflow.actions.showdefinition",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "Word"
+      ]
+    },
+    {
+      "display_name": "Show in Calendar",
+      "identifier": "is.workflow.actions.showincalendar",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFEvent"
+      ]
+    },
+    {
+      "display_name": "Show in Store",
+      "identifier": "is.workflow.actions.showinstore",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFProduct"
+      ]
+    },
+    {
+      "display_name": "Show Note",
+      "identifier": "is.workflow.actions.shownote",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Show Result",
+      "identifier": "is.workflow.actions.showresult",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "Text"
+      ]
+    },
+    {
+      "display_name": "Show Webpage",
+      "identifier": "is.workflow.actions.showwebpage",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFURL",
+        "WFEnterSafariReader"
+      ]
+    },
+    {
+      "display_name": "Siri Donation",
+      "identifier": "is.workflow.actions.sirikit.donation.handle",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": []
+    },
+    {
+      "display_name": "Skip Backward",
+      "identifier": "is.workflow.actions.skipback",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "point"
+      ]
+    },
+    {
+      "display_name": "Skip Forward",
+      "identifier": "is.workflow.actions.skipforward",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": []
+    },
+    {
+      "display_name": "Speak Text",
+      "identifier": "is.workflow.actions.speaktext",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFText",
+        "WFSpeakTextWait",
+        "WFSpeakTextRate",
+        "WFSpeakTextPitch",
+        "language"
+      ]
+    },
+    {
+      "display_name": "Split PDF",
+      "identifier": "is.workflow.actions.splitpdf",
+      "lowest_compatible_host": "iOS15",
+      "parameter_keys": [
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Split Screen",
+      "identifier": "is.workflow.actions.splitscreen",
+      "lowest_compatible_host": "iOS15",
+      "parameter_keys": [
+        "WFPrimaryAppIdentifier",
+        "WFSecondaryAppIdentifier",
+        "WFAppRatio"
+      ]
+    },
+    {
+      "display_name": "Start Screensaver",
+      "identifier": "is.workflow.actions.startscreensaver",
+      "lowest_compatible_host": "macOS12",
+      "parameter_keys": []
+    },
+    {
+      "display_name": "Calculate Statistic",
+      "identifier": "is.workflow.actions.statistics",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "Input",
+        "operation"
+      ]
+    },
+    {
+      "display_name": "Stock Quote",
+      "identifier": "is.workflow.actions.stocks.quote",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "StockSymbol"
+      ]
+    },
+    {
+      "display_name": "Take Photo",
+      "identifier": "is.workflow.actions.takephoto",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "camera",
+        "WFCameraCaptureShowPreview",
+        "WFPhotoCount"
+      ]
+    },
+    {
+      "display_name": "Take a Screenshot",
+      "identifier": "is.workflow.actions.takescreenshot",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": []
+    },
+    {
+      "display_name": "Take Video",
+      "identifier": "is.workflow.actions.takevideo",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "camera",
+        "quality",
+        "start"
+      ]
+    },
+    {
+      "display_name": "Change Text Case",
+      "identifier": "is.workflow.actions.text.changecase",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "text"
+      ]
+    },
+    {
+      "display_name": "Combine Text",
+      "identifier": "is.workflow.actions.text.combine",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "text",
+        "combine",
+        "WFTextCustomSeparator"
+      ]
+    },
+    {
+      "display_name": "Match Text",
+      "identifier": "is.workflow.actions.text.match",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "text",
+        "WFMatchTextPattern",
+        "WFMatchTextCaseSensitive"
+      ]
+    },
+    {
+      "display_name": "Get Match Group",
+      "identifier": "is.workflow.actions.text.match.getgroup",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "type",
+        "matches",
+        "WFGroupIndex"
+      ]
+    },
+    {
+      "display_name": "Replace Text",
+      "identifier": "is.workflow.actions.text.replace",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput",
+        "WFReplaceTextFind",
+        "WFReplaceTextReplace",
+        "WFReplaceTextRegularExpression",
+        "WFReplaceTextCaseSensitive"
+      ]
+    },
+    {
+      "display_name": "Split Text",
+      "identifier": "is.workflow.actions.text.split",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "text",
+        "separator",
+        "WFTextCustomSeparator"
+      ]
+    },
+    {
+      "display_name": "Translate Text",
+      "identifier": "is.workflow.actions.text.translate",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInputText",
+        "from",
+        "to"
+      ]
+    },
+    {
+      "display_name": "Start Timer",
+      "identifier": "is.workflow.actions.timer.start",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFDuration"
+      ]
+    },
+    {
+      "display_name": "Trim Video",
+      "identifier": "is.workflow.actions.trimvideo",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInputMedia"
+      ]
+    },
+    {
+      "display_name": "Extract Archive",
+      "identifier": "is.workflow.actions.unzip",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFArchive"
+      ]
+    },
+    {
+      "display_name": "URL",
+      "identifier": "is.workflow.actions.url",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFURLActionURL"
+      ]
+    },
+    {
+      "display_name": "Expand URL",
+      "identifier": "is.workflow.actions.url.expand",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "URL"
+      ]
+    },
+    {
+      "display_name": "Get URL Headers",
+      "identifier": "is.workflow.actions.url.getheaders",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Decode URL",
+      "identifier": "is.workflow.actions.urlencode",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Encode URL",
+      "identifier": "is.workflow.actions.urlencode",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "User Activity",
+      "identifier": "is.workflow.actions.useractivity.open",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": []
+    },
+    {
+      "display_name": "Vibrate Device",
+      "identifier": "is.workflow.actions.vibrate",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": []
+    },
+    {
+      "display_name": "View Content Graph",
+      "identifier": "is.workflow.actions.viewresult",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput"
+      ]
+    },
+    {
+      "display_name": "Wait to return",
+      "identifier": "is.workflow.actions.waittoreturn",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": []
+    },
+    {
+      "display_name": "Change Wallpaper",
+      "identifier": "is.workflow.actions.wallpaper.set",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "WFInput",
+        "WFWallpaperLocation",
+        "WFWallpaperShowPreview"
+      ]
+    },
+    {
+      "display_name": "Watch Me Do",
+      "identifier": "is.workflow.actions.watchmedo",
+      "lowest_compatible_host": "macOS12",
+      "parameter_keys": []
+    },
+    {
+      "display_name": "Get Current Conditions",
+      "identifier": "is.workflow.actions.weather.currentconditions",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": []
+    },
+    {
+      "display_name": "Get Forecast",
+      "identifier": "is.workflow.actions.weather.forecast",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "type"
+      ]
+    },
+    {
+      "display_name": "Set WiFi",
+      "identifier": "is.workflow.actions.wifi.set",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "OnValue"
+      ]
+    },
+    {
+      "display_name": "Start Workout",
+      "identifier": "is.workflow.actions.workout.start",
+      "lowest_compatible_host": "iOS14",
+      "parameter_keys": [
+        "Identifier",
+        "isOpenEnded",
+        "Magnitude",
+        "Unit"
+      ]
+    }
+  ],
+  "deliberately_omitted": [
+    "Jellycore description prose (original expression)",
+    "Jellycore DSL function names",
+    "presets"
+  ],
+  "enums": {
+    "InputMode": [
+      "as arguments",
+      "to stdin"
+    ],
+    "RatMode": [
+      "3G",
+      "4G",
+      "5G",
+      "LTE"
+    ],
+    "Shell": [
+      "/bin/bash",
+      "/bin/csh",
+      "/bin/ksh",
+      "/bin/sh",
+      "/bin/tcsh",
+      "/bin/zsh",
+      "/usr/bin/perl",
+      "/usr/bin/python",
+      "/usr/bin/ruby",
+      "/usr/bin/swift"
+    ],
+    "WFAdjustOperation": [
+      "Add",
+      "Get Start of Day",
+      "Get Start of Hour",
+      "Get Start of Minute",
+      "Get Start of Month",
+      "Get Start of Week",
+      "Get Start of Year",
+      "Subtract"
+    ],
+    "WFArchiveFormat": [
+      ".cpio",
+      ".gz",
+      ".iso",
+      ".tar",
+      ".tar.bz2",
+      ".tar.gz",
+      ".tar.xz",
+      ".zip"
+    ],
+    "WFAttribute": [
+      "Actor",
+      "Album",
+      "All",
+      "Artist",
+      "Author",
+      "Composer",
+      "Description",
+      "Developer",
+      "Director",
+      "Episode",
+      "Feature Film",
+      "Keywords",
+      "Language",
+      "Movie",
+      "Producer",
+      "Product ID",
+      "Rating",
+      "Rating Index",
+      "Release Year",
+      "Season",
+      "Short Film",
+      "Show",
+      "Song",
+      "Title",
+      "Track"
+    ],
+    "WFCameraCaptureDevice": [
+      "Back",
+      "Front"
+    ],
+    "WFCameraCaptureQuality": [
+      "High",
+      "Low",
+      "Medium"
+    ],
+    "WFCaseType": [
+      "alternating",
+      "every word",
+      "lowercase",
+      "sentence case",
+      "spongebob",
+      "title case",
+      "uppercase"
+    ],
+    "WFCellularDetail": [
+      "Carrier Name",
+      "Country Code",
+      "Radio Technology"
+    ],
+    "WFConfiguration": [
+      "Bottom Half",
+      "Bottom Left Quarter",
+      "Bottom Right Quarter",
+      "Dimensions",
+      "Fit Screen",
+      "Left Half",
+      "Right Half",
+      "Top Half",
+      "Top Left Quarter",
+      "Top Right Quarter"
+    ],
+    "WFContentItemPropertyName": [
+      "# of Ratings",
+      "# of Ratings (This Version)",
+      "52-Week High",
+      "52-Week Low",
+      "Action Count",
+      "Air Pollutants",
+      "Air Quality Category",
+      "Air Quality Index",
+      "Album",
+      "Album Artwork",
+      "Album Track #",
+      "Altitude",
+      "Apple Music ID",
+      "Apple Music URL",
+      "Artist",
+      "Artwork",
+      "Artwork URL",
+      "Author",
+      "Birthday",
+      "Body",
+      "Camera Make",
+      "Camera Model",
+      "Category",
+      "Change in Price",
+      "City",
+      "Comments",
+      "Company",
+      "Company Name",
+      "Composer",
+      "Condition",
+      "Contact Photo",
+      "Content Rating",
+      "Creation Date",
+      "Currency",
+      "Currency Code",
+      "Dark Mode Is On",
+      "Date",
+      "Date Added",
+      "Date Taken",
+      "Department",
+      "Description",
+      "Dewpoint",
+      "Disc #",
+      "Download Size",
+      "Driver",
+      "Drop Off Location",
+      "Drop Off Time",
+      "Due Date",
+      "Duration",
+      "Email Address",
+      "End Date",
+      "Episode Count",
+      "Excerpt",
+      "Feed URL",
+      "Feels Like",
+      "File Extension",
+      "File Size",
+      "First Name",
+      "Folder",
+      "Formatted Price",
+      "Frame Rate",
+      "Genre",
+      "Genres",
+      "Has Alarms",
+      "Has Subtasks",
+      "Height",
+      "High",
+      "High Price",
+      "Humidity",
+      "IS Explicit",
+      "Icon",
+      "Image",
+      "Info URL",
+      "Inverse Appearance",
+      "Is Cloud Item",
+      "Is Completed",
+      "Is Favorite",
+      "Is Flagged",
+      "Is Hidden",
+      "Is Me",
+      "Is Streamable",
+      "Is Universal",
+      "Is a Screenshot",
+      "Job Title",
+      "Last Modified Date",
+      "Last Name",
+      "Last Played Date",
+      "Latitude",
+      "List",
+      "Location",
+      "Longitude",
+      "Low",
+      "Low Price",
+      "Lyric Snippet Synced",
+      "Lyrics",
+      "Lyrics Snippet",
+      "Main Image URL",
+      "Maximum Price",
+      "Media Kind",
+      "Media Type",
+      "Metadata Dictionary",
+      "Middle Name",
+      "Minimum OS Version",
+      "Minimum Price",
+      "Name",
+      "Nickname",
+      "Notes",
+      "Number Of Words",
+      "Open Price",
+      "Organizer",
+      "Orientation",
+      "Page Contents",
+      "Page Selection",
+      "Page URL",
+      "Parent Reminder",
+      "Phone Number",
+      "Phonetic First Name",
+      "Phonetic Last Name",
+      "Phonetic Middle Name",
+      "Photo Type",
+      "Pickup Location",
+      "Pickup Time",
+      "Play Count",
+      "Precipitation Amount",
+      "Precipitation Chance",
+      "Prefix",
+      "Pressure",
+      "Price",
+      "Priority",
+      "Rating",
+      "Rating (This Version)",
+      "Region",
+      "Release Date",
+      "Release Notes",
+      "Reminder Location",
+      "Ride Option Name",
+      "Role",
+      "Screenshot URLs",
+      "Shazam URL",
+      "Skip Count",
+      "Source",
+      "Start Date",
+      "State",
+      "Status",
+      "Store ID",
+      "Store URL",
+      "Street",
+      "Street Address",
+      "Subtasks",
+      "Suffix",
+      "Sunrise Time",
+      "Sunset Time",
+      "Supported Devices",
+      "Supported Languages",
+      "Supports Game Center",
+      "Temperature",
+      "Time Quote Was Last Updated",
+      "Title",
+      "Type",
+      "URL",
+      "UV Index",
+      "Unit",
+      "Value",
+      "Vehicle Information",
+      "Version",
+      "Video URL",
+      "Visibility",
+      "Width",
+      "Wind Direction",
+      "Wind Speed",
+      "Zip Code",
+      "iPad Screenshot URLs"
+    ],
+    "WFCountType": [
+      "Characters",
+      "Items",
+      "Lines",
+      "Sentences",
+      "Words"
+    ],
+    "WFCountry": [
+      "Afghanistan",
+      "Albania",
+      "Algeria",
+      "American Samoa",
+      "Andorra",
+      "Angola",
+      "Anguilla",
+      "Antartica",
+      "Antigua & Barbuda",
+      "Argentina",
+      "Aruba",
+      "Ascension Island",
+      "Australia",
+      "Austria",
+      "Azerbaijan",
+      "Bahamas",
+      "Bahrain",
+      "Bangladesh",
+      "Barbados",
+      "Belarus",
+      "Belgium",
+      "Belize",
+      "Benin",
+      "Bermuda",
+      "Bhutan",
+      "Bolivia",
+      "Bosnia & Herzegovina",
+      "Botswana",
+      "Bouvet Island",
+      "Brazil",
+      "British Indian Ocean Territory",
+      "British Virgin Islands",
+      "Brunei",
+      "Bulgaria",
+      "Burkina Faso",
+      "Burundi",
+      "Cambodia",
+      "Cameroon",
+      "Canada",
+      "Canary Islands",
+      "Cape Verde",
+      "Caribbean Netherlands",
+      "Cayman Islands",
+      "Central African Republic",
+      "Ceuta & Melilla",
+      "Chad",
+      "Chile",
+      "China mainland",
+      "Christmas Island",
+      "Clipperton Island",
+      "Cocos (Keeling) Islands",
+      "Columbia",
+      "Comoros",
+      "Congo - Brazzaville",
+      "Congo - Kinshasa",
+      "Cook Islands",
+      "Costa Rica",
+      "Croatia",
+      "Cuba",
+      "Cyprus",
+      "Czechia",
+      "Denmark",
+      "Diego Garcia",
+      "Djibouti",
+      "Dominica",
+      "Dominican Republic",
+      "Ecuador",
+      "Egypt",
+      "El Salvador",
+      "Equatorial Guinea",
+      "Eritrea",
+      "Estonia",
+      "Eswatini",
+      "Ethiopia",
+      "Falkland Islands",
+      "Faroe Islands",
+      "Fiji",
+      "Finland",
+      "France",
+      "French Guiana",
+      "French Polynesia",
+      "French Southern Territories",
+      "Gabon",
+      "Gambia",
+      "Georgia",
+      "Germany",
+      "Ghana",
+      "Gibraltar",
+      "Greece",
+      "Greenland",
+      "Grenada",
+      "Guadeloupe",
+      "Guam",
+      "Guatemala",
+      "Guernsey",
+      "Guinea",
+      "Guinea-Bissau",
+      "Guyana",
+      "Haiti",
+      "Heard & McDonald Islands",
+      "Honduras",
+      "Hong Kong",
+      "Hungary",
+      "Iceland",
+      "India",
+      "Indonesia",
+      "Iran",
+      "Iraq",
+      "Ireland",
+      "Isle of Man",
+      "Israel",
+      "Italy",
+      "Jamaica",
+      "Japan",
+      "Jersey",
+      "Jordan",
+      "Kazakhstan",
+      "Kenya",
+      "Kosovo",
+      "Kribati",
+      "Kuwait",
+      "Kyrgyzstan",
+      "Laos",
+      "Latvia",
+      "Lebanon",
+      "Lesotho",
+      "Liberia",
+      "Libya",
+      "Liechtenstein",
+      "Lithuania",
+      "Luxembourg",
+      "Macao",
+      "Madagascar",
+      "Malawi",
+      "Malaysia",
+      "Maldives",
+      "Mali",
+      "Malta",
+      "Marshall Islands",
+      "Martinique",
+      "Mauritania",
+      "Mauritius",
+      "Mayotte",
+      "Mexico",
+      "Micronesia",
+      "Moldova",
+      "Monaco",
+      "Mongolia",
+      "Montenegro",
+      "Montserrat",
+      "Morocco",
+      "Mozambique",
+      "Myanmar (Burma)",
+      "Namibia",
+      "Nauru",
+      "Nepal",
+      "Netherlands",
+      "New Caledonia",
+      "New Zealand",
+      "Niger",
+      "Nigeria",
+      "Niue",
+      "Norfolk Island",
+      "North Korea",
+      "North Macedonia",
+      "Northern Mariana Islands",
+      "Norway",
+      "Oman",
+      "Pakistan",
+      "Palau",
+      "Palestinian Territories",
+      "Panama",
+      "Papua New Guinea",
+      "Paraguay",
+      "Peru",
+      "Philippines",
+      "Pitcairn Islands",
+      "Poland",
+      "Portugal",
+      "Puerto Rico",
+      "Qatar",
+      "Romania",
+      "Russia",
+      "Rwanda",
+      "Samoa",
+      "San Marino",
+      "Saudi Arabia",
+      "Senegal",
+      "Serbia",
+      "Seychelles",
+      "Sierra Leone",
+      "Singapore",
+      "Sint Maarten",
+      "Slovakia",
+      "Slovenia",
+      "So. Georgia & So. Sandwich Isl.",
+      "Solomon Islands",
+      "Somalia",
+      "South Africa",
+      "South Korea",
+      "South Sudan",
+      "Spain",
+      "Sri Lanka",
+      "St. Helena",
+      "St. Kitts & Nevis",
+      "St. Lucia",
+      "St. Martin",
+      "St. Pierre & Miquelon",
+      "St. Vincent & Grenadines",
+      "Sudan",
+      "Suriname",
+      "Svalbard & Jan Mayen",
+      "Sweden",
+      "Switzerland",
+      "Syria",
+      "Taiwan",
+      "Tajikistan",
+      "Tanzania",
+      "Thailand",
+      "Timor-Leste",
+      "Togo",
+      "Tokelau",
+      "Tonga",
+      "Trinidad & Tobago",
+      "Tristan da Cunha",
+      "Tunisia",
+      "Turkey",
+      "Turkmenistan",
+      "Turks & Caicos Islands",
+      "Tuvalu",
+      "U.S. Outlying Islands",
+      "U.S. Virgin Islands",
+      "Uganda",
+      "Ukraine",
+      "United Arab Emirates",
+      "United Kingdom",
+      "United States",
+      "Uruguay",
+      "Uzbekistan",
+      "Vanuatu",
+      "Vatican City",
+      "Venezuela",
+      "Vietnam",
+      "Wallis & Futuna",
+      "Wester Sahara",
+      "Yemen",
+      "Zambia",
+      "Zimbabwe"
+    ],
+    "WFDateFormatStyle": [
+      "Custom",
+      "ISO 8601",
+      "Long",
+      "Medium",
+      "None",
+      "RFC 2822",
+      "Relative",
+      "Short"
+    ],
+    "WFDateSpecifier": [
+      "Any Day",
+      "Specified Day",
+      "Today",
+      "Tomorrow"
+    ],
+    "WFDeviceDetail": [
+      "Current Brightness",
+      "Current Volume",
+      "Device Model",
+      "Device Name",
+      "Screen Height",
+      "Screen Width",
+      "System Version"
+    ],
+    "WFDictateTextStopListening": [
+      "After Pause",
+      "After Short Pause",
+      "On Tap"
+    ],
+    "WFEntity": [
+      "Albums",
+      "Artists",
+      "Audiobooks",
+      "Authors",
+      "Books",
+      "Episodes",
+      "Mac",
+      "Music Videos",
+      "Podcasts",
+      "Seasons",
+      "Songs",
+      "iPad",
+      "iPhone"
+    ],
+    "WFFaceTimeType": [
+      "Audio",
+      "Video"
+    ],
+    "WFFileSizeFormat": [
+      "Automatic",
+      "bytes",
+      "eb",
+      "gb",
+      "kb",
+      "mb",
+      "pb",
+      "tb",
+      "yb",
+      "zb"
+    ],
+    "WFGetGroupType": [
+      "All Groups",
+      "Group At Index"
+    ],
+    "WFGetTextFromPDFTextType": [
+      "Rich Text",
+      "Text"
+    ],
+    "WFHTTPBodyType": [
+      "File",
+      "Form",
+      "Json"
+    ],
+    "WFHTTPMethod": [
+      "DELETE",
+      "GET",
+      "PATCH",
+      "POST",
+      "PUT"
+    ],
+    "WFHashType": [
+      "MD5",
+      "SHA1",
+      "SHA256",
+      "SHA512"
+    ],
+    "WFIPAddressSourceOption": [
+      "External",
+      "Local"
+    ],
+    "WFIPAddressTypeOption": [
+      "IPv4",
+      "IPv6"
+    ],
+    "WFImageCombineMode": [
+      "Horizontally",
+      "In a grid",
+      "Vertically"
+    ],
+    "WFImageCropPosition": [
+      "Bottom Left",
+      "Bottom Right",
+      "Center",
+      "Custom",
+      "Top Left",
+      "Top Right"
+    ],
+    "WFImageFlipDirection": [
+      "Horizontal",
+      "Vertical"
+    ],
+    "WFImageFormat": [
+      "BMP",
+      "GIF",
+      "HEIF",
+      "JPEG",
+      "JPEG-2000",
+      "Match Input",
+      "PDF",
+      "PNG",
+      "TIFF"
+    ],
+    "WFImagePosition": [
+      "Bottom Left",
+      "Bottom Right",
+      "Center",
+      "Custom",
+      "Top Left",
+      "Top Right"
+    ],
+    "WFImportAudioFilesEncoder": [
+      "AAC",
+      "AIFF",
+      "Default",
+      "Lossless",
+      "MP3",
+      "WAV"
+    ],
+    "WFInputType": [
+      "Date",
+      "Date and Time",
+      "Number",
+      "Text",
+      "Time",
+      "URL"
+    ],
+    "WFItemSpecifier": [
+      "First Item",
+      "Item At Index",
+      "Items In Range",
+      "Last Item",
+      "Random Item"
+    ],
+    "WFMakeImageFromPDFPageColorspace": [
+      "CMYK",
+      "Gray",
+      "RGB"
+    ],
+    "WFMaskType": [
+      "Custom Image",
+      "Ellipse",
+      "Icon",
+      "Rounded Rectangle"
+    ],
+    "WFMediaAudioFormat": [
+      "AIFF",
+      "M4A"
+    ],
+    "WFMediaSize": [
+      "1280x720",
+      "1920x1080",
+      "640x480",
+      "960x540",
+      "HEVC 1920x1080",
+      "HEVC 3840x2160",
+      "Passthrough"
+    ],
+    "WFMediaSpeed": [
+      "0.5X",
+      "2X",
+      "Custom",
+      "Normal"
+    ],
+    "WFMediaType": [
+      "All",
+      "Audiobooks",
+      "Books",
+      "Movies",
+      "Music",
+      "Music Videos",
+      "Short Films",
+      "TV Shows"
+    ],
+    "WFNoOutputSurfaceBehavior": [
+      "Copy To Clipboard",
+      "Do Nothing",
+      "Respond"
+    ],
+    "WFNumberFormatDecimalPlaces": [
+      "Average",
+      "Maximum",
+      "Median",
+      "Minimum",
+      "Mode",
+      "Range",
+      "Standard Deviation",
+      "Sum"
+    ],
+    "WFPDFIncludedPages": [
+      "All Pages",
+      "Page Range",
+      "Single Page"
+    ],
+    "WFPhotoPickerTypes": [
+      "Images",
+      "Live Photos",
+      "Videos"
+    ],
+    "WFPickingMode": [
+      "Files",
+      "Folders"
+    ],
+    "WFPlayMusicActionRepeat": [
+      "All",
+      "None",
+      "One"
+    ],
+    "WFPlayMusicActionShuffle": [
+      "Off",
+      "Songs"
+    ],
+    "WFPlayPauseBehavior": [
+      "Pause",
+      "Play",
+      "Play/Pause"
+    ],
+    "WFPosition": [
+      "Bottom Center",
+      "Bottom Left",
+      "Bottom Right",
+      "Center",
+      "Coordinates",
+      "Middle Left",
+      "Middle Right",
+      "Top Left",
+      "Top Right",
+      "top Center"
+    ],
+    "WFQRErrorCorrectionLevel": [
+      "High",
+      "Low",
+      "Medium",
+      "Quartile"
+    ],
+    "WFRecordingCompression": [
+      "Normal",
+      "Very High"
+    ],
+    "WFRecordingEnd": [
+      "After Time",
+      "On Tap"
+    ],
+    "WFRecordingStart": [
+      "Immediately",
+      "On Tap"
+    ],
+    "WFRoundMode": [
+      "Always Round Down",
+      "Always Round Up",
+      "Normal"
+    ],
+    "WFRoundTo": [
+      "Billionths",
+      "Hundred Millionths",
+      "Hundred Thousands",
+      "Hundred Thousandths",
+      "Hundreds Place",
+      "Hundredths",
+      "Millions",
+      "Millionths",
+      "Ones Place",
+      "Ten Millionths",
+      "Ten Thousands",
+      "Ten Thousandths",
+      "Tens Place",
+      "Tenths",
+      "Thousands",
+      "Thousandths"
+    ],
+    "WFSSHAuthenticationType": [
+      "Password",
+      "SSH Key"
+    ],
+    "WFScientificMathOperation": [
+      "10^x",
+      "Modulus",
+      "abs(x)",
+      "cos(x)",
+      "e^x",
+      "ln(x)",
+      "log(x)",
+      "sin(x)",
+      "tan(x)",
+      "x!",
+      "x^2",
+      "x^3",
+      "x^y",
+      "\u221ax",
+      "\u221bx"
+    ],
+    "WFSearchWebDestination": [
+      "Amazon",
+      "Bing",
+      "DuckDuckGo",
+      "Google",
+      "Reddit",
+      "Twitter",
+      "Yahoo",
+      "YouTube",
+      "eBay"
+    ],
+    "WFSeekBehavior": [
+      "Backward By",
+      "Forward By",
+      "To Time"
+    ],
+    "WFSelectedFromLanguage": [
+      "Afrikaans",
+      "Arabic",
+      "Assamese",
+      "Bangla",
+      "Bosnian",
+      "Bulgarian",
+      "Cantonese (Traditional)",
+      "Catalan",
+      "Chinese Simplified",
+      "Chinese Traditional",
+      "Croatian",
+      "Czech",
+      "Danish",
+      "Dari",
+      "Detected Language",
+      "Dutch",
+      "English",
+      "Estonian",
+      "Fijian",
+      "Filipino",
+      "Finnish",
+      "French",
+      "French (Canada)",
+      "German",
+      "Greek",
+      "Gujarati",
+      "Haitian Creole",
+      "Hebrew",
+      "Hindi",
+      "Hmong Daw",
+      "Hungarian",
+      "Icelandic",
+      "Indonesian",
+      "Irish",
+      "Italian",
+      "Japanese",
+      "Kannada",
+      "Kazakh",
+      "Klingon (Latin)",
+      "Klingon (plqaD)",
+      "Korean",
+      "Kurdish (Central)",
+      "Kurdish (Northern)",
+      "Latvian",
+      "Lithuanian",
+      "Malagasy",
+      "Malay",
+      "Malayalam",
+      "Maltese",
+      "Maori",
+      "Marathi",
+      "Norwegian",
+      "Odia",
+      "Pashto",
+      "Persian",
+      "Polish",
+      "Portuguese (Brazil)",
+      "Portuguese (Portugal)",
+      "Punjabi",
+      "Romanian",
+      "Russian",
+      "Samoan",
+      "Serbian (Cyrillic)",
+      "Serbian (Latin)",
+      "Slovak",
+      "Slovenian",
+      "Spanish",
+      "Swahili",
+      "Swedish",
+      "Tahitian",
+      "Tamil",
+      "Telugu",
+      "Thai",
+      "Tongan",
+      "Turkish",
+      "Ukrainian",
+      "Urdu",
+      "Vietnamese",
+      "Welsh",
+      "Yucatec Maya"
+    ],
+    "WFSelectedLanguage": [
+      "Afrikaans",
+      "Arabic",
+      "Assamese",
+      "Bangla",
+      "Bosnian",
+      "Bulgarian",
+      "Cantonese (Traditional)",
+      "Catalan",
+      "Chinese Simplified",
+      "Chinese Traditional",
+      "Croatian",
+      "Czech",
+      "Danish",
+      "Dari",
+      "Detected Language",
+      "Dutch",
+      "English",
+      "Estonian",
+      "Fijian",
+      "Filipino",
+      "Finnish",
+      "French",
+      "French (Canada)",
+      "German",
+      "Greek",
+      "Gujarati",
+      "Haitian Creole",
+      "Hebrew",
+      "Hindi",
+      "Hmong Daw",
+      "Hungarian",
+      "Icelandic",
+      "Indonesian",
+      "Irish",
+      "Italian",
+      "Japanese",
+      "Kannada",
+      "Kazakh",
+      "Klingon (Latin)",
+      "Klingon (plqaD)",
+      "Korean",
+      "Kurdish (Central)",
+      "Kurdish (Northern)",
+      "Latvian",
+      "Lithuanian",
+      "Malagasy",
+      "Malay",
+      "Malayalam",
+      "Maltese",
+      "Maori",
+      "Marathi",
+      "Norwegian",
+      "Odia",
+      "Pashto",
+      "Persian",
+      "Polish",
+      "Portuguese (Brazil)",
+      "Portuguese (Portugal)",
+      "Punjabi",
+      "Romanian",
+      "Russian",
+      "Samoan",
+      "Serbian (Cyrillic)",
+      "Serbian (Latin)",
+      "Slovak",
+      "Slovenian",
+      "Spanish",
+      "Swahili",
+      "Swedish",
+      "Tahitian",
+      "Tamil",
+      "Telugu",
+      "Thai",
+      "Tongan",
+      "Turkish",
+      "Ukrainian",
+      "Urdu",
+      "Vietnamese",
+      "Welsh",
+      "Yucatec Maya"
+    ],
+    "WFSkipBackBehavior": [
+      "Beginning",
+      "Previous Song"
+    ],
+    "WFSpeakTextLanguage": [
+      "ar-SA",
+      "cs-CZ",
+      "da-DK",
+      "de-DE",
+      "el-GR",
+      "en-AU",
+      "en-GB",
+      "en-IE",
+      "en-IN",
+      "en-US",
+      "en-ZA",
+      "es-ES",
+      "es-MX",
+      "fi-FI",
+      "fr-CA",
+      "fr-FR",
+      "he-IL",
+      "hi-IN",
+      "hu-HU",
+      "id-ID",
+      "it-IT",
+      "ja-JP",
+      "ko-KR",
+      "nl-BE",
+      "nl-NL",
+      "no-NO",
+      "pl-PL",
+      "pt-BR",
+      "pt-PT",
+      "ro-RO",
+      "sk-SK",
+      "sv-SE",
+      "th-TH",
+      "tr-TR",
+      "zh-CN",
+      "zh-HK",
+      "zh-TW"
+    ],
+    "WFSpeechLanguage": [
+      " ja-JP",
+      "ar-SA",
+      "ca-ES",
+      "cs-CZ",
+      "da-DK",
+      "de-AT",
+      "de-CH",
+      "de-DE",
+      "el-GR",
+      "en-AE",
+      "en-AU",
+      "en-CA",
+      "en-GB",
+      "en-ID",
+      "en-IN",
+      "en-NZ",
+      "en-PH",
+      "en-SA",
+      "en-SG",
+      "en-US",
+      "en-ZA",
+      "es-419",
+      "es-CL",
+      "es-CO",
+      "es-ES",
+      "es-MX",
+      "es-US",
+      "fi-FI",
+      "fr-BE",
+      "fr-CA",
+      "fr-CH",
+      "fr-FR",
+      "he-IL",
+      "hi-IN",
+      "hi-IN-translit",
+      "hi-Latn",
+      "hr-HR",
+      "hu-HU",
+      "id-ID",
+      "it-CH",
+      "it-IT",
+      "ko-KR",
+      "ms-MY",
+      "nb-NO",
+      "nl-BE",
+      "nl-NL",
+      "pl-PL",
+      "pt-BR",
+      "pt-PT",
+      "ro-RO",
+      "ru-RU",
+      "sk-SK",
+      "sv-SE",
+      "th-TH",
+      "tr-TR",
+      "uk-UA",
+      "vi-VN",
+      "wuu-CN",
+      "yue-CN",
+      "zh-CN",
+      "zh-HK",
+      "zh-TW"
+    ],
+    "WFStatisticsOperation": [
+      "Average",
+      "Maximum",
+      "Median",
+      "Minimum",
+      "Mode",
+      "Range",
+      "Standard Deviation",
+      "Sum"
+    ],
+    "WFTextPosition": [
+      "Bottom Left",
+      "Bottom Middle",
+      "Bottom Right",
+      "Center",
+      "Custom",
+      "Top Left",
+      "Top Middle",
+      "Top Right"
+    ],
+    "WFTextSeparator": [
+      "Custom",
+      "Every Character",
+      "New Lines",
+      "Spaces"
+    ],
+    "WFTimeFormatStyle": [
+      "Long",
+      "Medium",
+      "None",
+      "Relative",
+      "Short"
+    ],
+    "WFTimeUntilUnit": [
+      "Days",
+      "Hours",
+      "Minutes",
+      "Months",
+      "Seconds",
+      "Total Time",
+      "Weeks",
+      "Years"
+    ],
+    "WFURLComponent": [
+      "Fragment",
+      "Host",
+      "Password",
+      "Path",
+      "Port",
+      "Query",
+      "Scheme",
+      "User"
+    ],
+    "WFWallpaperLocation": [
+      "Home Screen",
+      "Lock Screen"
+    ],
+    "WFWeatherForecastType": [
+      "Daily",
+      "Hourly"
+    ],
+    "WFWhenToPlay": [
+      "Later",
+      "Next"
+    ],
+    "WFWiFiDetail": [
+      "BSSID",
+      "Network Name"
+    ],
+    "WFWorkoutReadableActivityType": [
+      "American Football",
+      "Archery",
+      "Australian Football",
+      "Badminton",
+      "Barre",
+      "Baseball",
+      "Basketball",
+      "Bowling",
+      "Boxing",
+      "Climbing",
+      "Core Training",
+      "Cricket",
+      "Cross Country Skiing",
+      "Cross Training",
+      "Curling",
+      "Cycling",
+      "Dance",
+      "Dance Inspired Training",
+      "Downhill Skiing",
+      "Elliptical",
+      "Equestrian Sports",
+      "Fencing",
+      "Fishing",
+      "Flexibility",
+      "Functional Strength Training",
+      "Golf",
+      "Hand Cycling",
+      "Handball",
+      "High Intensity Interval Training",
+      "Hiking",
+      "Hockey",
+      "Hunting",
+      "Jump Rode",
+      "Kickboxing",
+      "Lacrosse",
+      "Martial Arts",
+      "Mind And Body",
+      "Mixed Cardio",
+      "Mixed Metabolic Cardio Training",
+      "Other",
+      "Paddle Sports",
+      "Pilates",
+      "Play",
+      "Preparation And Recovery",
+      "Racquetball",
+      "Rowling",
+      "Rugby",
+      "Running",
+      "Sailing",
+      "Skating Sports",
+      "Snow Sports",
+      "Snowboarding",
+      "Soccer",
+      "Softball",
+      "Squash",
+      "Stair Stepper",
+      "Stairs",
+      "Step Training",
+      "Surfing Sports",
+      "Swimming",
+      "Table Tennis",
+      "Tai Chi",
+      "Tennis",
+      "Track And Field",
+      "Traditional Strength Training",
+      "Volleyball",
+      "Walking",
+      "Water Fitness",
+      "Water Polo",
+      "Water Sports",
+      "Wheelchair Run Pace",
+      "Wheelchair Walk Pace",
+      "Wrestling",
+      "Yoga"
+    ]
+  },
+  "extracted_fields": [
+    "WFWorkflow identifiers",
+    "Apple display names",
+    "lowestCompatibleHost (OS min)",
+    "parameter WF* key names",
+    "enum members (Apple's typed values)"
+  ],
+  "source": "https://github.com/OpenJelly/Open-Jellycore (GPL-3.0)",
+  "structural_identifiers": [
+    "is.workflow.actions.choosefrommenu",
+    "is.workflow.actions.comment",
+    "is.workflow.actions.conditional",
+    "is.workflow.actions.exit",
+    "is.workflow.actions.repeat.count",
+    "is.workflow.actions.repeat.each",
+    "is.workflow.actions.setvariable",
+    "buzz.config.color",
+    "buzz.config.icon"
+  ]
+}
