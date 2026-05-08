@@ -22,6 +22,14 @@ User says any of:
 
 For modifications use `edit-shortcut`. For authoring, `make-shortcut`.
 
+## Optional context
+
+For Apple's design intent and the meaning of common identifiers,
+`~/Documents/FMP/tech/Apple_Shortcuts/Action_Reference_Index.md` is the
+nav hub. Read individual topic notes only when the shortcut warrants it
+(e.g. unfamiliar control-flow → `Control_Flow.md`; iOS 26 references →
+`iOS_26_Highlights.md`).
+
 ## Workflow
 
 ### Step 1 — Run the buzz digest

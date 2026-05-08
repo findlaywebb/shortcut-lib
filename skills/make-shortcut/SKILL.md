@@ -31,9 +31,18 @@ Before writing any Python, read in this order:
 
 1. `~/personal/shortcut-lib/docs/roadmap.md` — vision and current state.
 2. `~/personal/shortcut-lib/docs/format.md` — wire format anatomy.
-3. `~/Documents/FMP/tech/Apple_Shortcuts/Design_Intent.md` — Apple's mental model.
-4. `~/Documents/FMP/tech/Apple_Shortcuts/Magic_Variables.md` if the shortcut uses CurrentDate/Clipboard/etc.
-5. The lib's available actions: `cd ~/personal/shortcut-lib && uv run python -c "from shortcut_lib.schema import list_actions; import json; print(json.dumps(list_actions(), indent=2))"`
+3. The lib's full authoring surface — leaf actions, control flow, and value types: `cd ~/personal/shortcut-lib && uv run python scripts/print_actions.py`. (Or call `list_actions`, `list_control_flow`, `list_values` from `shortcut_lib.schema`.)
+
+Then read the vault notes relevant to the shortcut's surface area:
+
+- `~/Documents/FMP/tech/Apple_Shortcuts/Design_Intent.md` — Apple's mental model: input/output, content graph, surfaces.
+- `~/Documents/FMP/tech/Apple_Shortcuts/Magic_Variables.md` — when the shortcut uses CurrentDate / Clipboard / Ask / RepeatItem / etc.
+- `~/Documents/FMP/tech/Apple_Shortcuts/Control_Flow.md` — when nesting If / Repeat / Choose-from-Menu.
+- `~/Documents/FMP/tech/Apple_Shortcuts/Content_Item_Classes.md` — when the shortcut accepts share-sheet input or produces typed output.
+- `~/Documents/FMP/tech/Apple_Shortcuts/URL_Schemes.md` — when integrating with `shortcuts://` or x-callback-url.
+- `~/Documents/FMP/tech/Apple_Shortcuts/Personal_Automation.md` — when the user asks for time / location / app-triggered automation.
+- `~/Documents/FMP/tech/Apple_Shortcuts/iOS_26_Highlights.md` — when using Apple Intelligence (UseModel) or Writing Tools.
+- `~/Documents/FMP/tech/Apple_Shortcuts/Action_Reference_Index.md` — navigation hub when you don't know which note covers something.
 
 If the shortcut concept matches an existing `samples/*.shortcut`, decode
 it for reference: `uv run shortcut-decode samples/<name>.shortcut --format buzz`.

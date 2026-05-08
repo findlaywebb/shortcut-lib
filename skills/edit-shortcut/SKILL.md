@@ -30,10 +30,15 @@ If the user wants a brand-new shortcut, use the `make-shortcut` skill instead.
 
 ## Mandatory pre-reading
 
-Same as `make-shortcut`:
 1. `~/personal/shortcut-lib/docs/roadmap.md`.
 2. `~/personal/shortcut-lib/docs/format.md`.
-3. The schema registry: `cd ~/personal/shortcut-lib && uv run python -c "from shortcut_lib.schema import list_actions; import json; print(json.dumps(list_actions(), indent=2))"`.
+3. The schema surface: `cd ~/personal/shortcut-lib && uv run python scripts/print_actions.py`.
+
+Plus the vault notes most relevant to the edit:
+- `~/Documents/FMP/tech/Apple_Shortcuts/Design_Intent.md` — Apple's data-flow model.
+- `~/Documents/FMP/tech/Apple_Shortcuts/Magic_Variables.md` — if you'll touch variable references.
+- `~/Documents/FMP/tech/Apple_Shortcuts/Control_Flow.md` — if you'll add or remove If / Repeat / Menu blocks (mind GroupingIdentifier pairing).
+- `~/Documents/FMP/tech/Apple_Shortcuts/Action_Reference_Index.md` — to navigate the rest.
 
 ## Workflow
 
