@@ -21,8 +21,13 @@ from shortcut_lib.schema.base import Action
 _REGISTRY: dict[str, type[Action]] = {}
 
 
-def register(cls: type[Action]) -> type[Action]:
-    """Class decorator — register an action class by its identifier."""
+def register[T: Action](cls: type[T]) -> type[T]:
+    """Class decorator — register an action class by its identifier.
+
+    Parametrised over the concrete subclass so type checkers preserve
+    the dataclass-generated ``__init__`` on call sites (e.g.
+    ``GetText(text="…")``) instead of widening to ``type[Action]``.
+    """
     if not cls.identifier:
         raise ValueError(
             f"{cls.__name__} cannot be registered without a class-level `identifier`"
