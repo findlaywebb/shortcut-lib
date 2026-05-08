@@ -26,6 +26,17 @@ class SchemaError(ValueError):
     """
 
 
+# Type alias for action-parameter slots. Most parameter fields accept any of
+# the items below — a primitive scalar, a previous Action's output, a Value
+# (variable reference, templated string, quantity, etc.), a pre-built wire
+# envelope dict, or a list of any of the above. Used by action dataclasses
+# and surfaced by ``describe_action`` so LLM authors see the union rather
+# than ``Any``.
+type ParamValue = (
+    str | int | float | bool | None | "Action" | "Value" | dict[str, Any] | list[Any]
+)
+
+
 def fresh_uuid() -> str:
     """Return an uppercase UUID4 — Apple's convention in shortcut files."""
     return str(uuid4()).upper()

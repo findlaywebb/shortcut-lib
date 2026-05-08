@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
-from shortcut_lib.schema.base import Action, coerce_value
+from shortcut_lib.schema.base import Action, ParamValue, coerce_value
 from shortcut_lib.schema.registry import register
 
 
@@ -27,8 +27,8 @@ class ShowNotification(Action):
             (Apple defaults to playing a sound).
     """
 
-    title: Any = field(default="")
-    body: Any = field(default="")
+    title: ParamValue = field(default="")
+    body: ParamValue = field(default="")
     play_sound: bool | None = None
 
     identifier: ClassVar[str] = "is.workflow.actions.notification"

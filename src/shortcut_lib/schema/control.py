@@ -12,6 +12,7 @@ indentation tracking).
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from enum import IntEnum
 from typing import Any, ClassVar
 
 from shortcut_lib.schema.base import (
@@ -22,22 +23,48 @@ from shortcut_lib.schema.base import (
     fresh_uuid,
 )
 
-# `WFCondition` enum — observed values, may be incomplete. See
-# docs/format.md "Open questions".
+
+class WFCondition(IntEnum):
+    """Apple's ``WFCondition`` integer enum — observed values, may be incomplete.
+
+    See ``docs/format.md`` "Open questions". The string aliases below
+    (``CONDITION_CODES`` keys) are the LLM-facing names accepted by
+    :class:`If`; the enum members are the wire-format integers.
+    """
+
+    EQ = 0
+    LT = 1
+    GT = 2
+    LE = 3
+    GE = 4
+    BEGINS_WITH = 100
+    ENDS_WITH = 101
+    CONTAINS = 102
+    IS_TRUE = 999
+    IS_NOT_TRUE = 1000
+    EXISTS = 1001
+    DOES_NOT_EXIST = 1002
+
+
+# String aliases accepted by ``If(op=...)``. Mapped to the integer enum.
 CONDITION_CODES: dict[str, int] = {
-    "==": 0,
-    "<": 1,
-    ">": 2,
-    "<=": 3,
-    ">=": 4,
-    "begins-with": 100,
-    "ends-with": 101,
-    "contains": 102,
-    "is-true": 999,
-    "is-not-true": 1000,
-    "exists": 1001,
-    "does-not-exist": 1002,
+    "==": WFCondition.EQ,
+    "<": WFCondition.LT,
+    ">": WFCondition.GT,
+    "<=": WFCondition.LE,
+    ">=": WFCondition.GE,
+    "begins-with": WFCondition.BEGINS_WITH,
+    "ends-with": WFCondition.ENDS_WITH,
+    "contains": WFCondition.CONTAINS,
+    "is-true": WFCondition.IS_TRUE,
+    "is-not-true": WFCondition.IS_NOT_TRUE,
+    "exists": WFCondition.EXISTS,
+    "does-not-exist": WFCondition.DOES_NOT_EXIST,
 }
+
+# Reverse map for decode/summary use — int → string alias. Generated from
+# ``CONDITION_CODES`` so the two never drift.
+CONDITION_NAMES: dict[int, str] = {int(v): k for k, v in CONDITION_CODES.items()}
 
 
 class _ControlAction(Action):
@@ -60,8 +87,9 @@ class If(_ControlAction):
 
     Args:
         operand: The value being tested. Coerced via ``coerce_token``.
-        op: Comparison operator. One of CONDITION_CODES keys
-            (e.g. "==", "<", "contains", "is-true").
+        op: Comparison operator — either a :class:`WFCondition` enum
+            member or one of the ``CONDITION_CODES`` string aliases
+            (e.g. ``"=="``, ``"<"``, ``"contains"``, ``"is-true"``).
         value: The right-hand side of the comparison. Strings go to
             ``WFConditionalActionString``, numbers to ``WFNumberValue``.
         then: List of Actions executed when the condition is true.
@@ -69,7 +97,7 @@ class If(_ControlAction):
     """
 
     operand: Any = None
-    op: str = "=="
+    op: str | WFCondition = "=="
     value: Any = None
     then: list[Any] = field(default_factory=list)
     otherwise: list[Any] = field(default_factory=list)
@@ -81,15 +109,19 @@ class If(_ControlAction):
         raise NotImplementedError  # multi-action
 
     def to_actions(self) -> list[dict[str, Any]]:
-        if self.op not in CONDITION_CODES:
+        if isinstance(self.op, WFCondition):
+            op_code = int(self.op)
+        elif self.op in CONDITION_CODES:
+            op_code = CONDITION_CODES[self.op]
+        else:
             raise SchemaError(
-                f"unknown condition op {self.op!r} — "
-                f"use one of {sorted(CONDITION_CODES)}"
+                f"unknown condition op {self.op!r} — pass a WFCondition enum "
+                f"member or one of {sorted(CONDITION_CODES)}"
             )
 
         head_params: dict[str, Any] = {
             "GroupingIdentifier": self.grouping_identifier,
-            "WFCondition": CONDITION_CODES[self.op],
+            "WFCondition": op_code,
             "WFControlFlowMode": 0,
             "WFInput": _wrap_variable_input(self.operand),
         }
@@ -305,10 +337,21 @@ def _wrap_variable_input(operand: Any) -> dict[str, Any]:
     return {"Type": "Variable", "Variable": coerce_value(operand)}
 
 
-_VALUELESS_OPS = frozenset({"is-true", "is-not-true", "exists", "does-not-exist"})
+_VALUELESS_OPS: frozenset[str | WFCondition] = frozenset(
+    {
+        "is-true",
+        "is-not-true",
+        "exists",
+        "does-not-exist",
+        WFCondition.IS_TRUE,
+        WFCondition.IS_NOT_TRUE,
+        WFCondition.EXISTS,
+        WFCondition.DOES_NOT_EXIST,
+    }
+)
 
 
-def _condition_rhs(value: Any, op: str) -> dict[str, Any]:
+def _condition_rhs(value: Any, op: str | WFCondition) -> dict[str, Any]:
     """Map a condition right-hand side to the right WF* parameter key.
 
     Some operators ("is-true", "is-not-true", "exists", "does-not-exist")
@@ -321,8 +364,10 @@ def _condition_rhs(value: Any, op: str) -> dict[str, Any]:
         if op not in _VALUELESS_OPS:
             raise SchemaError(
                 f"If(value={value!r}) is a boolean, only valid for valueless "
-                f"operators ({sorted(_VALUELESS_OPS)}). For comparing against "
-                f"a string 'true'/'false', wrap it: value='true'."
+                f"operators (string aliases: is-true, is-not-true, exists, "
+                f"does-not-exist; or the matching WFCondition members). For "
+                f"comparing against a string 'true'/'false', wrap it: "
+                f"value='true'."
             )
         return {}
     if isinstance(value, int | float):

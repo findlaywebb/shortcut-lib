@@ -154,24 +154,11 @@ def _format_control_middle(
 
 def _condition_op(code: object) -> str:
     """Best-effort enum mapping for `WFCondition` (numeric in current iOS)."""
-    return (
-        {
-            0: "==",
-            1: "<",
-            2: ">",
-            3: "<=",
-            4: ">=",
-            100: "begins-with",
-            101: "ends-with",
-            102: "contains",
-            999: "is-true",
-            1000: "is-not-true",
-            1001: "exists",
-            1002: "does-not-exist",
-        }.get(code, f"<op {code!r}>")
-        if isinstance(code, int)
-        else "?"
-    )
+    from shortcut_lib.schema.control import CONDITION_NAMES
+
+    if not isinstance(code, int):
+        return "?"
+    return CONDITION_NAMES.get(code, f"<op {code!r}>")
 
 
 def _condition_compare(params: dict[str, Any], uuids: dict[str, str]) -> str:

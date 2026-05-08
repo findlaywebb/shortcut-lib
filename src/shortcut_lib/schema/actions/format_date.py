@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
-from shortcut_lib.schema.base import Action, SchemaError, coerce_value
+from shortcut_lib.schema.base import Action, ParamValue, SchemaError, coerce_value
 from shortcut_lib.schema.registry import register
 
 _VALID_DATE_STYLES = frozenset(
@@ -34,7 +34,7 @@ class FormatDate(Action):
     identifier: ClassVar[str] = "is.workflow.actions.format.date"
     default_output_name: ClassVar[str] = "Formatted Date"
 
-    input: Any = None
+    input: ParamValue = None
     date_style: str = field(default="Short")
     time_style: str | None = field(default=None)
     custom_format: str | None = field(default=None)

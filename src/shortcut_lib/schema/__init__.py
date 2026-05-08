@@ -30,6 +30,7 @@ from shortcut_lib.schema.control import (
     If,
     RepeatCount,
     RepeatEach,
+    WFCondition,
 )
 from shortcut_lib.schema.registry import (
     describe_action,
@@ -75,6 +76,7 @@ __all__ = [
     "Text",
     "TimeOffset",
     "Value",
+    "WFCondition",
     "describe_action",
     "list_actions",
     "list_control_flow",

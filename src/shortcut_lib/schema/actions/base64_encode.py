@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, ClassVar
 
-from shortcut_lib.schema.base import Action, coerce_value
+from shortcut_lib.schema.base import Action, ParamValue, coerce_value
 from shortcut_lib.schema.registry import register
 
 _DEFAULT_MODE = "Encode"
@@ -25,7 +25,7 @@ class Base64Encode(Action):
     Output name: "Base64 Encoded"
     """
 
-    input: Any = None
+    input: ParamValue = None
     mode: str = _DEFAULT_MODE
 
     identifier: ClassVar[str] = "is.workflow.actions.base64encode"

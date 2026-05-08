@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, ClassVar
 
-from shortcut_lib.schema.base import Action, coerce_value
+from shortcut_lib.schema.base import Action, ParamValue, coerce_value
 from shortcut_lib.schema.registry import register
 
 # AppIntentDescriptor dict copied verbatim from
@@ -46,7 +46,7 @@ class TranscribeAudio(Action):
     identifier: ClassVar[str] = "com.apple.ShortcutsActions.TranscribeAudioAction"
     default_output_name: ClassVar[str] = "Transcribe Audio"
 
-    audio_file: Any = None
+    audio_file: ParamValue = None
 
     def _params(self) -> dict[str, Any]:
         """Return the WF parameter dict for this transcribe-audio action."""

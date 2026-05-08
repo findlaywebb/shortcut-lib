@@ -14,9 +14,9 @@ The "JSON" and header shapes were verified against ``get_contents_of_url.xml``
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, ClassVar
+from typing import Any, ClassVar, cast
 
-from shortcut_lib.schema.base import Action, SchemaError, coerce_value
+from shortcut_lib.schema.base import Action, ParamValue, SchemaError, coerce_value
 from shortcut_lib.schema.registry import register
 
 # Apple's default method; omitting WFHTTPMethod from the plist is equivalent to GET.
@@ -134,10 +134,10 @@ class DownloadURL(Action):
     identifier: ClassVar[str] = "is.workflow.actions.downloadurl"
     default_output_name: ClassVar[str] = "Contents of URL"
 
-    url: Any = None
+    url: ParamValue = None
     method: str = _DEFAULT_METHOD
     headers: dict[str, Any] | None = field(default=None)
-    body: Any = None
+    body: ParamValue = None
     body_type: str | None = None
 
     def _params(self) -> dict[str, Any]:
@@ -196,7 +196,9 @@ class DownloadURL(Action):
                 wf_body_key = (
                     "WFJSONValues" if self.body_type == "JSON" else "WFFormValues"
                 )
-                out[wf_body_key] = _encode_wf_dict(self.body)
+                # ty's narrowing through ``self.body`` retains intersections like
+                # ``Action & dict`` that are unreachable in practice; cast past it.
+                out[wf_body_key] = _encode_wf_dict(cast(dict[str, Any], self.body))
             else:
                 # Plain Text / File / Multipart — body is a single variable/action ref.
                 out["WFRequestVariable"] = coerce_value(self.body)

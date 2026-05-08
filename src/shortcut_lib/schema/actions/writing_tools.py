@@ -22,7 +22,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, ClassVar
 
-from shortcut_lib.schema.base import Action, SchemaError, coerce_value
+from shortcut_lib.schema.base import Action, ParamValue, SchemaError, coerce_value
 from shortcut_lib.schema.registry import register
 
 # Apple's Writing Tools tone values observed in samples and Apple UI (iOS 26+).
@@ -50,7 +50,7 @@ class AdjustTone(Action):
     Apple identifier: ``com.apple.WritingTools.WritingToolsAppIntentsExtension.AdjustToneIntent``.
     """
 
-    text: Any = None
+    text: ParamValue = None
     tone: str = "professional"
 
     identifier: ClassVar[str] = (
@@ -79,7 +79,7 @@ class FormatList(Action):
     Apple identifier: ``com.apple.WritingTools.WritingToolsAppIntentsExtension.FormatListIntent``.
     """
 
-    text: Any = None
+    text: ParamValue = None
 
     identifier: ClassVar[str] = (
         "com.apple.WritingTools.WritingToolsAppIntentsExtension.FormatListIntent"
@@ -98,7 +98,7 @@ class RewriteText(Action):
     Apple identifier: ``com.apple.WritingTools.WritingToolsAppIntentsExtension.RewriteTextIntent``.
     """
 
-    text: Any = None
+    text: ParamValue = None
 
     identifier: ClassVar[str] = (
         "com.apple.WritingTools.WritingToolsAppIntentsExtension.RewriteTextIntent"
@@ -118,7 +118,7 @@ class SummarizeText(Action):
     Apple identifier: ``com.apple.WritingTools.WritingToolsAppIntentsExtension.SummarizeTextIntent``.
     """
 
-    text: Any = None
+    text: ParamValue = None
     summary_type: str | None = None
 
     identifier: ClassVar[str] = (

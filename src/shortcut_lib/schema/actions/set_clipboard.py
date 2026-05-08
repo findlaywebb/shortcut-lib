@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, ClassVar
 
-from shortcut_lib.schema.base import Action, coerce_value
+from shortcut_lib.schema.base import Action, ParamValue, coerce_value
 from shortcut_lib.schema.registry import register
 
 
@@ -19,7 +19,7 @@ class SetClipboard(Action):
             or a literal string, or any Value.
     """
 
-    input: Any = None
+    input: ParamValue = None
 
     identifier: ClassVar[str] = "is.workflow.actions.setclipboard"
 

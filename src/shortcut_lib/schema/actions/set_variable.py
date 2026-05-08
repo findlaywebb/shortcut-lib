@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, ClassVar
 
-from shortcut_lib.schema.base import Action, SchemaError, coerce_value
+from shortcut_lib.schema.base import Action, ParamValue, SchemaError, coerce_value
 from shortcut_lib.schema.registry import register
 
 
@@ -25,7 +25,7 @@ class SetVariable(Action):
     """
 
     name: str = ""
-    input: Any = None
+    input: ParamValue = None
 
     identifier: ClassVar[str] = "is.workflow.actions.setvariable"
 

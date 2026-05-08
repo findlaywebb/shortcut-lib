@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
-from shortcut_lib.schema.base import Action, coerce_value
+from shortcut_lib.schema.base import Action, ParamValue, coerce_value
 from shortcut_lib.schema.registry import register
 
 
@@ -28,7 +28,7 @@ class GetText(Action):
     identifier: ClassVar[str] = "is.workflow.actions.gettext"
     default_output_name: ClassVar[str] = "Text"
 
-    text: Any = field(default="")
+    text: ParamValue = field(default="")
 
     def _params(self) -> dict[str, Any]:
         """Return the WFTextActionText parameter dict."""

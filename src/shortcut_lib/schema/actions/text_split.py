@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, ClassVar
 
-from shortcut_lib.schema.base import Action, SchemaError, coerce_value
+from shortcut_lib.schema.base import Action, ParamValue, SchemaError, coerce_value
 from shortcut_lib.schema.registry import register
 
 _VALID_SEPARATORS = {"New Lines", "Spaces", "Every Character", "Custom"}
@@ -28,7 +28,7 @@ class TextSplit(Action):
     identifier: ClassVar[str] = "is.workflow.actions.text.split"
     default_output_name: ClassVar[str] = "Split Text"
 
-    input: Any = None
+    input: ParamValue = None
     separator: str = "New Lines"
     custom_separator: str | None = None
 

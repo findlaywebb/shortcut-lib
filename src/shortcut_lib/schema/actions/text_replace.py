@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
-from shortcut_lib.schema.base import Action, coerce_value
+from shortcut_lib.schema.base import Action, ParamValue, coerce_value
 from shortcut_lib.schema.registry import register
 
 
@@ -34,9 +34,9 @@ class TextReplace(Action):
     identifier: ClassVar[str] = "is.workflow.actions.text.replace"
     default_output_name: ClassVar[str] = "Updated Text"
 
-    input: Any = None
-    find: Any = field(default="")
-    replace: Any = field(default="")
+    input: ParamValue = None
+    find: ParamValue = field(default="")
+    replace: ParamValue = field(default="")
     case_sensitive: bool | None = None
     regex: bool | None = None
 
