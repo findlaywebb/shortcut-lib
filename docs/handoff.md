@@ -511,6 +511,30 @@ suggested `WFLLMModelExtension` (when `model="Extension"`) and
 `WFLLMSystemPrompt`. Both unverified against samples. Wait for a
 real iOS 26 export that uses ChatGPT before adding.
 
+**FU-7 — Sweep every action parameter slot for the WFTextTokenString
+envelope bug.** Three instances confirmed during 2026-05-09 vault-note
+validation (`WFURL`, JSON body dict values, `WFDate`). All three
+emitted `WFTextTokenAttachment` for variable references, where Apple
+expects a single-attachment `WFTextTokenString`. SF-batch6 was
+demoted based on the bare-string round-trip evidence, but Apple is
+selectively permissive — bare literals work, bare variable refs
+don't. Walk every registered action's `_params` and identify slots
+whose Apple wire shape is templated-string. The shared helper
+`shortcut_lib.schema.base.coerce_text_field` is the fix; tests should
+follow the pattern in `tests/test_action_format_date.py`.
+
+**FU-8 — Robust create-or-update for the GitHub PUT.** The
+`Vault Note To Git` example side-steps GitHub's "must supply sha when
+file exists" rule by using millisecond filename precision. A robust
+path needs GET-first-then-PUT-with-sha, which requires a JSON-extract
+action we haven't modelled. Punt unless a sub-ms collision shows up.
+
+**FU-9 — Setup-section authoring (`WFWorkflowImportQuestions`).** The
+example asks the user to edit placeholder Text actions in
+Shortcuts.app after import. Apple's Setup section can prompt for
+values on import; first-class authoring support would let the lib
+emit ready-to-use shortcuts. Sits under C4 (workflow-level metadata).
+
 ---
 
 ## Coding conventions that matter for resume

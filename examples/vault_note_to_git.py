@@ -1,25 +1,27 @@
-"""Compositional example: an orchestrator + two helper shortcuts.
+"""Vault note → polished by Apple Intelligence → committed to GitHub.
 
-This is the multi-shortcut composition pattern: small focused helper
-shortcuts (like Python modules) and an orchestrator that links them via
-``RunWorkflow``. Each is signed and importable separately.
+Single self-contained shortcut. Python composes the steps via helper
+functions; the emitted ``.shortcut`` is one workflow with no
+``RunWorkflow`` calls — iOS assigns fresh UUIDs at import time and
+won't honour pre-baked links to other shortcuts in a locally-signed
+file, so multi-shortcut composition costs more than it gives.
 
-The polish helper now calls Apple Intelligence's ``Use Model`` action
-(modelled in C2 after the user exported `intelly.shortcut`). The push
-helper is still a placeholder — see ``examples/note_to_github.py`` for
-a real GitHub Files API push you can paste in.
+Pipeline:
+
+    clipboard
+      -> Apple Intelligence "Use Model" (polish)
+      -> base64 + GitHub Files API PUT
+      -> notification
+
+Token + repo are placeholder Text actions at the top of the shortcut.
+Edit them in Shortcuts.app after import; don't share the signed
+``.shortcut`` file with a real PAT baked in.
 
 Usage:
     uv run python examples/vault_note_to_git.py
 
-Drops three .shortcut files on ~/Desktop:
-- "Polish With LLM.shortcut"  (helper)
-- "Push To Vault Repo.shortcut" (helper, placeholder push)
-- "Vault Note To Git.shortcut" (orchestrator)
-
-Import all three; the orchestrator's ``RunWorkflow`` actions reference the
-helpers by their internal UUID, so they must be present in the Shortcuts
-library when the orchestrator runs.
+Drops ``Vault Note To Git.shortcut`` on ~/Desktop. Import, edit the
+two placeholders, and run with a clipboard note.
 """
 
 from __future__ import annotations
@@ -27,22 +29,35 @@ from __future__ import annotations
 from pathlib import Path
 
 from shortcut_lib.builder import Shortcut
-from shortcut_lib.schema import NamedVar, RunWorkflow, ShortcutInput, Text
+from shortcut_lib.schema import NamedVar, Text
+from shortcut_lib.schema.actions.base64_encode import Base64Encode
+from shortcut_lib.schema.actions.download_url import DownloadURL
+from shortcut_lib.schema.actions.format_date import FormatDate
 from shortcut_lib.schema.actions.get_clipboard import GetClipboard
+from shortcut_lib.schema.actions.get_text import GetText
 from shortcut_lib.schema.actions.set_variable import SetVariable
 from shortcut_lib.schema.actions.show_notification import ShowNotification
+from shortcut_lib.schema.actions.text_replace import TextReplace
 from shortcut_lib.schema.actions.use_model import UseModel
+from shortcut_lib.schema.values import CurrentDate
+
+PLACEHOLDER_TOKEN = "REPLACE_WITH_GITHUB_PAT"  # noqa: S105
+PLACEHOLDER_REPO = "owner/repo-name"
 
 
-def polish_helper() -> Shortcut:
-    """Receive a note via Shortcut Input, polish it via Apple Intelligence.
+def _add_config(s: Shortcut) -> None:
+    """Set Token and Repo named variables from placeholder Text actions."""
+    token_text = s.add(GetText(text=PLACEHOLDER_TOKEN))
+    s.add(SetVariable(name="Token", input=token_text))
 
-    The polished text is set as the ``Polished`` named variable so the
-    orchestrator can pull it via NamedVar regardless of the helper's
-    output-passing behaviour.
-    """
-    s = Shortcut(name="Polish With LLM", surfaces=[])
-    s.add(SetVariable(name="Note", input=ShortcutInput))
+    repo_text = s.add(GetText(text=PLACEHOLDER_REPO))
+    s.add(SetVariable(name="Repo", input=repo_text))
+
+
+def _add_polish(s: Shortcut) -> None:
+    """Read the clipboard, polish via Apple Intelligence, store as ``Polished``."""
+    note = s.add(GetClipboard())
+    s.add(SetVariable(name="Note", input=note))
     polished = s.add(
         UseModel(
             prompt=Text(
@@ -54,66 +69,98 @@ def polish_helper() -> Shortcut:
         )
     )
     s.add(SetVariable(name="Polished", input=polished))
-    return s
 
 
-def push_helper() -> Shortcut:
-    """Stub helper: receives polished text, would PUT to GitHub.
+def _add_push(s: Shortcut) -> None:
+    """Encode ``Polished`` and PUT it to the GitHub Files API."""
+    # Filename: yyyy-MM-dd_HH-mm-ss-SSS — ms precision keeps re-runs from
+    # colliding on the GitHub side (PUT returns 422 "sha wasn't supplied"
+    # if the path already exists).
+    stamp = s.add(
+        FormatDate(
+            input=CurrentDate,
+            date_style="Custom",
+            custom_format="yyyy-MM-dd_HH-mm-ss-SSS",
+        )
+    )
+    s.add(SetVariable(name="Stamp", input=stamp))
 
-    For now: just notifies. The real push (DownloadURL PUT to the GitHub
-    Files API) lives in examples/note_to_github.py — copy that block in
-    here when you wire this up to a real repo.
-    """
-    s = Shortcut(name="Push To Vault Repo", surfaces=[])
-    s.add(SetVariable(name="Note", input=ShortcutInput))
+    base_text = s.add(
+        GetText(
+            text=Text(
+                "note_{stamp}",
+                substitutions={"stamp": NamedVar("Stamp")},
+            )
+        )
+    )
+    s.add(SetVariable(name="Base", input=base_text))
+
+    encoded = s.add(Base64Encode(input=NamedVar("Polished")))
+    stripped = s.add(
+        TextReplace(
+            input=encoded,
+            find=r"\s+",
+            replace="",
+            regex=True,
+        )
+    )
+    s.add(SetVariable(name="ContentB64", input=stripped))
+
+    url_text = s.add(
+        GetText(
+            text=Text(
+                "https://api.github.com/repos/{repo}/contents/notes/{base}.md",
+                substitutions={"repo": NamedVar("Repo"), "base": NamedVar("Base")},
+            )
+        )
+    )
+    auth_header = Text("Bearer {tok}", substitutions={"tok": NamedVar("Token")})
+    s.add(
+        DownloadURL(
+            url=url_text,
+            method="PUT",
+            headers={
+                "Authorization": auth_header,
+                "Accept": "application/vnd.github+json",
+                "X-GitHub-Api-Version": "2022-11-28",
+            },
+            body={
+                "message": Text(
+                    "Add note {base}", substitutions={"base": NamedVar("Base")}
+                ),
+                "content": NamedVar("ContentB64"),
+            },
+            body_type="JSON",
+        )
+    )
+
     s.add(
         ShowNotification(
-            title="Push (stub)",
+            title="Pushed to GitHub",
             body=Text(
-                "Would push to repo: {n}",
-                substitutions={"n": NamedVar("Note")},
+                "Saved notes/{base}.md to {repo}.",
+                substitutions={"base": NamedVar("Base"), "repo": NamedVar("Repo")},
             ),
         )
     )
-    return s
 
 
-def orchestrator(polish: Shortcut, push: Shortcut) -> Shortcut:
-    """Top-level shortcut: clipboard → polish → push → notify."""
+def build() -> Shortcut:
     s = Shortcut(name="Vault Note To Git", surfaces=["share", "quick-action"])
-
-    note = s.add(GetClipboard())
-    polished = s.add(RunWorkflow(target=polish, input=note))
-    pushed = s.add(RunWorkflow(target=push, input=polished))
-
-    # The orchestrator's tail is a confirmation. The push helper's output
-    # is opaque (a stub), so this just acknowledges completion.
-    s.add(
-        ShowNotification(
-            title="Vault → git",
-            body=Text(
-                "Note flowed through Polish + Push. Result: {r}",
-                substitutions={"r": pushed},
-            ),
-        )
-    )
+    _add_config(s)
+    _add_polish(s)
+    _add_push(s)
     return s
 
 
 def main() -> None:
-    desktop = Path.home() / "Desktop"
-    polish = polish_helper()
-    push = push_helper()
-    main_shortcut = orchestrator(polish, push)
-
-    for s in (polish, push, main_shortcut):
-        out = desktop / f"{s.name}.shortcut"
-        s.save_signed(out)
-        print(f"wrote {out}")
+    s = build()
+    out = Path.home() / "Desktop" / f"{s.name}.shortcut"
+    s.save_signed(out)
+    print(f"wrote {out}")
     print(
-        "\nImport all three into Shortcuts.app. The orchestrator's "
-        "RunWorkflow steps reference the helpers by UUID, so the helpers "
-        "must be present in the library before the orchestrator runs."
+        "\nImport, then open the shortcut in Shortcuts.app and replace the "
+        "placeholder token + repo in the first two Text actions."
     )
 
 
