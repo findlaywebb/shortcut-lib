@@ -19,22 +19,30 @@ def _all_samples() -> list[Path]:
 
 
 @pytest.mark.parametrize("sample", _all_samples(), ids=lambda p: p.stem)
-def test_lift_then_emit_preserves_actions(sample: Path) -> None:
-    """Round-trip via the schema layer using RawAction passthrough.
+def test_lift_then_emit_preserves_full_top_level(sample: Path) -> None:
+    """Lift→emit must reproduce the full top-level WFWorkflow* dict.
 
-    A decoded workflow lifted into a ``Shortcut`` and re-emitted must produce
-    the same action list — proving the schema layer can wrap any decoded
-    file without losing fidelity.
+    Captures regressions in metadata fidelity: WFWorkflowImportQuestions,
+    WFWorkflowNoInputBehavior, WFQuickActionSurfaces, the original
+    WFWorkflowClientVersion, etc. The schema layer routes everything not
+    represented by an explicit Shortcut attribute through ``_extra`` so the
+    re-emit is byte-for-byte identical at the top level.
 
-    Top-level metadata (workflow_identifier, surfaces) round-trips when our
-    lift preserves it; we only assert on the action list since the lift may
-    legitimately default some metadata.
+    Anything that legitimately can't round-trip belongs on the allowlist
+    below — keep that list short and document why each entry is there.
     """
     original = decode_file(sample).workflow
     lifted = Shortcut.from_workflow(original)
     re_emitted = lifted.to_workflow()
 
-    assert re_emitted["WFWorkflowActions"] == original["WFWorkflowActions"]
-    assert re_emitted["WFWorkflowMinimumClientVersion"] == original.get(
-        "WFWorkflowMinimumClientVersion", 900
-    )
+    # Currently empty: every top-level key in our committed samples
+    # round-trips exactly. If a future sample legitimately can't (e.g. a
+    # client-version that we want to regenerate), add the key here with a
+    # one-line rationale.
+    allowlist: set[str] = set()
+
+    keys_to_check = (set(original) | set(re_emitted)) - allowlist
+    for key in keys_to_check:
+        assert re_emitted.get(key) == original.get(key), (
+            f"top-level key {key!r} differs after lift→emit for {sample.name}"
+        )

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any
+from typing import Any, ClassVar
 from uuid import uuid4
 
 from shortcut_lib.encode import SignMode, encode_to_bplist, sign_to_file
@@ -60,6 +60,26 @@ class Shortcut:
     accepted_input: list[str] = field(default_factory=list)
     output_classes: list[str] = field(default_factory=list)
     actions: list[Action] = field(default_factory=list)
+    # Top-level WFWorkflow* keys not represented by an explicit attribute
+    # above. Populated by `from_workflow` so a lift→emit round-trip preserves
+    # everything (e.g. WFWorkflowImportQuestions, WFWorkflowNoInputBehavior,
+    # WFQuickActionSurfaces, the original WFWorkflowClientVersion). On emit,
+    # values here override the hardcoded defaults in `to_workflow`.
+    _extra: dict[str, Any] = field(default_factory=dict)
+
+    # Top-level keys derived from the explicit attributes above. Anything in
+    # a decoded workflow NOT in this set is captured into `_extra`.
+    _ATTRIBUTE_KEYS: ClassVar[frozenset[str]] = frozenset(
+        {
+            "WFWorkflowMinimumClientVersion",
+            "WFWorkflowMinimumClientVersionString",
+            "WFWorkflowIcon",
+            "WFWorkflowTypes",
+            "WFWorkflowInputContentItemClasses",
+            "WFWorkflowOutputContentItemClasses",
+            "WFWorkflowActions",
+        }
+    )
 
     def add(self, action: Action) -> Action:
         """Append an action; return it so its output can be referenced."""
@@ -87,9 +107,8 @@ class Shortcut:
         # the imported file's filename. Keeping it in self.name for
         # composition (RunWorkflow.workflowName) and signed-file naming only.
         types = [SURFACE_TO_TYPE.get(s, s) for s in self.surfaces]
-        return {
+        out: dict[str, Any] = {
             "WFWorkflowMinimumClientVersion": self.min_client,
-            "WFWorkflowMinimumClientVersionString": str(self.min_client),
             "WFWorkflowClientVersion": "4033.0.4.3",
             "WFWorkflowIcon": {
                 "WFWorkflowIconGlyphNumber": self.icon_glyph,
@@ -104,6 +123,16 @@ class Shortcut:
             "WFWorkflowHasShortcutInputVariables": False,
             "WFWorkflowActions": action_dicts,
         }
+        # Apple omits WFWorkflowMinimumClientVersionString when min_client is 0
+        # (gallery shortcuts with no minimum). Otherwise it duplicates the int
+        # as a string. Match that behaviour so lift→emit is a no-op.
+        if self.min_client:
+            out["WFWorkflowMinimumClientVersionString"] = str(self.min_client)
+        # Captured non-attribute keys (from a prior lift) override the
+        # hardcoded defaults. Newly-authored shortcuts have an empty _extra
+        # so the defaults flow through unchanged.
+        out.update(self._extra)
+        return out
 
     def to_bplist(self) -> bytes:
         """Encode as a binary plist (unsigned)."""
@@ -153,6 +182,9 @@ class Shortcut:
         # Some gallery samples store min_client=0; preserve literal-zero
         # rather than coercing to the default.
         min_client = workflow.get("WFWorkflowMinimumClientVersion", 900)
+        # Capture any top-level keys not represented by an explicit Shortcut
+        # attribute so a lift→emit round-trip preserves the full dict.
+        extra = {k: v for k, v in workflow.items() if k not in cls._ATTRIBUTE_KEYS}
         out = cls(
             name=name,
             surfaces=list(types),
@@ -165,6 +197,7 @@ class Shortcut:
             output_classes=list(
                 workflow.get("WFWorkflowOutputContentItemClasses") or []
             ),
+            _extra=extra,
         )
         for action in workflow.get("WFWorkflowActions") or []:
             ident = action.get("WFWorkflowActionIdentifier", "")
