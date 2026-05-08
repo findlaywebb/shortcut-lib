@@ -24,21 +24,31 @@ A Swift compiler-frontend for Apple Shortcuts (the Jellycuts language).
 The most comprehensive open catalogue of first-party action identifiers,
 parameter key names, OS-min metadata, and typed enums.
 
-This project's `data/jellycore_facts.json` is a derivative compilation of
-Open-Jellycore's curated lookup tables, restricted to Apple-side facts
-(identifier strings, display names, parameter WF* key names, OS-min, and
-the typed-enum members Apple accepts) — produced by
-`scripts/extract_jellycore.py` walking an Open-Jellycore checkout. The
-upstream's original expression (description prose, the Jellycuts DSL
-function names, the upstream Swift parameter-struct names, presets) is
-deliberately omitted from the shipped JSON.
+`data/jellycore_facts.json` in this repository is a derivative compilation
+of Open-Jellycore's curated lookup tables, produced by
+`scripts/extract_jellycore.py` walking an Open-Jellycore checkout and
+projecting it to JSON. It is licensed under GPL-3.0-or-later (the same
+licence as this project at large). The derivative status of the JSON is
+the basis for this project's choice of GPL-3.0-or-later. The dataset is
+a development-time bootstrapping artefact for
+`scripts/coverage_report.py` and is excluded from the built wheel
+(`pyproject.toml` `[tool.hatch.build.targets.wheel] exclude = ["data/"]`).
 
-The dataset is a development-time bootstrapping artefact used by
-`scripts/coverage_report.py` to identify which Apple actions this lib
-hasn't yet modelled. It is not packaged into the wheel
-(`pyproject.toml` excludes `data/`). This lib is GPL-3.0 throughout, so
-the JSON's status as a derivative work raises no licence-compatibility
-question.
+Modifications to the upstream catalogue (per GPL-3.0 §5(a)):
+
+- 2026-05-08: subset projection to JSON via
+  `scripts/extract_jellycore.py`. Only Apple-side facts are emitted —
+  identifier strings, Apple display names, parameter WF* key names, and
+  OS-min metadata. Upstream original expression (description prose, the
+  Jellycuts DSL function names, upstream Swift parameter-struct names,
+  presets) is filtered out.
+- 2026-05-08: typo fix — `WFShell` enum value `/usr/bin/pearl` corrected
+  to `/usr/bin/perl`. Worth upstreaming back to Open-Jellycore.
+- 2026-05-08: filtered out Open-Jellycore-invented identifiers
+  (`jelly.config.*`) from `structural_identifiers`.
+- 2026-05-08: dropped the unused `enums` section (Open-Jellycore's
+  typed-enum extraction was bootstrapping data that this library never
+  consumed at runtime).
 
 --------------------------------------------------------------------------------
 shortcuts-js — https://github.com/joshfarrant/shortcuts-js

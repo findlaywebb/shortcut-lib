@@ -105,7 +105,11 @@ E1. **Vault Note → LLM → Git.** Compositional design:
   prove cumbersome for the LLM.
 - **2026-05-07** — ty + ruff + prek; matches `~/.claude/toolkit/` style.
 - **2026-05-07** — Personal use; relicense path open if it proves useful.
-- **2026-05-07** — GPL-clean: Jellycore facts extracted, source not vendored.
+- **2026-05-07** — Action-fact dataset bootstrapped by mechanical
+  extraction from Open-Jellycore (GPL-3.0). The resulting JSON is a
+  derivative compilation; the project as a whole is licensed
+  GPL-3.0-or-later to match. See `NOTICE` for the §5(a) modifications
+  log.
 - **2026-05-07** — Compositional: shortcuts compose via `runworkflow` like
   Python modules. Schema layer treats it as a first-class operator.
 - **2026-05-07** — Lib's primary user is Claude. Discoverability, error

@@ -41,13 +41,6 @@ PARAM_FIELD_RE = re.compile(
     re.MULTILINE,
 )
 
-# Enums declare bare cases then expose strings via a `var value: String`
-# switch. We grab from the switch since those quoted strings are the wire
-# representation Apple expects in the bplist.
-ENUM_VALUE_RE = re.compile(
-    r'case\s+\.(?P<name>[A-Za-z0-9_]+)\s*:\s*return\s+"(?P<value>[^"]*)"',
-)
-
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
@@ -83,29 +76,17 @@ def main() -> int:
 
     actions = _extract_actions(shortcuts_dir / "ShortcutsLookupTable.swift")
     _enrich_with_param_keys(actions, shortcuts_dir / "Actions")
-    enums = _extract_enums(shortcuts_dir / "Enums")
     structural = _extract_structural_identifiers(
         args.source / "Sources/Open-Jellycore/Core/Compiler/Compiler.swift"
     )
+    # Filter Open-Jellycore-invented identifiers (e.g. ``jelly.config.color``,
+    # ``jelly.config.icon``) — they aren't Apple wire identifiers and have no
+    # business in a dataset that documents Apple's surface.
+    structural = [s for s in structural if not s.startswith(("jelly.", "Jelly_"))]
 
     facts = {
-        "source": "https://github.com/OpenJelly/Open-Jellycore (GPL-3.0)",
-        "extracted_fields": [
-            "WFWorkflow identifiers",
-            "Apple display names",
-            "lowestCompatibleHost (OS min)",
-            "parameter WF* key names",
-            "enum members (Apple's typed values)",
-        ],
-        "deliberately_omitted": [
-            "Jellycore description prose (original expression)",
-            "Jellycore DSL function names",
-            "Jellycore Swift parameter-struct names",
-            "presets",
-        ],
         "actions": _strip_internals(actions),
         "structural_identifiers": structural,
-        "enums": enums,
     }
 
     args.out.parent.mkdir(parents=True, exist_ok=True)
@@ -113,8 +94,7 @@ def main() -> int:
 
     print(
         f"wrote {args.out.relative_to(Path.cwd())} — "
-        f"{len(actions)} actions, {len(structural)} structural ids, "
-        f"{len(enums)} enums"
+        f"{len(actions)} actions, {len(structural)} structural ids"
     )
     no_params = [a for a in actions if not a["parameter_keys"]]
     if no_params:
@@ -174,19 +154,6 @@ def _extract_structural_identifiers(compiler_path: Path) -> list[str]:
     text = compiler_path.read_text()
     pattern = re.compile(r'WFWorkflowActionIdentifier:\s*"([^"]+)"')
     return sorted(set(pattern.findall(text)))
-
-
-def _extract_enums(enums_dir: Path) -> dict[str, list[str]]:
-    if not enums_dir.is_dir():
-        return {}
-    out: dict[str, list[str]] = {}
-    for swift in enums_dir.glob("Jelly_*.swift"):
-        name = swift.stem.removeprefix("Jelly_")
-        text = swift.read_text()
-        values = sorted({m["value"] for m in ENUM_VALUE_RE.finditer(text)})
-        if values:
-            out[name] = values
-    return out
 
 
 def _strip_internals(actions: Iterable[dict[str, object]]) -> list[dict[str, object]]:

@@ -36,12 +36,17 @@ deliberately omits upstream original expression: description prose, the
 Jellycuts DSL function names, the upstream Swift parameter-struct names,
 and presets.
 
-This lib's licence is GPL-3.0, so the JSON's status as a derivative
-compilation of Open-Jellycore's curation is the natural fit and triggers
-no licence conflict. The lib at large continues to evolve via
-sample-grounded authoring; the JSON is a development-time bootstrapping
-artefact rather than a runtime dependency. The current packaging
-configuration (`pyproject.toml`) excludes `data/` from the wheel.
+The JSON is a derivative compilation of Open-Jellycore's curation —
+mechanical extraction by an in-repo script, restricted to Apple-side
+fields. It is licensed under GPL-3.0-or-later (matching the rest of
+this lib); the derivative status is the basis for this project's choice
+of licence. The lib at large continues to evolve via sample-grounded
+authoring; the JSON is a development-time bootstrapping artefact rather
+than a runtime dependency, and `pyproject.toml` excludes `data/` from
+the wheel.
+
+`NOTICE` carries the date-stamped modifications log for the JSON per
+GPL-3.0 §5(a).
 
 Dictionary.shortcut coverage check: the action-fact dataset covers ~62%
 of identifiers (231 via lookup table + 7 via language constructs),
