@@ -11,8 +11,14 @@ files signed via the `shortcuts` CLI shipped with macOS.
 
 - **Decode**: working. AEA1 → Apple Archive → bplist pipeline using the
   embedded signing public key, no external state needed.
-- **Schema**: empty. Bootstrapped on demand from decoded samples.
-- **Encode + DSL**: not started.
+- **Encode**: working. dict → bplist → signed via the system `shortcuts`
+  CLI; round-trips verified against committed samples.
+- **Schema**: 22 typed leaf actions (Tier 0/1/2 + Apple Intelligence)
+  plus control-flow constructs (`If`, `RepeatCount`, `RepeatEach`,
+  `ChooseFromMenu`) and value/composition primitives (`Text`,
+  `NamedVar`, `Output`, `RunWorkflow`, `Self`). Auto-discovering
+  registry; `RawAction` passthrough for unmodelled identifiers.
+- **DSL surface**: Python dataclasses; no YAML/text-DSL planned for now.
 
 ## Install
 
