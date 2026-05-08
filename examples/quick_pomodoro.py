@@ -15,7 +15,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from shortcut_lib.builder import Shortcut
-from shortcut_lib.schema import If, RunWorkflow, Text
+from shortcut_lib.schema import If, RunWorkflow, Self, Text
 from shortcut_lib.schema.actions.ask import AskForInput
 from shortcut_lib.schema.actions.show_notification import ShowNotification
 
@@ -44,9 +44,9 @@ def build() -> Shortcut:
                     title="Pomodoro",
                     body="That's not a valid duration — try again.",
                 ),
-                # Recurse into self to re-prompt. RunWorkflow(target="self")
-                # is resolved at emit time to point at this shortcut.
-                RunWorkflow(target="self"),
+                # Recurse into self to re-prompt. The Self sentinel is bound
+                # to the containing shortcut at add() time.
+                RunWorkflow(target=Self),
             ],
         )
     )

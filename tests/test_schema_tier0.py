@@ -20,6 +20,7 @@ from shortcut_lib.schema import (
     RepeatCount,
     RepeatEach,
     RunWorkflow,
+    Self,
     Text,
     TimeOffset,
     describe_action,
@@ -225,14 +226,64 @@ def test_time_offset_with_variable_value() -> None:
     assert inner["Value"]["OutputUUID"] == "U"
 
 
-def test_run_workflow_self_reference_resolves_at_emit() -> None:
+def test_run_workflow_self_sentinel_binds_to_containing_shortcut() -> None:
     s = Shortcut(name="Recursive")
-    s.add(RunWorkflow(target="self", input="payload"))
+    s.add(RunWorkflow(target=Self, input="payload"))
     actions = s.to_workflow()["WFWorkflowActions"]
     wf = actions[0]["WFWorkflowActionParameters"]["WFWorkflow"]
     assert wf["isSelf"] is True
     assert wf["workflowIdentifier"] == s.workflow_identifier
     assert wf["workflowName"] == "Recursive"
+
+
+def test_run_workflow_self_sentinel_nested_in_if_branch() -> None:
+    """Self inside ``If.then`` (or any control-flow body) binds at add() time."""
+    s = Shortcut(name="Recursive Branch")
+    s.add(
+        If(
+            operand="x",
+            op="==",
+            value="x",
+            then=[RunWorkflow(target=Self)],
+            otherwise=[RunWorkflow(target=Self, input="alt")],
+        )
+    )
+    actions = s.to_workflow()["WFWorkflowActions"]
+    run_actions = [
+        a
+        for a in actions
+        if a["WFWorkflowActionIdentifier"] == "is.workflow.actions.runworkflow"
+    ]
+    assert len(run_actions) == 2
+    for a in run_actions:
+        wf = a["WFWorkflowActionParameters"]["WFWorkflow"]
+        assert wf["isSelf"] is True
+        assert wf["workflowIdentifier"] == s.workflow_identifier
+
+
+def test_run_workflow_self_sentinel_unbound_raises() -> None:
+    """Emitting ``RunWorkflow(target=Self)`` without first adding it to a
+    Shortcut is an error: the sentinel only resolves once bound."""
+    from shortcut_lib.schema import SchemaError
+
+    rw = RunWorkflow(target=Self, input="x")
+    with pytest.raises(SchemaError, match="only resolves once the action is added"):
+        rw.to_actions()
+
+
+def test_workflow_identifier_is_deterministic_from_name() -> None:
+    """Re-running a build script produces the same workflow_identifier so
+    orchestrators that bake in a helper's UUID stay valid across runs."""
+    a = Shortcut(name="Polish With LLM")
+    b = Shortcut(name="Polish With LLM")
+    c = Shortcut(name="Push To Vault Repo")
+    assert a.workflow_identifier == b.workflow_identifier
+    assert a.workflow_identifier != c.workflow_identifier
+
+
+def test_workflow_identifier_explicit_override_wins() -> None:
+    s = Shortcut(name="X", workflow_identifier="ABC-123")
+    assert s.workflow_identifier == "ABC-123"
 
 
 def test_run_workflow_cross_shortcut_reference() -> None:

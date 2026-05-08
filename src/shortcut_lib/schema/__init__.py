@@ -24,7 +24,7 @@ from __future__ import annotations
 # Importing the actions submodule registers leaf-action classes via decorators.
 from shortcut_lib.schema import actions as _actions  # noqa: F401
 from shortcut_lib.schema.base import Action, SchemaError, Value
-from shortcut_lib.schema.compose import RunWorkflow
+from shortcut_lib.schema.compose import RunWorkflow, Self
 from shortcut_lib.schema.control import (
     ChooseFromMenu,
     If,
@@ -72,6 +72,7 @@ __all__ = [
     "RepeatItem",
     "RunWorkflow",
     "SchemaError",
+    "Self",
     "ShortcutInput",
     "Text",
     "TimeOffset",

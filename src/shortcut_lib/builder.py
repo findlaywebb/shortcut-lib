@@ -5,14 +5,21 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, ClassVar
-from uuid import uuid4
+from uuid import NAMESPACE_DNS, uuid5
 
 from shortcut_lib.encode import SignMode, encode_to_bplist, sign_to_file
 from shortcut_lib.schema.base import Action, RawAction, SchemaError
+from shortcut_lib.schema.compose import RunWorkflow, _BoundSelf, _SelfRef
 
 
-def _new_workflow_uuid() -> str:
-    return str(uuid4()).upper()
+def _derive_workflow_uuid(name: str) -> str:
+    """Stable UUID derived from the shortcut's name.
+
+    Re-running the same build script produces the same identifier, so an
+    orchestrator that bakes a helper's UUID into a ``RunWorkflow`` keeps
+    working across re-runs. Renaming a shortcut changes its identifier.
+    """
+    return str(uuid5(NAMESPACE_DNS, name)).upper()
 
 
 # Subset of WFWorkflowTypes / WFQuickActionSurfaces values. Apple's full
@@ -56,7 +63,10 @@ class Shortcut:
     min_client: int = 900
     icon_glyph: int = 61512  # default to a generic icon
     icon_color: int = 4282601983  # red
-    workflow_identifier: str = field(default_factory=_new_workflow_uuid)
+    # Defaults to a UUID derived from `name` (stable across runs). Pass an
+    # explicit value to override — useful when lifting an existing shortcut
+    # that already has a UUID assigned in the wild.
+    workflow_identifier: str | None = None
     accepted_input: list[str] = field(default_factory=list)
     output_classes: list[str] = field(default_factory=list)
     actions: list[Action] = field(default_factory=list)
@@ -81,14 +91,46 @@ class Shortcut:
         }
     )
 
+    def __post_init__(self) -> None:
+        if self.workflow_identifier is None:
+            self.workflow_identifier = _derive_workflow_uuid(self.name)
+
     def add(self, action: Action) -> Action:
         """Append an action; return it so its output can be referenced."""
         if not isinstance(action, Action):
             raise SchemaError(
                 f"Shortcut.add expects an Action, got {type(action).__name__}"
             )
+        # Bind any Self sentinel (including ones nested in control-flow
+        # bodies) to this containing shortcut so emit doesn't need a second
+        # pass over the action dicts.
+        self._bind_self(action)
         self.actions.append(action)
         return action
+
+    def _bind_self(self, action: Action) -> None:
+        """Recursively rebind ``Self`` sentinels under ``action``.
+
+        Walks the known control-flow body containers (``then``, ``otherwise``,
+        ``body``, ``cases``). Some leaf actions reuse one of those names for
+        unrelated state (e.g. ``DownloadURL.body`` is the request payload),
+        so we type-guard on ``list`` before recursing.
+        """
+        if isinstance(action, RunWorkflow) and isinstance(action.target, _SelfRef):
+            action.target = _BoundSelf(self)
+        for attr in ("then", "otherwise", "body"):
+            container = getattr(action, attr, None)
+            if isinstance(container, list):
+                for child in container:
+                    if isinstance(child, Action):
+                        self._bind_self(child)
+        cases = getattr(action, "cases", None)
+        if isinstance(cases, list):
+            for case in cases:
+                if isinstance(case, tuple) and len(case) == 2:
+                    for child in case[1]:
+                        if isinstance(child, Action):
+                            self._bind_self(child)
 
     def extend(self, actions: list[Action]) -> None:
         """Append several actions in order."""
@@ -100,7 +142,6 @@ class Shortcut:
         action_dicts: list[dict[str, Any]] = []
         for action in self.actions:
             action_dicts.extend(action.to_actions())
-        self._resolve_self_refs(action_dicts)
 
         # NB: WFWorkflowName is intentionally not emitted. None of the decoded
         # samples contain it; the Shortcuts app derives the display name from
@@ -207,14 +248,3 @@ class Shortcut:
                 RawAction(uuid=uuid, raw_identifier=ident, raw_params=dict(params))
             )
         return out
-
-    def _resolve_self_refs(self, action_dicts: list[dict[str, Any]]) -> None:
-        """Replace `__SELF__` markers from RunWorkflow(target='self')."""
-        for action in action_dicts:
-            params = action.get("WFWorkflowActionParameters") or {}
-            wf = params.get("WFWorkflow")
-            if isinstance(wf, dict) and wf.get("workflowIdentifier") == "__SELF__":
-                wf["workflowIdentifier"] = self.workflow_identifier
-                wf["workflowName"] = self.name
-            if params.get("WFWorkflowName") == "__SELF__":
-                params["WFWorkflowName"] = self.name
