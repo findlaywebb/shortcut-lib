@@ -23,10 +23,16 @@ def test_use_model_default_emits_apple_intelligence() -> None:
 
 
 def test_use_model_with_named_var_prompt() -> None:
+    """A NamedVar prompt is wrapped as a single-attachment WFTextTokenString.
+
+    WFLLMPrompt is a templated-string slot in real samples; a bare
+    WFTextTokenAttachment imports as a disconnected field.
+    """
     action = UseModel(prompt=NamedVar("Note")).to_action_dict()
     prompt = action["WFWorkflowActionParameters"]["WFLLMPrompt"]
-    assert prompt["Value"]["VariableName"] == "Note"
-    assert prompt["WFSerializationType"] == "WFTextTokenAttachment"
+    assert prompt["WFSerializationType"] == "WFTextTokenString"
+    attachments = prompt["Value"]["attachmentsByRange"]
+    assert attachments["{0, 1}"]["VariableName"] == "Note"
 
 
 def test_use_model_alternate_model() -> None:

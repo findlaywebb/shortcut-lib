@@ -5,7 +5,12 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, ClassVar, Literal, get_args
 
-from shortcut_lib.schema.base import Action, ParamValue, SchemaError, coerce_value
+from shortcut_lib.schema.base import (
+    Action,
+    ParamValue,
+    SchemaError,
+    coerce_text_field,
+)
 from shortcut_lib.schema.registry import register
 
 # Wire-format strings shown in Shortcuts.app's GUI dropdown for the LLM
@@ -64,5 +69,7 @@ class UseModel(Action):
             raise SchemaError("UseModel requires `prompt`")
         return {
             "WFLLMModel": self.model,
-            "WFLLMPrompt": coerce_value(self.prompt),
+            # WFLLMPrompt is a WFTextTokenString slot — variable refs need
+            # a single-attachment templated-string envelope.
+            "WFLLMPrompt": coerce_text_field(self.prompt),
         }

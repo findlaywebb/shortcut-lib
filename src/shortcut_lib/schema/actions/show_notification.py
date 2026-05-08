@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
-from shortcut_lib.schema.base import Action, ParamValue, coerce_value
+from shortcut_lib.schema.base import Action, ParamValue, coerce_text_field
 from shortcut_lib.schema.registry import register
 
 
@@ -35,10 +35,13 @@ class ShowNotification(Action):
 
     def _params(self) -> dict[str, Any]:
         out: dict[str, Any] = {}
-        coerced_title = coerce_value(self.title)
+        # Title and body are WFTextTokenString slots. Plain strings pass
+        # through unchanged; variable refs are wrapped as a single-attachment
+        # WFTextTokenString so the field links cleanly on import.
+        coerced_title = coerce_text_field(self.title)
         if coerced_title != "":
             out["WFNotificationActionTitle"] = coerced_title
-        coerced_body = coerce_value(self.body)
+        coerced_body = coerce_text_field(self.body)
         if coerced_body != "":
             out["WFNotificationActionBody"] = coerced_body
         if self.play_sound is not None:

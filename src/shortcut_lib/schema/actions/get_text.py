@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
-from shortcut_lib.schema.base import Action, ParamValue, coerce_value
+from shortcut_lib.schema.base import Action, ParamValue, coerce_text_field
 from shortcut_lib.schema.registry import register
 
 
@@ -32,4 +32,6 @@ class GetText(Action):
 
     def _params(self) -> dict[str, Any]:
         """Return the WFTextActionText parameter dict."""
-        return {"WFTextActionText": coerce_value(self.text)}
+        # WFTextActionText is a WFTextTokenString slot; bare WFTextTokenAttachment
+        # imports as a disconnected field. Plain strings pass through unchanged.
+        return {"WFTextActionText": coerce_text_field(self.text)}

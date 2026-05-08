@@ -5,7 +5,12 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
-from shortcut_lib.schema.base import Action, ParamValue, coerce_value
+from shortcut_lib.schema.base import (
+    Action,
+    ParamValue,
+    coerce_text_field,
+    coerce_value,
+)
 from shortcut_lib.schema.registry import register
 
 
@@ -44,9 +49,13 @@ class TextReplace(Action):
         """Return the WFReplaceText* parameter dict."""
         out: dict[str, Any] = {}
         if self.input is not None:
+            # WFInput is a permissive slot in samples — WFTextTokenAttachment
+            # is the dominant shape, so coerce_value is correct here.
             out["WFInput"] = coerce_value(self.input)
-        out["WFReplaceTextFind"] = coerce_value(self.find)
-        out["WFReplaceTextReplace"] = coerce_value(self.replace)
+        # Find/Replace are WFTextTokenString slots when not bare literals;
+        # route variable refs through coerce_text_field for the right envelope.
+        out["WFReplaceTextFind"] = coerce_text_field(self.find)
+        out["WFReplaceTextReplace"] = coerce_text_field(self.replace)
         if self.case_sensitive is not None:
             out["WFReplaceTextCaseSensitive"] = self.case_sensitive
         if self.regex is not None:

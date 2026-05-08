@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, ClassVar
 
-from shortcut_lib.schema.base import Action, SchemaError
+from shortcut_lib.schema.base import Action, ParamValue, SchemaError, coerce_text_field
 from shortcut_lib.schema.registry import register
 
 # Apple plist key is WFInputType, not "type" (Jellycore's field name).
@@ -53,7 +53,7 @@ class AskForInput(Action):
     identifier: ClassVar[str] = "is.workflow.actions.ask"
     default_output_name: ClassVar[str] = "Provided Input"
 
-    prompt: str = ""
+    prompt: ParamValue = ""
     input_type: str = "Text"
     default_answer: str | None = None
     allows_decimal: bool | None = None
@@ -81,7 +81,9 @@ class AskForInput(Action):
     def _params(self) -> dict[str, Any]:
         out: dict[str, Any] = {}
         if self.prompt:
-            out["WFAskActionPrompt"] = self.prompt
+            # WFAskActionPrompt is a WFTextTokenString slot when not literal —
+            # variable refs need the single-attachment templated envelope.
+            out["WFAskActionPrompt"] = coerce_text_field(self.prompt)
         out["WFInputType"] = self.input_type
         if self.default_answer is not None:
             out[_DEFAULT_ANSWER_KEY[self.input_type]] = self.default_answer
