@@ -4,11 +4,10 @@ This is the multi-shortcut composition pattern: small focused helper
 shortcuts (like Python modules) and an orchestrator that links them via
 ``RunWorkflow``. Each is signed and importable separately.
 
-The actual LLM-polish step is stubbed because Apple's iOS 26 ``Use Model``
-action isn't yet schema-modelled (no decoded sample available — see
-docs/product_review.md P2). When that lands, swap the placeholder
-``ShowNotification`` inside ``polish_helper()`` for a real ``UseModel``
-action.
+The polish helper now calls Apple Intelligence's ``Use Model`` action
+(modelled in C2 after the user exported `intelly.shortcut`). The push
+helper is still a placeholder — see ``examples/note_to_github.py`` for
+a real GitHub Files API push you can paste in.
 
 Usage:
     uv run python examples/vault_note_to_git.py
@@ -32,28 +31,29 @@ from shortcut_lib.schema import NamedVar, RunWorkflow, ShortcutInput, Text
 from shortcut_lib.schema.actions.get_clipboard import GetClipboard
 from shortcut_lib.schema.actions.set_variable import SetVariable
 from shortcut_lib.schema.actions.show_notification import ShowNotification
+from shortcut_lib.schema.actions.use_model import UseModel
 
 
 def polish_helper() -> Shortcut:
-    """Stub helper: receives a note as input, would call Use Model.
+    """Receive a note via Shortcut Input, polish it via Apple Intelligence.
 
-    For now: notifies that a polish would happen, then returns the input
-    unchanged (set as a named variable so the orchestrator can pull it).
+    The polished text is set as the ``Polished`` named variable so the
+    orchestrator can pull it via NamedVar regardless of the helper's
+    output-passing behaviour.
     """
     s = Shortcut(name="Polish With LLM", surfaces=[])
     s.add(SetVariable(name="Note", input=ShortcutInput))
-    s.add(
-        ShowNotification(
-            title="Polish (stub)",
-            body=Text(
-                "Would polish: {n}",
+    polished = s.add(
+        UseModel(
+            prompt=Text(
+                "Polish this note for clarity and tone, preserving meaning. "
+                "Return only the polished text, no commentary:\n\n{n}",
                 substitutions={"n": NamedVar("Note")},
             ),
+            model="Apple Intelligence",
         )
     )
-    # NB: when UseModel lands, swap the notification for a UseModel
-    # action that takes NamedVar("Note") as input and a polish-style
-    # prompt, then SetVariable("Note") on its output.
+    s.add(SetVariable(name="Polished", input=polished))
     return s
 
 
