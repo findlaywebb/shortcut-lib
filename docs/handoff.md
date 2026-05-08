@@ -512,16 +512,16 @@ suggested `WFLLMModelExtension` (when `model="Extension"`) and
 real iOS 26 export that uses ChatGPT before adding.
 
 **FU-7 — Sweep every action parameter slot for the WFTextTokenString
-envelope bug.** Three instances confirmed during 2026-05-09 vault-note
-validation (`WFURL`, JSON body dict values, `WFDate`). All three
-emitted `WFTextTokenAttachment` for variable references, where Apple
-expects a single-attachment `WFTextTokenString`. SF-batch6 was
-demoted based on the bare-string round-trip evidence, but Apple is
-selectively permissive — bare literals work, bare variable refs
-don't. Walk every registered action's `_params` and identify slots
-whose Apple wire shape is templated-string. The shared helper
-`shortcut_lib.schema.base.coerce_text_field` is the fix; tests should
-follow the pattern in `tests/test_action_format_date.py`.
+envelope bug.** ✅ Done 2026-05-09. A Python plist scan over every
+decoded sample mapped each slot to its observed envelope shape;
+slots that only emit `WFTextTokenString` or bare-string literals are
+now routed through `coerce_text_field`. Updated: `WFTextActionText`,
+`WFNotificationActionTitle/Body`, `WFLLMPrompt`, `WFAskActionPrompt`,
+`WFCommentActionText`, `WFReplaceTextFind/Replace`. Slots that
+genuinely accept `WFTextTokenAttachment` in samples (`WFInput`,
+Base64 input, `TextReplace.input`, `Use Model` output,
+`Transcribe Audio`'s `audioFile`, …) keep `coerce_value`. Regression
+test at `tests/test_envelope_text_token_string.py`.
 
 **FU-8 — Robust create-or-update for the GitHub PUT.** The
 `Vault Note To Git` example side-steps GitHub's "must supply sha when
