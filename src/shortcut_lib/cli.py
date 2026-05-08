@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Any, cast
 
 from shortcut_lib.decode import DecodeError, decode_file
+from shortcut_lib.summary import workflow_to_summary
 
 
 def decode_main(argv: list[str] | None = None) -> int:
@@ -23,9 +24,10 @@ def decode_main(argv: list[str] | None = None) -> int:
     parser.add_argument("input", type=Path, help="Path to a .shortcut file")
     parser.add_argument(
         "--format",
-        choices=("xml", "json", "summary"),
+        choices=("xml", "json", "summary", "buzz"),
         default="xml",
-        help="Output format (default: xml)",
+        help="Output format (default: xml). 'buzz' is a compact, "
+        "LLM-readable representation; 'summary' is a header-only digest.",
     )
     parser.add_argument(
         "-o",
@@ -43,6 +45,8 @@ def decode_main(argv: list[str] | None = None) -> int:
 
     if args.format == "summary":
         out = _summarise(decoded.workflow, decoded.signing_subject).encode()
+    elif args.format == "buzz":
+        out = workflow_to_summary(decoded.workflow).encode()
     elif args.format == "json":
         out = json.dumps(decoded.workflow, indent=2, default=_json_default).encode()
     else:

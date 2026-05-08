@@ -1,0 +1,16 @@
+# (unnamed)
+# surfaces: Watch, NCWidget
+# min client: 900
+# 11 actions
+
+# WFCommentActionText="Below, \u2018Ask for Input\u2019 is set to \u2018Number\u2019 responses.\n\nWhen you tap the shortcut, it will show a \u2018Number\u2019 field.\n\nWhen you say \u201cStart Pomodoro\u201d to Siri, you can say things like \u201cTwenty Six\u201d when it asks for a number."
+ask WFAskActionAllowsNegativeNumbers=false WFAskActionPrompt="OK, for how many minutes?" WFAskActionAllowsDecimalNumbers=false WFInputType="Number" WFAskActionDefaultAnswerNumber="25" -> $Break Length
+round WFInput=${Break Length} WFRoundMode="Always Round Up" -> $round
+if $round == "1":
+  run-shortcut WFInput=$round WFWorkflow={workflowIdentifier, isSelf, workflowName} WFWorkflowName="Start Pomodoro" WFShowWorkflow=true -> $run-shortcut
+end if
+adjust-date WFDuration=$round min WFAdjustOffsetPicker=(Add ${Ask for Input} Minute) WFAdjustOperation="Add" WFDate="@CurrentDate" -> $Break End Time
+timer.start WFDuration=$round min IntentAppDefinition={TeamIdentifier, BundleIdentifier, Name, ExtensionBundleIdentifier} -> $timer.start
+# WFCommentActionText="Above, the ‘Start Timer’ action will create a new timer using the output of the ‘Adjust Time’ action."
+dnd.set AssertionType="Time" FocusModes={Identifier, DisplayString} Time="${Break End Time}" Enabled=1 Event=${Break End Time}
+show Text="Started a timer for ${Break Length} minutes. Your focus will stay on until the timer goes off."
