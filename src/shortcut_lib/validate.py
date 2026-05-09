@@ -19,6 +19,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Literal
 
+from shortcut_lib.schema.values import MAGIC_VAR_TYPE_NAMES
+
 logger = logging.getLogger(__name__)
 
 _ORACLE_PATH = (
@@ -26,19 +28,9 @@ _ORACLE_PATH = (
 )
 
 # Magic-variable Type strings that are always in scope without a preceding
-# SetVariable / AppendVariable.  These originate from ``values.py``
-# MagicVar.to_token()["Type"] values plus the Shortcut input token.
-# "ExtensionInput" is the wire form of ShortcutInput.
-_MAGIC_VAR_TYPES: frozenset[str] = frozenset(
-    {
-        "CurrentDate",
-        "Clipboard",
-        "Ask",
-        "ExtensionInput",  # ShortcutInput wire name
-        "RepeatItem",
-        "RepeatIndex",
-    }
-)
+# SetVariable / AppendVariable.  Derived from ``values.py`` singletons so
+# additions to the MagicVar catalogue propagate here automatically.
+_MAGIC_VAR_TYPES: frozenset[str] = MAGIC_VAR_TYPE_NAMES
 
 # SetVariable / AppendVariable identifiers — actions that bring a name into
 # scope for later NamedVar references.
@@ -233,54 +225,36 @@ def _validate_envelope(
 # ---------------------------------------------------------------------------
 
 
-def _collect_set_variable_names(
-    actions: list[dict[str, Any]],
-) -> set[str]:
-    """Return all variable names bound by SetVariable / AppendVariable actions.
-
-    Walks the flat action list sequentially.  Control-flow bodies (nested
-    under group-marker actions) are not walked; those bindings are treated
-    as always-available in the current flat model (consistent with how iOS
-    Shortcuts resolves named variables — a name set inside a Repeat body is
-    visible after the loop).
-    """
-    names: set[str] = set()
-    for action in actions:
-        action_id = action.get("WFWorkflowActionIdentifier", "")
-        if action_id in _SET_VAR_IDENTIFIERS:
-            params = action.get("WFWorkflowActionParameters") or {}
-            var_name = params.get("WFVariableName")
-            if isinstance(var_name, str) and var_name:
-                names.add(var_name)
-    return names
-
-
 def _validate_variable_not_set(
     actions: list[dict[str, Any]],
     workflow: dict[str, Any],
     oracle: dict[str, Any],
 ) -> list[ValidationFinding]:
-    """Flag NamedVar / variable references whose name was never set upstream.
+    """Flag NamedVar references whose name has not been set by a prior action.
 
-    Walks every token in every action's parameters looking for::
+    Walks the action list linearly, accumulating the set of names bound by
+    SetVariable / AppendVariable as it goes.  Each action's parameter tree is
+    checked against names bound *strictly before* that action — meaning a
+    reference at action N to a name first set at action N+K is flagged as a
+    use-before-set error.
 
-        {"Type": "Variable", "VariableName": <name>}
+    iOS resolves named-variable references in sequential execution order; a
+    variable that is set later in the flat list is empty at the point of use,
+    producing silent data-loss at runtime.
 
-    If ``<name>`` is not in the set of names bound by SetVariable /
-    AppendVariable actions (and is not a magic-variable type), it is flagged.
-
-    This does *not* account for variables set inside conditional branches that
-    may not execute — the check is conservative (no false negatives).  A name
-    that is set in an ``If``/``Else`` body will still satisfy the check because
-    ``from_workflow`` lifts all actions into the same flat list.
+    Magic variables (CurrentDate, Clipboard, Ask, ShortcutInput, RepeatItem,
+    RepeatIndex) are always in scope and are never flagged.
     """
-    bound_names = _collect_set_variable_names(actions)
+    bound_names: set[str] = set()
     findings: list[ValidationFinding] = []
     seen_refs: set[tuple[int, str]] = set()  # (action_index, var_name) dedup
 
     for idx, action in enumerate(actions):
         action_id = action.get("WFWorkflowActionIdentifier", "")
         params = action.get("WFWorkflowActionParameters") or {}
+
+        # Check references BEFORE updating bound_names for this action so
+        # that a SetVariable at index N does not satisfy its own references.
         for node in _walk_params(params):
             if not isinstance(node, dict):
                 continue
@@ -302,13 +276,19 @@ def _validate_variable_not_set(
                     message=(
                         f"Action at index {idx} ({action_id!r}) references "
                         f"variable {var_name!r} but no SetVariable or "
-                        f"AppendVariable action in this workflow assigns that "
-                        f"name.  The variable will be empty at runtime."
+                        f"AppendVariable action earlier in the workflow assigns "
+                        f"that name.  The variable will be empty at runtime."
                     ),
                     action_index=idx,
                     action_identifier=action_id,
                 )
             )
+
+        # Now register any name this action binds for subsequent actions.
+        if action_id in _SET_VAR_IDENTIFIERS:
+            var_name = params.get("WFVariableName")
+            if isinstance(var_name, str) and var_name:
+                bound_names.add(var_name)
 
     return findings
 

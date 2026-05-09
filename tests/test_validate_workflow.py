@@ -372,3 +372,93 @@ def test_validate_oracle_unknown_envelope_is_info() -> None:
     assert f.severity == "info"
     assert f.action_index == 0
     assert "WFTotallyInventedType12345" in f.message
+
+
+# ---------------------------------------------------------------------------
+# 8. use-before-set — sequential variable scope (regression for deep-review B)
+# ---------------------------------------------------------------------------
+
+
+def test_validate_use_before_set_flagged() -> None:
+    """Action 0 referencing MyVar via NamedVar wire, action 1 sets it — flagged.
+
+    The pre-refactor validator pre-collected all SetVariable names globally,
+    making use-before-set invisible.  After the sequential-walk fix, action 0's
+    reference is checked before action 1's SetVariable is accumulated, so the
+    finding is emitted at action_index=0.
+    """
+    workflow = _minimal_workflow(
+        [
+            # Action 0: references MyVar which has not been set yet.
+            {
+                "WFWorkflowActionIdentifier": "is.workflow.actions.setclipboard",
+                "WFWorkflowActionParameters": {
+                    "UUID": _UUID_A,
+                    "WFInput": {
+                        "Value": {"VariableName": "MyVar", "Type": "Variable"},
+                        "WFSerializationType": "WFTextTokenAttachment",
+                    },
+                },
+            },
+            # Action 1: binds MyVar — too late for action 0.
+            {
+                "WFWorkflowActionIdentifier": "is.workflow.actions.setvariable",
+                "WFWorkflowActionParameters": {
+                    "UUID": _UUID_B,
+                    "WFVariableName": "MyVar",
+                },
+            },
+        ]
+    )
+    findings = validate_workflow(workflow)
+    not_set = [f for f in findings if f.code == "variable-not-set"]
+    assert len(not_set) == 1, (
+        f"Expected exactly 1 variable-not-set finding, got: {not_set}"
+    )
+    f = not_set[0]
+    assert f.severity == "error"
+    assert f.action_index == 0
+    assert "MyVar" in f.message
+
+
+def test_validate_set_then_use_is_clean() -> None:
+    """SetVariable at action 0 then NamedVar reference at action 1 — no finding."""
+    workflow = _minimal_workflow(
+        [
+            # Action 0: binds MyVar.
+            {
+                "WFWorkflowActionIdentifier": "is.workflow.actions.setvariable",
+                "WFWorkflowActionParameters": {
+                    "UUID": _UUID_A,
+                    "WFVariableName": "MyVar",
+                },
+            },
+            # Action 1: references MyVar — valid, set at action 0.
+            {
+                "WFWorkflowActionIdentifier": "is.workflow.actions.setclipboard",
+                "WFWorkflowActionParameters": {
+                    "UUID": _UUID_B,
+                    "WFInput": {
+                        "Value": {"VariableName": "MyVar", "Type": "Variable"},
+                        "WFSerializationType": "WFTextTokenAttachment",
+                    },
+                },
+            },
+        ]
+    )
+    findings = validate_workflow(workflow)
+    not_set = [f for f in findings if f.code == "variable-not-set"]
+    assert not_set == [], f"Expected no variable-not-set findings, got: {not_set}"
+
+
+# ---------------------------------------------------------------------------
+# 9. Top-level package import symmetry
+# ---------------------------------------------------------------------------
+
+
+def test_top_level_import() -> None:
+    """validate_workflow and ValidationFinding are importable from the package root."""
+    from shortcut_lib import ValidationFinding, validate_workflow
+
+    assert callable(validate_workflow)
+    assert ValidationFinding is not None
