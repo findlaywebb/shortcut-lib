@@ -11,10 +11,10 @@ from shortcut_lib.schema.registry import lookup
 
 
 def test_get_upcoming_events_defaults() -> None:
-    """Default construction emits WFDateSpecifier='Today', empty calendar, no count.
+    """Default construction emits WFDateSpecifier='Today', no calendar key, no count.
 
-    Confirmed against daily_standup.xml:34 which uses WFDateSpecifier='Today',
-    WFGetUpcomingItemCalendar='', WFGetUpcomingItemCount=24.
+    dictionary.xml:4701 sample has UUID-only params (no WFGetUpcomingItemCalendar
+    key at all), confirming that an empty calendar should be omitted entirely.
     """
     action = GetUpcomingEvents()
     result = action.to_action_dict()
@@ -23,7 +23,7 @@ def test_get_upcoming_events_defaults() -> None:
     )
     params = result["WFWorkflowActionParameters"]
     assert params["WFDateSpecifier"] == "Today"
-    assert params["WFGetUpcomingItemCalendar"] == ""
+    assert "WFGetUpcomingItemCalendar" not in params
     assert "WFGetUpcomingItemCount" not in params
 
 
@@ -86,6 +86,11 @@ def test_get_upcoming_events_wire_format_equivalence_daily_standup() -> None:
 
     Sample: WFDateSpecifier='Today', WFGetUpcomingItemCalendar='',
     WFGetUpcomingItemCount=24 (lines 465-470 of daily_standup.xml).
+
+    Note: the sample emits WFGetUpcomingItemCalendar as an explicit empty
+    string, but our schema omits the key when empty. The wire format is
+    otherwise equivalent; Apple treats absent and empty-string calendar the
+    same way.
     """
     action = GetUpcomingEvents(
         date_specifier="Today",
@@ -100,19 +105,30 @@ def test_get_upcoming_events_wire_format_equivalence_daily_standup() -> None:
     params = result["WFWorkflowActionParameters"]
     assert params["UUID"] == "F0C1D259-8C6A-4F82-B3F9-0026EA4DD46A"
     assert params["WFDateSpecifier"] == "Today"
-    assert params["WFGetUpcomingItemCalendar"] == ""
+    assert "WFGetUpcomingItemCalendar" not in params
     assert params["WFGetUpcomingItemCount"] == 24
 
 
-def test_get_upcoming_events_wire_format_equivalence_dictionary() -> None:
-    """Wire format matches dictionary.xml:4701 sample (parameters dict empty).
+def test_get_upcoming_events_bare_omits_calendar() -> None:
+    """Bare GetUpcomingEvents() emits no WFGetUpcomingItemCalendar key.
 
-    Sample at line 4699-4707 of dictionary.xml: no extra parameters — UUID
-    only. Default construction must produce exactly WFDateSpecifier and
-    WFGetUpcomingItemCalendar (our modelled defaults); count is absent.
+    Matches dictionary.xml:4701 sample exactly — UUID-only params dict.
+    """
+    action = GetUpcomingEvents(uuid="99E86E8B-4C6B-41C6-989C-693B10EF95B5")
+    params = action.to_action_dict()["WFWorkflowActionParameters"]
+    assert "WFGetUpcomingItemCalendar" not in params
+    assert "WFGetUpcomingItemCount" not in params
+
+
+def test_get_upcoming_events_wire_format_equivalence_dictionary() -> None:
+    """Wire format matches dictionary.xml:4701 sample exactly (minus UUID).
+
+    Sample at lines 4699-4707 of dictionary.xml: UUID-only params dict.
+    Default construction must produce WFDateSpecifier only (calendar and
+    count both absent).
     """
     action = GetUpcomingEvents(uuid="99E86E8B-4C6B-41C6-989C-693B10EF95B5")
     params = action.to_action_dict()["WFWorkflowActionParameters"]
     assert params["UUID"] == "99E86E8B-4C6B-41C6-989C-693B10EF95B5"
-    # The sample emits no optional keys; count must be absent.
+    assert "WFGetUpcomingItemCalendar" not in params
     assert "WFGetUpcomingItemCount" not in params

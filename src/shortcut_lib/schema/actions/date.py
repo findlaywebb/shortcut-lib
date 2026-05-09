@@ -1,4 +1,4 @@
-"""DateAction — return the current date or a specified date."""
+"""GetDate — return the current date or a specified date."""
 
 from __future__ import annotations
 
@@ -16,7 +16,7 @@ _VALID_MODES: frozenset[str] = frozenset(get_args(WFDateActionMode))
 
 @register
 @dataclass
-class DateAction(Action):
+class GetDate(Action):
     """Return the current date or a fixed date value.
 
     Both corpus appearances (daily_standup.xml:870 and dictionary.xml:482)

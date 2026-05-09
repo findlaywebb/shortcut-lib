@@ -48,10 +48,9 @@ class GetUpcomingEvents(Action):
             raise SchemaError(f"count must be a positive integer, got {self.count!r}")
 
     def _params(self) -> dict[str, Any]:
-        out: dict[str, Any] = {
-            "WFDateSpecifier": self.date_specifier,
-            "WFGetUpcomingItemCalendar": self.calendar,
-        }
+        out: dict[str, Any] = {"WFDateSpecifier": self.date_specifier}
+        if self.calendar:
+            out["WFGetUpcomingItemCalendar"] = self.calendar
         if self.count is not None:
             out["WFGetUpcomingItemCount"] = self.count
         return out
