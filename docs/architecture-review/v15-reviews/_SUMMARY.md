@@ -1,8 +1,10 @@
 # V1.5 autonomous batches — summary for return
 
-**Session:** 2026-05-09 autonomous run while user was out.
-**Branches under `v15/`:** 31 unmerged.
+**Session:** 2026-05-09 autonomous run while user was out + return-pass.
+**Branches under `v15/`:** 35 unmerged (31 from autonomous run + 4 from batch 9 post-v1.0.0-redefinition).
 **Reviews under `docs/architecture-review/v15-reviews/`:** 30+ per-branch sonnet reviews + 3 opus deep reviews under `docs/architecture-review/v15-deep-review/`.
+
+**Tag applied 2026-05-09:** `v0.1.0` on `main` at `d1ad7d4` — the prior "V1 done" milestone. Per the user's versioning convention (pre-1.0 minor numbers are an alpha/beta sequence; 0.99 → 0.100 valid before 1.0), the road from v0.1.0 to v1.0.0 is the comprehensive corpus action coverage + per-action docs work. Many 0.X minor versions to come.
 
 ## How to read this
 
@@ -74,6 +76,17 @@ Three **deep reviews** (Section A: action coverage, Section B: schema infrastruc
 | `v15/model-resizewindow` | `5b375f7` | `resizewindow.md` | GREEN; 2/11 Literal values sample-confirmed, 9 from Apple surface honestly documented |
 | `v15/skill-refresh-make-shortcut` | `571bd66` | `skill-refresh-make-shortcut.md` | APPROVE with **merge-order constraint**: must merge AFTER `v15/v1-examples-typed-handles` because the SKILL cross-references `examples/vault_note_to_git.py` and teaches the new typed-handle pattern that `v1-examples-typed-handles` puts in that file |
 
+### Batch 9 — first batch under redefined v1.0.0 criterion
+
+User redefined v1.0.0 on 2026-05-09 (later in the day): *"v1.0.0 will be when we can make any shortcut with any of the existing actions, with clear docs on each action."* Doc quality is now first-class. This batch dispatches three more action models alongside a doc-quality audit pass over the 24 V1 leaf actions on main.
+
+| Branch | Latest head | Review | Verdict |
+|---|---|---|---|
+| `v15/model-list` | `ab64eb0` | `list.md` | GREEN. `BuildList` class name (avoids `list` builtin shadow). Plain `<array>` of `<string>` for `WFItems`; empty list omits the key entirely; items must be strings (no per-item variable refs). 13 tests. Doc 4/5. |
+| `v15/model-math` | `5231002` | `math.md` | GREEN-with-fix-applied-inline. Initial head `2cdc16e` made false jellycore-source claims for scientific mode (jellycore has NO `is.workflow.actions.math` entry); `5231002` corrects to honest "UI-inferred, unconfirmed" framing. Arithmetic mode corpus-grounded; scientific mode speculative pending fresh sample. 25 tests. |
+| `v15/model-adjustdate` | `44b1bb0` | `adjustdate.md` | GREEN. Notable wire-format finding: dual-slot pattern (`WFDuration` abbreviated units `"min"` ↔ `WFAdjustOffsetPicker` spelled-out `"Minute"`) for Add/Subtract operations. Single-magnitude API mirrors into both slots; follow-up filed for optional `picker_value` override field. 22 tests. Doc 5/5 (best in batch). |
+| `v15/doc-quality-audit-v1` | `31239d8` | review **PENDING** (sub-agent budget hit; resets ~23:40 Europe/London) | Doc-only refresh of all 24 V1 leaf actions on main. Average docstring score moved from ~2.8 to 5.0. Surfaced 5 undocumented quirks (AskForInput.WFAskActionImmediateDictation key, TextSplit input→text wire-key mismatch, DownloadURL.body_type="Form" raises unconditionally, RecordAudio jellycore params unverified, DictateText.stop_listening UI-only). Behaviour-only; tests should remain green. Should land EARLY in merge order to set the doc-quality bar that batch-9-onwards branches inherit. |
+
 ### Batch 8 — SKILL companions + test discipline + tier-2 actions + a bug fix
 
 | Branch | Latest head | Review | Verdict |
@@ -129,6 +142,8 @@ After merging all 31, run `prek run --all-files` and `uv run pytest -q` to confi
 
 - **`589e500`** — gitignore `.claude/`
 - **`3c6db55`** — committed the 20 public decoded sample XMLs (`samples/decoded/*.xml`); kept `samples/decoded/private/` ignored. Per deep review C: makes the 28 wire-format equivalence tests run on fresh clones instead of skipping. Test count on a clean clone now matches the development environment.
+- **`f203f62`** — `docs/roadmap.md` — recorded the user's 2026-05-09 v1.0.0 criterion redefinition.
+- **`d1ad7d4`** — `docs/roadmap.md` — relabel prior milestone "v0.9-equivalent" → "v0.1.0"; tag `v0.1.0` applied at this commit.
 
 ## Open V1.5 follow-ups (carried forward from reviews)
 
