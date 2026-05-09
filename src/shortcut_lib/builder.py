@@ -8,10 +8,39 @@ from typing import Any, ClassVar
 from uuid import NAMESPACE_DNS, uuid5
 
 from shortcut_lib.encode import SignMode, encode_to_bplist, sign_to_file
+from shortcut_lib.schema.actions.get_text import GetText
 from shortcut_lib.schema.actions.set_variable import SetVariable
 from shortcut_lib.schema.base import Action, RawAction, SchemaError
 from shortcut_lib.schema.compose import RunWorkflow, _BoundSelf, _SelfRef
 from shortcut_lib.schema.values import NamedVar
+
+
+@dataclass(frozen=True)
+class ImportQuestion:
+    """A Setup-section prompt shown when the shortcut is imported.
+
+    Apple's wire format calls this WFWorkflowImportQuestions; each
+    entry targets a specific action's parameter and replaces it with
+    the user's answer at import time.
+
+    Args:
+        action: The Action whose parameter receives the answer.
+        parameter_key: The WF* slot on that action (e.g. WFTextActionText).
+        question: The text shown to the user on the import sheet.
+        default: Optional default value. Shape depends on the parameter:
+            - text/string slots: a plain str
+            - other slots: a dict matching Apple's expected shape (see
+              start_pomodoro.xml for a Focus default of
+              {DisplayString, Identifier})
+        category: Wire-format Category. Defaults to "Parameter"
+            (the only value seen in samples).
+    """
+
+    action: Action
+    parameter_key: str
+    question: str
+    default: Any | None = None
+    category: str = "Parameter"
 
 
 def _derive_workflow_uuid(name: str) -> str:
@@ -78,11 +107,13 @@ class Shortcut:
     accepted_input: list[str] = field(default_factory=list)
     output_classes: list[str] = field(default_factory=list)
     actions: list[Action] = field(default_factory=list)
+    setup_questions: list[ImportQuestion] = field(default_factory=list)
     # Top-level WFWorkflow* keys not represented by an explicit attribute
     # above. Populated by `from_workflow` so a lift→emit round-trip preserves
-    # everything (e.g. WFWorkflowImportQuestions, WFWorkflowNoInputBehavior,
-    # WFQuickActionSurfaces, the original WFWorkflowClientVersion). On emit,
-    # values here override the hardcoded defaults in `to_workflow`.
+    # everything (e.g. WFWorkflowNoInputBehavior, WFQuickActionSurfaces, the
+    # original WFWorkflowClientVersion). On emit, values here override the
+    # hardcoded defaults in `to_workflow`. WFWorkflowImportQuestions is now
+    # managed by setup_questions, so it is no longer captured into _extra.
     _extra: dict[str, Any] = field(default_factory=dict)
 
     # Top-level keys derived from the explicit attributes above. Anything in
@@ -96,6 +127,8 @@ class Shortcut:
             "WFWorkflowInputContentItemClasses",
             "WFWorkflowOutputContentItemClasses",
             "WFWorkflowActions",
+            # Lifted into setup_questions, not _extra.
+            "WFWorkflowImportQuestions",
         }
     )
 
@@ -184,11 +217,114 @@ class Shortcut:
         self.add(SetVariable(name=name, input=value))
         return NamedVar(name)
 
+    def ask_on_import(
+        self,
+        action: Action,
+        parameter_key: str,
+        question: str,
+        default: Any | None = None,
+        category: str = "Parameter",
+    ) -> None:
+        """Register a Setup-section prompt targeting an action's parameter.
+
+        The prompt is shown to the user when the shortcut is imported;
+        their answer is written into ``parameter_key`` on ``action``
+        before the shortcut is saved.  ``action`` must already have been
+        add()ed to this Shortcut — ``to_workflow()`` will raise if not.
+
+        Args:
+            action: The action whose parameter slot receives the answer.
+            parameter_key: The WF* key on that action (e.g. WFTextActionText).
+            question: The text shown to the user on the import sheet.
+            default: Optional pre-filled value.  Pass a plain ``str`` for
+                text slots; pass a dict matching Apple's wire shape for
+                other slots (e.g. ``{DisplayString, Identifier}`` for a
+                Focus mode — see start_pomodoro.xml).
+            category: Wire-format Category string. "Parameter" is the only
+                value observed in samples; override only if needed.
+        """
+        if not isinstance(action, Action):
+            raise SchemaError(
+                f"ask_on_import expects an Action, got {type(action).__name__}"
+            )
+        self.setup_questions.append(
+            ImportQuestion(
+                action=action,
+                parameter_key=parameter_key,
+                question=question,
+                default=default,
+                category=category,
+            )
+        )
+
+    def ask_text_on_import(self, question: str, default: str = "") -> Action:
+        """Add a GetText action wired as a Setup prompt on import.
+
+        Sugar for the common case where the caller wants the user to supply
+        a text value at import time (e.g. a GitHub token or repo path).
+
+        Internally:
+        1. Adds a ``GetText(text=default)`` action via ``self.add()``.
+        2. Registers an ``ImportQuestion`` targeting ``WFTextActionText``.
+        3. Returns the ``GetText`` Action so its output can be referenced
+           downstream (e.g. ``s.set("Token", token_text)``).
+
+        Args:
+            question: The text shown to the user on the import sheet.
+            default: Pre-filled value shown in the prompt. Defaults to "".
+
+        Returns:
+            The newly added GetText Action.
+        """
+        get_text = self.add(GetText(text=default))
+        self.ask_on_import(
+            action=get_text,
+            parameter_key="WFTextActionText",
+            question=question,
+            default=default if default else None,
+        )
+        return get_text
+
     def to_workflow(self) -> dict[str, Any]:
         """Emit the WFWorkflow* top-level dict ready for encoding."""
+        # Build a Python-identity → flat-index map in a single pass.
+        # Using id() rather than UUID avoids the problem of actions that have
+        # no UUID key in their plist (e.g. is.workflow.actions.dnd.set in
+        # start_pomodoro); those round-trip through RawAction(uuid="") and the
+        # empty UUID can't distinguish one action from another.
+        #
+        # Each top-level Action in self.actions maps its Python id() to the
+        # flat-index of its *first* emitted action dict (the head). Control-flow
+        # constructs (If, ChooseFromMenu, …) expand to multiple flat entries;
+        # setup questions targeting actions nested inside control-flow bodies
+        # are out of scope for V1 — only the head action of each top-level
+        # entry in self.actions is a valid question target.
         action_dicts: list[dict[str, Any]] = []
+        flat_index_by_id: dict[int, int] = {}
         for action in self.actions:
+            flat_index_by_id[id(action)] = len(action_dicts)
             action_dicts.extend(action.to_actions())
+
+        # Emit WFWorkflowImportQuestions from setup_questions.
+        import_questions: list[dict[str, Any]] = []
+        for iq in self.setup_questions:
+            idx = flat_index_by_id.get(id(iq.action))
+            if idx is None:
+                raise SchemaError(
+                    f"ImportQuestion references an action "
+                    f"(type={type(iq.action).__name__}) "
+                    f"that is not present in this Shortcut. Call add() before "
+                    f"ask_on_import()."
+                )
+            entry: dict[str, Any] = {
+                "ActionIndex": idx,
+                "Category": iq.category,
+                "ParameterKey": iq.parameter_key,
+                "Text": iq.question,
+            }
+            if iq.default is not None:
+                entry["DefaultValue"] = iq.default
+            import_questions.append(entry)
 
         # NB: WFWorkflowName is intentionally not emitted. None of the decoded
         # samples contain it; the Shortcuts app derives the display name from
@@ -206,7 +342,7 @@ class Shortcut:
             "WFQuickActionSurfaces": [],
             "WFWorkflowInputContentItemClasses": list(self.accepted_input),
             "WFWorkflowOutputContentItemClasses": list(self.output_classes),
-            "WFWorkflowImportQuestions": [],
+            "WFWorkflowImportQuestions": import_questions,
             "WFWorkflowHasOutputFallback": False,
             "WFWorkflowHasShortcutInputVariables": False,
             "WFWorkflowActions": action_dicts,
@@ -312,4 +448,38 @@ class Shortcut:
             out.actions.append(
                 RawAction(uuid=uuid, raw_identifier=ident, raw_params=dict(params))
             )
+
+        # Lift WFWorkflowImportQuestions into setup_questions.
+        # All lifted actions are RawAction instances (from_workflow never
+        # produces typed Action subclasses), so we reconstruct ImportQuestion
+        # by looking up the action at ActionIndex. If an entry is malformed
+        # (missing ActionIndex, or index out of range), fall back to storing
+        # the raw dict in _extra under a private key so the wire format is
+        # preserved without crashing. This is documented as the intended
+        # fallback for RawAction-backed round-trips.
+        raw_questions = workflow.get("WFWorkflowImportQuestions") or []
+        fallback_raw: list[dict[str, Any]] = []
+        for raw_q in raw_questions:
+            idx = raw_q.get("ActionIndex")
+            if idx is None or not (0 <= idx < len(out.actions)):
+                # Malformed or out-of-range entry — preserve verbatim.
+                fallback_raw.append(dict(raw_q))
+                continue
+            target_action = out.actions[idx]
+            out.setup_questions.append(
+                ImportQuestion(
+                    action=target_action,
+                    parameter_key=raw_q.get("ParameterKey", ""),
+                    question=raw_q.get("Text", ""),
+                    default=raw_q.get("DefaultValue"),
+                    category=raw_q.get("Category", "Parameter"),
+                )
+            )
+        if fallback_raw:
+            # Store unlifted questions so to_workflow can re-emit them.
+            # _extra keys override to_workflow's defaults; this key is
+            # intentionally not in _ATTRIBUTE_KEYS so it flows through
+            # out.update(self._extra) cleanly.
+            out._extra["WFWorkflowImportQuestions"] = fallback_raw
+
         return out

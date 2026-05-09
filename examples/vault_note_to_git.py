@@ -13,15 +13,14 @@ Pipeline:
       -> base64 + GitHub Files API PUT
       -> notification
 
-Token + repo are placeholder Text actions at the top of the shortcut.
-Edit them in Shortcuts.app after import; don't share the signed
-``.shortcut`` file with a real PAT baked in.
+Token + repo are collected via Setup prompts shown at import time.
+Don't bake a real PAT into the signed ``.shortcut`` file.
 
 Usage:
     uv run python examples/vault_note_to_git.py
 
-Drops ``Vault Note To Git.shortcut`` on ~/Desktop. Import, edit the
-two placeholders, and run with a clipboard note.
+Drops ``Vault Note To Git.shortcut`` on ~/Desktop. Import, fill in
+the two Setup prompts, and run with a clipboard note.
 """
 
 from __future__ import annotations
@@ -41,17 +40,19 @@ from shortcut_lib.schema.actions.text_replace import TextReplace
 from shortcut_lib.schema.actions.use_model import UseModel
 from shortcut_lib.schema.values import CurrentDate
 
-PLACEHOLDER_TOKEN = "REPLACE_WITH_GITHUB_PAT"  # noqa: S105
-PLACEHOLDER_REPO = "owner/repo-name"
-
 
 def _add_config(s: Shortcut) -> None:
-    """Set Token and Repo named variables from placeholder Text actions."""
-    token_text = s.add(GetText(text=PLACEHOLDER_TOKEN))
-    s.add(SetVariable(name="Token", input=token_text))
-
-    repo_text = s.add(GetText(text=PLACEHOLDER_REPO))
-    s.add(SetVariable(name="Repo", input=repo_text))
+    """Collect Token and Repo via Setup prompts shown at import time."""
+    token_text = s.ask_text_on_import(
+        question="Your GitHub personal access token (fine-grained, contents: read+write)",
+        default="REPLACE_WITH_GITHUB_PAT",
+    )
+    s.set("Token", token_text)
+    repo_text = s.ask_text_on_import(
+        question="The repo to commit to (owner/name)",
+        default="owner/repo-name",
+    )
+    s.set("Repo", repo_text)
 
 
 def _add_polish(s: Shortcut) -> None:
@@ -158,10 +159,7 @@ def main() -> None:
     out = Path.home() / "Desktop" / f"{s.name}.shortcut"
     s.save_signed(out)
     print(f"wrote {out}")
-    print(
-        "\nImport, then open the shortcut in Shortcuts.app and replace the "
-        "placeholder token + repo in the first two Text actions."
-    )
+    print("\nImport, fill in the two Setup prompts, and run with a clipboard note.")
 
 
 if __name__ == "__main__":
