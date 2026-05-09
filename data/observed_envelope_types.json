@@ -1,0 +1,2780 @@
+{
+  "actions_observed": 687,
+  "bare_string_slots": {
+    "com.apple.WritingTools.WritingToolsAppIntentsExtension.AdjustToneIntent": [
+      "text",
+      "tone"
+    ],
+    "com.apple.WritingTools.WritingToolsAppIntentsExtension.FormatListIntent": [
+      "text"
+    ],
+    "com.apple.WritingTools.WritingToolsAppIntentsExtension.RewriteTextIntent": [
+      "text"
+    ],
+    "com.apple.WritingTools.WritingToolsAppIntentsExtension.SummarizeTextIntent": [
+      "summaryType",
+      "text"
+    ],
+    "is.workflow.actions.addnewreminder": [
+      "WFAlertCondition",
+      "WFAlertEnabled",
+      "WFCalendarItemCalendar",
+      "WFCalendarItemNotes",
+      "WFURL"
+    ],
+    "is.workflow.actions.adjustdate": [
+      "WFAdjustOperation"
+    ],
+    "is.workflow.actions.alert": [
+      "WFAlertActionMessage",
+      "WFAlertActionTitle"
+    ],
+    "is.workflow.actions.ask": [
+      "WFAskActionDefaultAnswerDateAndTime",
+      "WFAskActionDefaultAnswerNumber",
+      "WFInputType"
+    ],
+    "is.workflow.actions.askllm": [
+      "WFLLMModel"
+    ],
+    "is.workflow.actions.choosefromlist": [
+      "WFChooseFromListActionPrompt"
+    ],
+    "is.workflow.actions.choosefrommenu": [
+      "GroupingIdentifier",
+      "WFMenuItemTitle",
+      "WFMenuPrompt"
+    ],
+    "is.workflow.actions.comment": [
+      "WFCommentActionText"
+    ],
+    "is.workflow.actions.conditional": [
+      "GroupingIdentifier",
+      "WFNumberValue"
+    ],
+    "is.workflow.actions.count": [
+      "WFCountType"
+    ],
+    "is.workflow.actions.dnd.set": [
+      "AssertionType"
+    ],
+    "is.workflow.actions.downloadurl": [
+      "WFHTTPBodyType",
+      "WFHTTPMethod"
+    ],
+    "is.workflow.actions.filter.files": [
+      "WFContentItemSortOrder",
+      "WFContentItemSortProperty"
+    ],
+    "is.workflow.actions.format.date": [
+      "WFDateFormat",
+      "WFDateFormatStyle",
+      "WFTimeFormatStyle"
+    ],
+    "is.workflow.actions.getitemfromlist": [
+      "WFItemIndex",
+      "WFItemSpecifier"
+    ],
+    "is.workflow.actions.getupcomingevents": [
+      "WFDateSpecifier",
+      "WFGetUpcomingItemCalendar"
+    ],
+    "is.workflow.actions.image.combine": [
+      "WFImageCombineMode"
+    ],
+    "is.workflow.actions.makespokenaudiofromtext": [
+      "WFSpeakTextVoice"
+    ],
+    "is.workflow.actions.notification": [
+      "WFNotificationActionTitle"
+    ],
+    "is.workflow.actions.output": [
+      "WFNoOutputSurfaceBehavior"
+    ],
+    "is.workflow.actions.pinboard.add": [
+      "WFPinTitle"
+    ],
+    "is.workflow.actions.pocket.add": [
+      "WFPocketTags"
+    ],
+    "is.workflow.actions.recordaudio": [
+      "WFRecordingStart"
+    ],
+    "is.workflow.actions.repeat.count": [
+      "GroupingIdentifier"
+    ],
+    "is.workflow.actions.repeat.each": [
+      "GroupingIdentifier"
+    ],
+    "is.workflow.actions.resizewindow": [
+      "WFConfiguration"
+    ],
+    "is.workflow.actions.round": [
+      "WFRoundMode"
+    ],
+    "is.workflow.actions.runworkflow": [
+      "WFWorkflowName"
+    ],
+    "is.workflow.actions.setvariable": [
+      "WFVariableName"
+    ],
+    "is.workflow.actions.text.combine": [
+      "WFTextSeparator"
+    ]
+  },
+  "generated_at": "2026-05-09T08:09:34.980297+00:00",
+  "samples_scanned": 21,
+  "slots": {
+    "com.apple.HydraUSDAppIntents.ConvertToUSDZ": {
+      "file": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:206"
+            ]
+          }
+        }
+      }
+    },
+    "com.apple.Notes.CreateChecklistItemLinkAction": {
+      "noteEntity": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:362"
+            ]
+          }
+        }
+      }
+    },
+    "com.apple.ShortcutsActions.TranscribeAudioAction": {
+      "audioFile": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/private/voice_note_to_github.xml:6"
+            ]
+          }
+        }
+      }
+    },
+    "com.apple.facetime.facetime": {
+      "WFFaceTimeContact": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:282"
+            ]
+          }
+        }
+      }
+    },
+    "com.apple.freeform.CRLDeleteBoardIntent": {
+      "entities": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:298"
+            ]
+          }
+        }
+      }
+    },
+    "com.apple.freeform.CRLInsertFilesToBoardIntent": {
+      "board": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:296"
+            ]
+          }
+        }
+      }
+    },
+    "com.apple.freeform.CRLOpenBoardIntent": {
+      "target": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:299"
+            ]
+          }
+        }
+      }
+    },
+    "com.apple.freeform.CRLUpdateBoardIntent": {
+      "target": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:300"
+            ]
+          }
+        }
+      }
+    },
+    "com.apple.iBooksX.OpenBookIntent": {
+      "target": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:232"
+            ]
+          }
+        }
+      }
+    },
+    "com.apple.iBooksX.OpenDefaultCollectionIntent": {
+      "target": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:233"
+            ]
+          }
+        }
+      }
+    },
+    "com.apple.iBooksX.OpenTabBarItemIntent": {
+      "target": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:234"
+            ]
+          }
+        }
+      }
+    },
+    "com.apple.iBooksX.PlayAudiobookIntent": {
+      "target": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:235"
+            ]
+          }
+        }
+      }
+    },
+    "com.apple.iBooksX.openin": {
+      "BooksInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:184"
+            ]
+          }
+        }
+      }
+    },
+    "com.apple.mobilenotes.SharingExtension": {
+      "WFCreateNoteInput": {
+        "envelopes": {
+          "WFTextTokenString": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/private/voice_note_to_github.xml:14"
+            ]
+          }
+        }
+      },
+      "name": {
+        "envelopes": {
+          "WFTextTokenString": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/private/voice_note_to_github.xml:14"
+            ]
+          }
+        }
+      }
+    },
+    "com.apple.mobilephone.call": {
+      "WFCallContact": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:281"
+            ]
+          }
+        }
+      }
+    },
+    "com.apple.news.WFAppSettingEntityUpdaterAction": {
+      "WFTableTemplate": {
+        "envelopes": {
+          "WFContentPredicateTableTemplate": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:356"
+            ]
+          }
+        }
+      }
+    },
+    "com.apple.shortcuts.DeleteWorkflowAction": {
+      "entities": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:439"
+            ]
+          }
+        }
+      }
+    },
+    "com.apple.shortcuts.SearchShortcutsAction": {
+      "folder": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:446"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.addframetogif": {
+      "WFInputGIF": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:134"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.addmusictoupnext": {
+      "WFMusic": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:345"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.addnewreminder": {
+      "WFAlertCustomTime": {
+        "envelopes": {
+          "WFTextTokenString": {
+            "count": 2,
+            "samples": [
+              "samples/decoded/add_expiry_reminder.xml:3",
+              "samples/decoded/set_weekend_chores.xml:3"
+            ]
+          }
+        }
+      },
+      "WFAlertLocationRadius": {
+        "envelopes": {
+          "WFQuantityFieldValue": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/batch_add_reminders.xml:2"
+            ]
+          }
+        }
+      },
+      "WFCalendarItemTitle": {
+        "envelopes": {
+          "WFTextTokenString": {
+            "count": 4,
+            "samples": [
+              "samples/decoded/add_expiry_reminder.xml:3",
+              "samples/decoded/batch_add_reminders.xml:12",
+              "samples/decoded/batch_add_reminders.xml:2",
+              "samples/decoded/set_weekend_chores.xml:3"
+            ]
+          }
+        }
+      },
+      "WFParentTask": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/batch_add_reminders.xml:12"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.addtoplaylist": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:346"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.adjustdate": {
+      "WFAdjustOffsetPicker": {
+        "envelopes": {
+          "WFTimeOffsetValue": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/start_pomodoro.xml:6"
+            ]
+          }
+        }
+      },
+      "WFDate": {
+        "envelopes": {
+          "WFTextTokenString": {
+            "count": 2,
+            "samples": [
+              "samples/decoded/dictionary.xml:31",
+              "samples/decoded/start_pomodoro.xml:6"
+            ]
+          }
+        }
+      },
+      "WFDuration": {
+        "envelopes": {
+          "WFQuantityFieldValue": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/start_pomodoro.xml:6"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.airdropdocument": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:175"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.ask": {
+      "WFAskActionDefaultAnswer": {
+        "envelopes": {
+          "WFTextTokenString": {
+            "count": 2,
+            "samples": [
+              "samples/decoded/adjust_clipboard.xml:1",
+              "samples/decoded/clean_up_clipboard.xml:1"
+            ]
+          }
+        }
+      },
+      "WFAskActionPrompt": {
+        "envelopes": {
+          "WFTextTokenString": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/rename_files.xml:15"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.askllm": {
+      "WFLLMPrompt": {
+        "envelopes": {
+          "WFTextTokenString": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/intelly.xml:2"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.avairyeditphoto": {
+      "WFDocument": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 3,
+            "samples": [
+              "samples/decoded/dictionary.xml:122",
+              "samples/decoded/dictionary.xml:180",
+              "samples/decoded/markup_and_send.xml:0"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.base64encode": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 3,
+            "samples": [
+              "samples/decoded/dictionary.xml:61",
+              "samples/decoded/private/voice_note_to_github.xml:15",
+              "samples/decoded/private/voice_note_to_github.xml:18"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.calculateexpression": {
+      "Input": {
+        "envelopes": {
+          "WFTextTokenString": {
+            "count": 2,
+            "samples": [
+              "samples/decoded/dictionary.xml:238",
+              "samples/decoded/dictionary.xml:25"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.choosefromlist": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 2,
+            "samples": [
+              "samples/decoded/dictionary.xml:13",
+              "samples/decoded/set_weekend_chores.xml:1"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.compresspdf": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:182"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.conditional": {
+      "WFConditionalActionString": {
+        "envelopes": {
+          "WFTextTokenString": {
+            "count": 2,
+            "samples": [
+              "samples/decoded/daily_standup.xml:24",
+              "samples/decoded/rename_files.xml:18"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.connecttoservers": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:283"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.converttimezone": {
+      "Date": {
+        "envelopes": {
+          "WFTextTokenString": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:34"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.correctspelling": {
+      "text": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:46"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.count": {
+      "Input": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 2,
+            "samples": [
+              "samples/decoded/combine_screenshots_and_share.xml:2",
+              "samples/decoded/dictionary.xml:4"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.createplaylist": {
+      "WFPlaylistItems": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:162"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.deletephotos": {
+      "photos": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:146"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.detect.address": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 2,
+            "samples": [
+              "samples/decoded/dictionary.xml:111",
+              "samples/decoded/dictionary.xml:316"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.detect.contacts": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:271"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.detect.date": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:33"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.detect.dictionary": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:18"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.detect.emailaddress": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenString": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:311"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.detect.images": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:118"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.detect.link": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenString": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:219"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.detect.number": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 2,
+            "samples": [
+              "samples/decoded/dictionary.xml:23",
+              "samples/decoded/dictionary.xml:241"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.detect.phonenumber": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenString": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:273"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.detect.text": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:36"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.detectlanguage": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenString": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:51"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.dnd.set": {
+      "Event": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/start_pomodoro.xml:9"
+            ]
+          }
+        }
+      },
+      "Time": {
+        "envelopes": {
+          "WFTextTokenString": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/start_pomodoro.xml:9"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.documentpicker.open": {
+      "WFFile": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 2,
+            "samples": [
+              "samples/decoded/dictionary.xml:195",
+              "samples/decoded/dictionary.xml:288"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.documentpicker.save": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 2,
+            "samples": [
+              "samples/decoded/dictionary.xml:190",
+              "samples/decoded/dictionary.xml:294"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.downloadurl": {
+      "WFHTTPHeaders": {
+        "envelopes": {
+          "WFDictionaryFieldValue": {
+            "count": 3,
+            "samples": [
+              "samples/decoded/get_contents_of_url.xml:0",
+              "samples/decoded/private/voice_note_to_github.xml:22",
+              "samples/decoded/private/voice_note_to_github.xml:24"
+            ]
+          }
+        }
+      },
+      "WFJSONValues": {
+        "envelopes": {
+          "WFDictionaryFieldValue": {
+            "count": 2,
+            "samples": [
+              "samples/decoded/private/voice_note_to_github.xml:22",
+              "samples/decoded/private/voice_note_to_github.xml:24"
+            ]
+          }
+        }
+      },
+      "WFRequestVariable": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 2,
+            "samples": [
+              "samples/decoded/private/voice_note_to_github.xml:22",
+              "samples/decoded/private/voice_note_to_github.xml:24"
+            ]
+          }
+        }
+      },
+      "WFURL": {
+        "envelopes": {
+          "WFTextTokenString": {
+            "count": 5,
+            "samples": [
+              "samples/decoded/dictionary.xml:222",
+              "samples/decoded/get_contents_of_url.xml:1",
+              "samples/decoded/get_contents_of_url.xml:2",
+              "samples/decoded/get_contents_of_url.xml:3",
+              "samples/decoded/private/voice_note_to_github.xml:22"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.ejectdisk": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:278"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.encodemedia": {
+      "WFMedia": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:147"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.extracttextfromimage": {
+      "WFImage": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:121"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.file.append": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenString": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:196"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.file.delete": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 2,
+            "samples": [
+              "samples/decoded/dictionary.xml:191",
+              "samples/decoded/dictionary.xml:285"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.file.getfoldercontents": {
+      "WFFolder": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 2,
+            "samples": [
+              "samples/decoded/dictionary.xml:194",
+              "samples/decoded/dictionary.xml:287"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.file.getlink": {
+      "WFFile": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:192"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.file.label": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:290"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.file.move": {
+      "WFFile": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 2,
+            "samples": [
+              "samples/decoded/dictionary.xml:188",
+              "samples/decoded/dictionary.xml:291"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.file.rename": {
+      "WFFile": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 5,
+            "samples": [
+              "samples/decoded/dictionary.xml:189",
+              "samples/decoded/dictionary.xml:292",
+              "samples/decoded/rename_files.xml:10",
+              "samples/decoded/rename_files.xml:19",
+              "samples/decoded/rename_files.xml:6"
+            ]
+          }
+        }
+      },
+      "WFNewFilename": {
+        "envelopes": {
+          "WFTextTokenString": {
+            "count": 5,
+            "samples": [
+              "samples/decoded/rename_files.xml:10",
+              "samples/decoded/rename_files.xml:19",
+              "samples/decoded/rename_files.xml:51",
+              "samples/decoded/rename_files.xml:53",
+              "samples/decoded/rename_files.xml:6"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.file.reveal": {
+      "WFFile": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:293"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.filter.articles": {
+      "WFContentItemInputParameter": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:214"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.filter.calendarevents": {
+      "WFContentItemFilter": {
+        "envelopes": {
+          "WFContentPredicateTableTemplate": {
+            "count": 3,
+            "samples": [
+              "samples/decoded/daily_standup.xml:22",
+              "samples/decoded/daily_standup.xml:23",
+              "samples/decoded/running_late.xml:0"
+            ]
+          }
+        }
+      },
+      "WFContentItemInputParameter": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 2,
+            "samples": [
+              "samples/decoded/daily_standup.xml:22",
+              "samples/decoded/daily_standup.xml:23"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.filter.contacts": {
+      "WFContentItemInputParameter": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:270"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.filter.eventattendees": {
+      "WFContentItemInputParameter": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:247"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.filter.files": {
+      "WFContentItemInputParameter": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 2,
+            "samples": [
+              "samples/decoded/dictionary.xml:201",
+              "samples/decoded/sort_lines.xml:1"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.filter.images": {
+      "WFContentItemInputParameter": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:116"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.filter.locations": {
+      "WFContentItemInputParameter": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:103"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.filter.music": {
+      "WFContentItemInputParameter": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 2,
+            "samples": [
+              "samples/decoded/dictionary.xml:155",
+              "samples/decoded/dictionary.xml:349"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.filter.photos": {
+      "WFContentItemInputParameter": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 2,
+            "samples": [
+              "samples/decoded/dictionary.xml:138",
+              "samples/decoded/dictionary.xml:394"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.filter.reminders": {
+      "WFContentItemInputParameter": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:415"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.format.date": {
+      "WFDate": {
+        "envelopes": {
+          "WFTextTokenString": {
+            "count": 5,
+            "samples": [
+              "samples/decoded/daily_standup.xml:34",
+              "samples/decoded/dictionary.xml:30",
+              "samples/decoded/private/voice_note_to_github.xml:8",
+              "samples/decoded/rename_files.xml:31",
+              "samples/decoded/rename_files.xml:34"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.format.filesize": {
+      "WFFileSize": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:63"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.format.number": {
+      "WFNumber": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 2,
+            "samples": [
+              "samples/decoded/dictionary.xml:22",
+              "samples/decoded/dictionary.xml:240"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.generatebarcode": {
+      "WFText": {
+        "envelopes": {
+          "WFTextTokenString": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:178"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.getarticle": {
+      "WFWebPage": {
+        "envelopes": {
+          "WFTextTokenString": {
+            "count": 2,
+            "samples": [
+              "samples/decoded/dictionary.xml:216",
+              "samples/decoded/dictionary.xml:424"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.getdirections": {
+      "WFDestination": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 2,
+            "samples": [
+              "samples/decoded/dictionary.xml:104",
+              "samples/decoded/dictionary.xml:321"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.getdistance": {
+      "WFGetDistanceDestination": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 2,
+            "samples": [
+              "samples/decoded/dictionary.xml:112",
+              "samples/decoded/dictionary.xml:317"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.getepisodesforpodcast": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:167"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.getframesfromimage": {
+      "WFImage": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:135"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.gethtmlfromrichtext": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:202"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.getitemfromlist": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 3,
+            "samples": [
+              "samples/decoded/dictionary.xml:14",
+              "samples/decoded/tile_last_2_windows.xml:1",
+              "samples/decoded/tile_last_2_windows.xml:3"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.getitemname": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:53"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.getitemtype": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:54"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.getlastscreenshot": {
+      "WFGetLatestPhotoCount": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/combine_screenshots_and_share.xml:0"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.getmapslink": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 2,
+            "samples": [
+              "samples/decoded/dictionary.xml:109",
+              "samples/decoded/dictionary.xml:319"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.getnameofemoji": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenString": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:38"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.getrichtextfromhtml": {
+      "WFHTML": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:204"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.getrichtextfrommarkdown": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:205"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.gettext": {
+      "WFTextActionText": {
+        "envelopes": {
+          "WFTextTokenString": {
+            "count": 5,
+            "samples": [
+              "samples/decoded/daily_standup.xml:10",
+              "samples/decoded/daily_standup.xml:17",
+              "samples/decoded/daily_standup.xml:26",
+              "samples/decoded/daily_standup.xml:28",
+              "samples/decoded/daily_standup.xml:3"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.gettextfrompdf": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:185"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.gettimebetweendates": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenString": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:32"
+            ]
+          }
+        }
+      },
+      "WFTimeUntilFromDate": {
+        "envelopes": {
+          "WFTextTokenString": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:32"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.gettraveltime": {
+      "WFDestination": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 3,
+            "samples": [
+              "samples/decoded/dictionary.xml:114",
+              "samples/decoded/dictionary.xml:320",
+              "samples/decoded/running_late.xml:1"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.geturlcomponent": {
+      "WFURL": {
+        "envelopes": {
+          "WFTextTokenString": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:220"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.getvalueforkey": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:16"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.getwebpagecontents": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenString": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:425"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.hash": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:62"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.image.combine": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 2,
+            "samples": [
+              "samples/decoded/combine_screenshots_and_share.xml:4",
+              "samples/decoded/dictionary.xml:123"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.image.crop": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:124"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.image.flip": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:125"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.image.mask": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:126"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.image.removebackground": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:131"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.image.resize": {
+      "WFImage": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:129"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.image.rotate": {
+      "WFImage": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:130"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.importaudiofiles": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:353"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.instapaper.add": {
+      "WFInputURL": {
+        "envelopes": {
+          "WFTextTokenString": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/read_later.xml:11"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.makediskimage": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:279"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.makegif": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:132"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.makeimagefrompdfpage": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:119"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.makeimagefromrichtext": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:120"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.makepdf": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:181"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.makespokenaudiofromtext": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenString": {
+            "count": 2,
+            "samples": [
+              "samples/decoded/dictionary.xml:50",
+              "samples/decoded/turn_text_into_audio.xml:0"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.makevideofromgif": {
+      "WFInputGIF": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:133"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.makezip": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:197"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.math": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:24"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.measurement.convert": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:28"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.mountdiskimage": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:280"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.movewindow": {
+      "WFWindow": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:343"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.notification": {
+      "WFNotificationActionBody": {
+        "envelopes": {
+          "WFTextTokenString": {
+            "count": 3,
+            "samples": [
+              "samples/decoded/dictionary.xml:96",
+              "samples/decoded/intelly.xml:1",
+              "samples/decoded/private/voice_note_to_github.xml:25"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.openin": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:199"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.openurl": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 2,
+            "samples": [
+              "samples/decoded/dictionary.xml:208",
+              "samples/decoded/dictionary.xml:429"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.openxcallbackurl": {
+      "WFXCallbackURL": {
+        "envelopes": {
+          "WFTextTokenString": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:68"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.output": {
+      "WFOutput": {
+        "envelopes": {
+          "WFTextTokenString": {
+            "count": 2,
+            "samples": [
+              "samples/decoded/dictionary.xml:64",
+              "samples/decoded/sort_lines.xml:3"
+            ]
+          }
+        }
+      },
+      "WFResponse": {
+        "envelopes": {
+          "WFTextTokenString": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/sort_lines.xml:3"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.overlayimageonimage": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:127"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.overlaytext": {
+      "WFImage": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:128"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.pinboard.add": {
+      "WFPinboardURL": {
+        "envelopes": {
+          "WFTextTokenString": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/read_later.xml:13"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.playmusic": {
+      "WFMediaItems": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 2,
+            "samples": [
+              "samples/decoded/dictionary.xml:156",
+              "samples/decoded/dictionary.xml:354"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.playpodcast": {
+      "WFPodcastShow": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:166"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.playsound": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:97"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.pocket.add": {
+      "WFInputURL": {
+        "envelopes": {
+          "WFTextTokenString": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/read_later.xml:9"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.podcasts.subscribe": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 2,
+            "samples": [
+              "samples/decoded/dictionary.xml:165",
+              "samples/decoded/dictionary.xml:409"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.previewdocument": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 4,
+            "samples": [
+              "samples/decoded/combine_screenshots_and_share.xml:5",
+              "samples/decoded/daily_standup.xml:36",
+              "samples/decoded/dictionary.xml:56",
+              "samples/decoded/turn_text_into_audio.xml:1"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.print": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:179"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.properties.appstore": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:228"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.properties.articles": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 2,
+            "samples": [
+              "samples/decoded/dictionary.xml:215",
+              "samples/decoded/dictionary.xml:427"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.properties.calendarevents": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:249"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.properties.contacts": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:272"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.properties.eventattendees": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:250"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.properties.files": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:200"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.properties.images": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:117"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.properties.music": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 2,
+            "samples": [
+              "samples/decoded/dictionary.xml:158",
+              "samples/decoded/dictionary.xml:351"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.properties.podcastshow": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 2,
+            "samples": [
+              "samples/decoded/dictionary.xml:169",
+              "samples/decoded/dictionary.xml:410"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.properties.reminders": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:416"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.properties.safariwebpage": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:428"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.properties.weather.conditions": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:451"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.readinglist": {
+      "WFURL": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 2,
+            "samples": [
+              "samples/decoded/dictionary.xml:211",
+              "samples/decoded/read_later.xml:7"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.removeevents": {
+      "WFInputEvents": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:254"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.removefromalbum": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:145"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.repeat.each": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 5,
+            "samples": [
+              "samples/decoded/batch_add_reminders.xml:10",
+              "samples/decoded/daily_standup.xml:16",
+              "samples/decoded/daily_standup.xml:2",
+              "samples/decoded/daily_standup.xml:25",
+              "samples/decoded/daily_standup.xml:9"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.resizewindow": {
+      "WFWindow": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 3,
+            "samples": [
+              "samples/decoded/dictionary.xml:344",
+              "samples/decoded/tile_last_2_windows.xml:2",
+              "samples/decoded/tile_last_2_windows.xml:4"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.ride.requestride": {
+      "DropOffLocation": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 2,
+            "samples": [
+              "samples/decoded/dictionary.xml:106",
+              "samples/decoded/dictionary.xml:323"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.round": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 3,
+            "samples": [
+              "samples/decoded/dictionary.xml:21",
+              "samples/decoded/dictionary.xml:244",
+              "samples/decoded/start_pomodoro.xml:2"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.rss": {
+      "WFRSSFeedURL": {
+        "envelopes": {
+          "WFTextTokenString": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:212"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.rss.extract": {
+      "WFURLs": {
+        "envelopes": {
+          "WFTextTokenString": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:213"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.runextension": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:172"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.runjavascriptforautomation": {
+      "Input": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:435"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.runjavascriptonwebpage": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:430"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.runworkflow": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 3,
+            "samples": [
+              "samples/decoded/dictionary.xml:445",
+              "samples/decoded/dictionary.xml:59",
+              "samples/decoded/start_pomodoro.xml:4"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.savetocameraroll": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:136"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.searchlocalbusinesses": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:102"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.searchmaps": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 2,
+            "samples": [
+              "samples/decoded/dictionary.xml:105",
+              "samples/decoded/dictionary.xml:322"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.searchweb": {
+      "WFInputText": {
+        "envelopes": {
+          "WFTextTokenString": {
+            "count": 2,
+            "samples": [
+              "samples/decoded/dictionary.xml:207",
+              "samples/decoded/dictionary.xml:431"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.sendemail": {
+      "WFSendEmailActionInputAttachments": {
+        "envelopes": {
+          "WFTextTokenString": {
+            "count": 3,
+            "samples": [
+              "samples/decoded/dictionary.xml:174",
+              "samples/decoded/dictionary.xml:313",
+              "samples/decoded/email_last_image.xml:1"
+            ]
+          }
+        }
+      },
+      "WFSendEmailActionSubject": {
+        "envelopes": {
+          "WFTextTokenString": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/email_last_image.xml:1"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.sendmessage": {
+      "WFSendMessageActionRecipients": {
+        "envelopes": {
+          "WFContactFieldValue": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/running_late.xml:3"
+            ]
+          }
+        }
+      },
+      "WFSendMessageContent": {
+        "envelopes": {
+          "WFTextTokenString": {
+            "count": 3,
+            "samples": [
+              "samples/decoded/dictionary.xml:173",
+              "samples/decoded/markup_and_send.xml:1",
+              "samples/decoded/running_late.xml:3"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.setclipboard": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 5,
+            "samples": [
+              "samples/decoded/adjust_clipboard.xml:2",
+              "samples/decoded/clean_up_clipboard.xml:2",
+              "samples/decoded/dictate_to_clipboard.xml:1",
+              "samples/decoded/dictionary.xml:176",
+              "samples/decoded/dictionary.xml:94"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.setitemname": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:55"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.setters.contacts": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:269"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.setvalueforkey": {
+      "WFDictionary": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:17"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.setvariable": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 5,
+            "samples": [
+              "samples/decoded/add_expiry_reminder.xml:1",
+              "samples/decoded/batch_add_reminders.xml:4",
+              "samples/decoded/batch_add_reminders.xml:7",
+              "samples/decoded/combine_screenshots_and_share.xml:1",
+              "samples/decoded/daily_standup.xml:6"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.share": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 3,
+            "samples": [
+              "samples/decoded/combine_screenshots_and_share.xml:7",
+              "samples/decoded/daily_standup.xml:37",
+              "samples/decoded/dictionary.xml:171"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.showdefinition": {
+      "Word": {
+        "envelopes": {
+          "WFTextTokenString": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:37"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.showincalendar": {
+      "WFEvent": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:253"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.showresult": {
+      "Text": {
+        "envelopes": {
+          "WFTextTokenString": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/start_pomodoro.xml:10"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.showwebpage": {
+      "WFURL": {
+        "envelopes": {
+          "WFTextTokenString": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:210"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.speaktext": {
+      "WFText": {
+        "envelopes": {
+          "WFTextTokenString": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:49"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.splitpdf": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:183"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.statistics": {
+      "Input": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 2,
+            "samples": [
+              "samples/decoded/dictionary.xml:239",
+              "samples/decoded/dictionary.xml:26"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.text.changecase": {
+      "text": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:39"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.text.combine": {
+      "text": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 5,
+            "samples": [
+              "samples/decoded/daily_standup.xml:12",
+              "samples/decoded/daily_standup.xml:19",
+              "samples/decoded/daily_standup.xml:5",
+              "samples/decoded/dictionary.xml:40",
+              "samples/decoded/sort_lines.xml:2"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.text.match": {
+      "text": {
+        "envelopes": {
+          "WFTextTokenString": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:44"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.text.match.getgroup": {
+      "matches": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:45"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.text.replace": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenString": {
+            "count": 5,
+            "samples": [
+              "samples/decoded/dictionary.xml:42",
+              "samples/decoded/rename_files.xml:17",
+              "samples/decoded/rename_files.xml:32",
+              "samples/decoded/rename_files.xml:35",
+              "samples/decoded/rename_files.xml:38"
+            ]
+          }
+        }
+      },
+      "WFReplaceTextFind": {
+        "envelopes": {
+          "WFTextTokenString": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/rename_files.xml:17"
+            ]
+          }
+        }
+      },
+      "WFReplaceTextReplace": {
+        "envelopes": {
+          "WFTextTokenString": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/rename_files.xml:17"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.text.split": {
+      "text": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 5,
+            "samples": [
+              "samples/decoded/batch_add_reminders.xml:9",
+              "samples/decoded/daily_standup.xml:1",
+              "samples/decoded/daily_standup.xml:15",
+              "samples/decoded/daily_standup.xml:8",
+              "samples/decoded/dictionary.xml:41"
+            ]
+          },
+          "WFTextTokenString": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/sort_lines.xml:0"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.text.translate": {
+      "WFInputText": {
+        "envelopes": {
+          "WFTextTokenString": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:52"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.text.trimwhitespace": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenString": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:43"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.timer.start": {
+      "WFDuration": {
+        "envelopes": {
+          "WFQuantityFieldValue": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/start_pomodoro.xml:7"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.trimvideo": {
+      "WFInputMedia": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:148"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.unzip": {
+      "WFArchive": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:198"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.url.expand": {
+      "URL": {
+        "envelopes": {
+          "WFTextTokenString": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:221"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.url.getheaders": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenString": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:223"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.urlencode": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenString": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:218"
+            ]
+          }
+        }
+      }
+    },
+    "is.workflow.actions.viewresult": {
+      "WFInput": {
+        "envelopes": {
+          "WFTextTokenAttachment": {
+            "count": 1,
+            "samples": [
+              "samples/decoded/dictionary.xml:57"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

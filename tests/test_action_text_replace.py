@@ -24,16 +24,26 @@ def test_text_replace_basic() -> None:
 
 
 def test_text_replace_with_action_input() -> None:
-    """Passing an Action as input chains the output reference into WFInput."""
+    """Passing an Action as input wraps WFInput as a WFTextTokenString.
+
+    Corpus evidence (samples/decoded/rename_files.xml:17,
+    samples/decoded/dictionary.xml:42): Apple emits WFInput as a single-
+    attachment WFTextTokenString, not a bare WFTextTokenAttachment.
+    The schema now uses coerce_text_field to match this wire format.
+    """
     source = GetText(text="some text")
     action = TextReplace(input=source, find="some", replace="any")
     params = action.to_action_dict()["WFWorkflowActionParameters"]
 
     wf_input = params["WFInput"]
-    # coerce_value on an Action yields its output token form (WFTextTokenAttachment)
-    assert wf_input["Value"]["OutputUUID"] == source.uuid
-    assert wf_input["Value"]["OutputName"] == "Text"
-    assert wf_input["Value"]["Type"] == "ActionOutput"
+    # WFInput must be a WFTextTokenString (single-attachment templated string).
+    assert wf_input["WFSerializationType"] == "WFTextTokenString"
+    attachments = wf_input["Value"]["attachmentsByRange"]
+    assert len(attachments) == 1
+    token = next(iter(attachments.values()))
+    assert token["OutputUUID"] == source.uuid
+    assert token["OutputName"] == "Text"
+    assert token["Type"] == "ActionOutput"
 
 
 def test_text_replace_with_regex_flag() -> None:
