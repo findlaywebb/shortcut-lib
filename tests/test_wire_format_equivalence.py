@@ -26,6 +26,7 @@ from shortcut_lib.schema.actions.comment import Comment
 from shortcut_lib.schema.actions.dictate_text import DictateText
 from shortcut_lib.schema.actions.download_url import DownloadURL
 from shortcut_lib.schema.actions.exit_shortcut import ExitShortcut
+from shortcut_lib.schema.actions.file_rename import FileRename
 from shortcut_lib.schema.actions.format_date import FormatDate
 from shortcut_lib.schema.actions.get_clipboard import GetClipboard
 from shortcut_lib.schema.actions.get_text import GetText
@@ -65,6 +66,7 @@ ADJUST_CLIPBOARD = DECODED / "adjust_clipboard.xml"
 DICTIONARY = DECODED / "dictionary.xml"
 READ_LATER = DECODED / "read_later.xml"
 SET_WEEKEND = DECODED / "set_weekend_chores.xml"
+RENAME_FILES = DECODED / "rename_files.xml"
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -1235,3 +1237,62 @@ def test_choose_from_menu_wire_format() -> None:
         "This is a sample quirk, not a schema bug.  Replace the sample with a "
         "newer one to make this test green."
     )
+
+
+# ---------------------------------------------------------------------------
+# Test 29 — FileRename
+# ---------------------------------------------------------------------------
+
+
+def test_file_rename_wire_format() -> None:
+    """FileRename schema matches the first configured file.rename in rename_files.xml.
+
+    Source: samples/decoded/rename_files.xml, action index 6 (UUID
+    10F96164-026B-4052-8DBA-BC55CDE493AF).  Chosen as the simplest
+    configured instance among the 5 fully-configured appearances.
+
+    Sample params (after normalisation):
+        WFFile = {Value: {Type: "Variable", VariableName: "Repeat Item"},
+                  WFSerializationType: "WFTextTokenAttachment"}
+        WFNewFilename = {Value: {string: "￼￼",
+                                 attachmentsByRange: {
+                                   "{0, 1}": {OutputName: "Provided Input",
+                                              Type: "ActionOutput"},
+                                   "{1, 1}": {Type: "Variable",
+                                              VariableName: "Repeat Item"}}},
+                         WFSerializationType: "WFTextTokenString"}
+
+    Envelope evidence (data/observed_envelope_types.json):
+        WFFile        → WFTextTokenAttachment (5/5 corpus appearances)
+        WFNewFilename → WFTextTokenString    (5/5 corpus appearances)
+    """
+    if not RENAME_FILES.exists():
+        pytest.skip(f"Sample not found: {RENAME_FILES}")
+
+    workflow = plistlib.loads(RENAME_FILES.read_bytes())
+    # Action index 6 is the first configured file.rename in rename_files.xml.
+    sample_action = workflow["WFWorkflowActions"][6]
+    assert (
+        sample_action["WFWorkflowActionIdentifier"] == "is.workflow.actions.file.rename"
+    )
+    sample_norm = _normalise(sample_action)
+
+    # WFFile: NamedVar "Repeat Item" → plain WFTextTokenAttachment.
+    file_var = NamedVar("Repeat Item")
+
+    # WFNewFilename: "￼￼" — two attachment slots.
+    # ActionOutput "Provided Input" at {0,1}, Variable "Repeat Item" at {1,1}.
+    # After _strip_output_uuids the OutputUUID is removed from the ActionOutput
+    # token, leaving {OutputName, Type} — matching the sample.
+    ask_output = Output(
+        uuid="65707666-0C66-41C5-B333-3ED91DE75880", name="Provided Input"
+    )
+    repeat_var = NamedVar("Repeat Item")
+    new_name = Text(
+        "{ask}{item}", substitutions={"ask": ask_output, "item": repeat_var}
+    )
+
+    schema_action = FileRename(file=file_var, new_name=new_name)
+    schema_norm = _normalise(schema_action.to_action_dict())
+
+    assert schema_norm == sample_norm
