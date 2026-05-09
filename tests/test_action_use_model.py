@@ -41,8 +41,19 @@ def test_use_model_alternate_model() -> None:
 
 
 def test_use_model_requires_prompt() -> None:
-    with pytest.raises(SchemaError, match="requires `prompt`"):
+    with pytest.raises(SchemaError, match="non-empty"):
         UseModel().to_action_dict()
+
+
+def test_use_model_empty_prompt_raises() -> None:
+    """UseModel(prompt="") raises SchemaError, same as prompt=None.
+
+    The guard is ``if not self.prompt``, so both None and empty string
+    are rejected. Action-typed prompts (NamedVar, Text, Output) are
+    objects and evaluate truthy — unaffected.
+    """
+    with pytest.raises(SchemaError, match="non-empty"):
+        UseModel(prompt="").to_action_dict()
 
 
 def test_adjust_tone_emits_text_and_tone() -> None:
