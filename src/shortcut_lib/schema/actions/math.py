@@ -35,9 +35,12 @@ WFMathOperation = Literal[
 # used when a scientific operation is active (except for "x^y", where it
 # supplies the exponent).
 #
-# Wire-format strings sourced from Jellycore's action catalogue and
-# cross-referenced against Apple's Shortcuts.app UI labels (iOS 17 / macOS 14).
-# Use the exact codepoints below — do not substitute ASCII approximations.
+# Wire-format strings inferred from Apple's Shortcuts.app UI labels
+# (iOS 17 / macOS 14). Neither jellycore nor any decoded corpus sample
+# confirms the ``scientific`` parameter key, the operation token strings,
+# or the ``x^y`` exponent rule — they are speculative pending a fresh
+# sample exercising scientific mode. Use the exact codepoints below;
+# do not substitute ASCII approximations.
 WFScientificOperation = Literal[
     "√",  # square root — U+221A SQUARE ROOT
     "x^2",  # square
@@ -118,6 +121,10 @@ class Math(Action):
     parameter key and suppresses ``WFMathOperation``.  For ``"x^y"``
     the ``operand`` is emitted as the exponent.
 
+    *Note: scientific mode is not corpus-confirmed. The parameter key
+    name, the operation token strings, and the exponent rule for x^y
+    are inferred from Apple's UI alone; see the module docstring.*
+
     **Corpus evidence** (``samples/decoded/dictionary.xml``):
 
     - Line 373 -- first input operand bound to the ``Numbers`` output of a
@@ -130,8 +137,9 @@ class Math(Action):
     (mirroring the omit-if-default convention used by ``RoundNumber`` and
     ``FormatDate``).
 
-    **Minimum host**: iOS 14 / macOS 11 (per Jellycore's
-    ``lowest_compatible_host`` catalogue entry for this identifier).
+    **Minimum host**: not corpus-confirmed; the action is present in
+    iOS 13+ Shortcuts catalogues but the exact lowest compatible host
+    is not asserted here pending a confirmed source.
 
     Args:
         input: First operand.  Pass an :class:`~shortcut_lib.schema.base.Action`
