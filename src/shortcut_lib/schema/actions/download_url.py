@@ -1,7 +1,7 @@
 """DownloadURL — make an HTTP request and return the response body.
 
 This is Apple's "Get Contents of URL" action. It supports all standard HTTP
-methods and three body-encoding modes observed in real shortcuts:
+methods and four body-encoding modes observed in real shortcuts:
 - "JSON"       — WFJSONValues dict, encoded as application/json
 - "Form"       — WFFormValues dict, encoded as multipart/form-data (TODO: unconfirmed key name)
 - "Plain Text" — WFRequestVariable, raw text body
