@@ -1,8 +1,8 @@
 # V1.5 autonomous batches — summary for return
 
 **Session:** 2026-05-09 autonomous run while user was out.
-**Branches under `v15/`:** 27 unmerged.
-**Reviews under `docs/architecture-review/v15-reviews/`:** 26 per-branch sonnet reviews + 3 opus deep reviews under `docs/architecture-review/v15-deep-review/`.
+**Branches under `v15/`:** 31 unmerged.
+**Reviews under `docs/architecture-review/v15-reviews/`:** 30+ per-branch sonnet reviews + 3 opus deep reviews under `docs/architecture-review/v15-deep-review/`.
 
 ## How to read this
 
@@ -74,11 +74,23 @@ Three **deep reviews** (Section A: action coverage, Section B: schema infrastruc
 | `v15/model-resizewindow` | `5b375f7` | `resizewindow.md` | GREEN; 2/11 Literal values sample-confirmed, 9 from Apple surface honestly documented |
 | `v15/skill-refresh-make-shortcut` | `571bd66` | `skill-refresh-make-shortcut.md` | APPROVE with **merge-order constraint**: must merge AFTER `v15/v1-examples-typed-handles` because the SKILL cross-references `examples/vault_note_to_git.py` and teaches the new typed-handle pattern that `v1-examples-typed-handles` puts in that file |
 
+### Batch 8 — SKILL companions + test discipline + tier-2 actions + a bug fix
+
+| Branch | Latest head | Review | Verdict |
+|---|---|---|---|
+| `v15/skill-refresh-edit-shortcut` | `8f4c73c` | `skill-refresh-edit-shortcut.md` | GREEN with one wording nit (the setup_questions duplication is actually a silent overwrite); cross-skill style aligned with make-shortcut refresh |
+| `v15/test-empty-string-coverage` | `e3421c5` | `test-empty-string-coverage.md` | GREEN. Pins 3 distinct empty-string conventions across 5 V1 actions. **Surfaced a real bug** in `UseModel.prompt=""` (asymmetric guard). Bug fixed on a parallel branch (`v15/usemodel-empty-prompt-guard`); see merge-interaction note below. |
+| `v15/model-event-helpers` | `58954cc` | `event-helpers.md` | YELLOW→GREEN. Original review caught two issues; both fixed inline (commit `58954cc`): `DateAction` renamed to `GetDate` (matches schema convention of bare nouns) + `WFGetUpcomingItemCalendar` now omitted when empty (matches `dictionary.xml`'s bare sample). |
+| `v15/usemodel-empty-prompt-guard` | `907d97f` | `usemodel-empty-prompt-guard.md` | GREEN. Fixes the asymmetric-guard bug surfaced by the empty-string-coverage sweep. Merge interaction: see HARD constraint below. |
+
+The decode-shortcut SKILL was audited and confirmed accurate as-is — no branch created.
+
 ## Suggested merge order
 
-All 27 branches are independent of each other except for one **hard constraint** and one **soft constraint**:
+All 31 branches are independent of each other except for these constraints:
 
 - **HARD: `v15/v1-examples-typed-handles` must merge BEFORE `v15/skill-refresh-make-shortcut`.** The SKILL teaches the typed-handle pattern and cross-references `examples/vault_note_to_git.py`; on `main` that file uses the OLD pattern, but `v1-examples-typed-handles` migrates it. If skill-refresh merges first, the cross-reference points at code that contradicts what the SKILL teaches.
+- **HARD: `v15/usemodel-empty-prompt-guard` should merge BEFORE `v15/test-empty-string-coverage`.** The latter has `test_use_model_empty_prompt_emits_empty_string` documenting the OLD (buggy) behaviour; once the guard fix lands that test fails. When merging the test-coverage branch second, drop the now-stale test (its intent is superseded by the new `test_use_model_empty_prompt_raises` from the guard-fix branch).
 - **SOFT: divergent `docs/known_identifiers.md` regenerations** across batch-1 vs batch-A branches (4 with hash `1c2d9afe…`, 5 with `ea99b712…`). Resolves by merge order; not a correctness issue.
 
 Recommended tiered order:
@@ -90,23 +102,28 @@ Recommended tiered order:
    - `v15/test-helpers-extract`
 2. **Schema infrastructure:**
    - `v15/fu12-validate-workflow`
+   - `v15/usemodel-empty-prompt-guard` ← **must precede `v15/test-empty-string-coverage`**
 3. **Action coverage (bulk; order doesn't matter within tier):**
    - Batch 2: `v15/model-file-rename`, `v15/model-text-combine`, `v15/model-addnewreminder`
    - Batch 3: `v15/model-sendmessage`, `v15/model-previewdocument`, `v15/model-filter-calendarevents`
    - Batch 4: `v15/model-showresult`, `v15/model-choosefromlist`, `v15/model-list-helpers`, `v15/model-alert`
    - Batch 6: `v15/model-share`, `v15/model-sendemail`, `v15/model-round`, `v15/model-photo-getters`
    - Batch 7: `v15/model-gettraveltime`, `v15/model-readinglist`, `v15/model-resizewindow`
-4. **Examples (after action coverage):**
+   - Batch 8: `v15/model-event-helpers`
+4. **Test discipline:**
+   - `v15/test-empty-string-coverage` ← gated on `v15/usemodel-empty-prompt-guard`; drop the now-stale `test_use_model_empty_prompt_emits_empty_string` test on merge
+5. **Examples (after action coverage):**
    - `v15/v1-examples-typed-handles` ← **must precede the SKILL refresh**
    - `v15/note-to-github-modernize`
-5. **Docs / SKILLs / discoverability (last):**
-   - `v15/skill-refresh-make-shortcut` ← gated on (4) above
+6. **Docs / SKILLs / discoverability (last):**
+   - `v15/skill-refresh-make-shortcut` ← gated on (5) above
+   - `v15/skill-refresh-edit-shortcut`
    - `v15/schema-gaps-inventory`
    - `v15/readme-release-notes`
 
-Within each tier (excepting the HARD constraint above), merge order doesn't matter for correctness.
+Within each tier (excepting the HARD constraints above), merge order doesn't matter for correctness.
 
-After merging all 27, run `prek run --all-files` and `uv run pytest -q` to confirm. Test count should land somewhere around **450+ passing** (started at 336; ~150+ new tests across action branches + envelope oracle + factory methods + Var[T] + FU-12 fixes).
+After merging all 31, run `prek run --all-files` and `uv run pytest -q` to confirm. Test count should land somewhere around **460+ passing** (started at 336; ~160+ new tests across action branches + envelope oracle + factory methods + Var[T] + FU-12 fixes + V1.5 polish).
 
 ## What landed without a branch (committed directly to `main`)
 
