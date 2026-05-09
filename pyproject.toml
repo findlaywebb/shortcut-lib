@@ -70,6 +70,11 @@ ignore = [
 "scripts/**" = ["T201", "E402"]        # scripts use print; sys.path tweak before import is intentional
 "examples/**" = ["T201"]               # examples are runnable scripts; print is fine
 "tests/**" = ["S101"]                  # assert is fine in tests
+# Math action uses Apple's Unicode operator wire-format values (U+2212 MINUS,
+# U+00D7 MULTIPLICATION, etc.). RUF001/RUF002 would fire on every literal and
+# docstring reference; suppress them project-wide for these two files.
+"src/shortcut_lib/schema/actions/math.py" = ["RUF001", "RUF002"]
+"tests/test_action_math.py" = ["RUF001", "RUF002"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["shortcut_lib"]
