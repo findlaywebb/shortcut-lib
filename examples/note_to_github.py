@@ -1,7 +1,7 @@
 """Post the clipboard contents as a markdown file to a GitHub repo.
 
 Demonstrates the full Tier 0/1/2 surface end to end:
-- Set Variable (configuration)
+- Setup section (FU-9) for token + repo — filled at import time
 - Get Clipboard → text
 - Format Date for the filename
 - Templated strings (Text)
@@ -13,12 +13,11 @@ Demonstrates the full Tier 0/1/2 surface end to end:
 Pattern lifted from Findlay's `voice_note_to_github.shortcut` but trimmed
 to text only — no audio recording, no Notes backup, no transcription.
 
-⚠️  The token is intentionally a placeholder. Open the resulting shortcut
-in the Shortcuts app and replace the first Text action's contents before
-running. Don't sign-and-share this file with the placeholder still in it.
-
 Usage:
     uv run python examples/note_to_github.py
+
+Drops ``Note to GitHub.shortcut`` on ~/Desktop. Import, fill in the two
+Setup prompts (token and repo), then run with content on the clipboard.
 """
 
 from __future__ import annotations
@@ -37,9 +36,6 @@ from shortcut_lib.schema.actions.show_notification import ShowNotification
 from shortcut_lib.schema.actions.text_replace import TextReplace
 from shortcut_lib.schema.values import CurrentDate
 
-PLACEHOLDER_TOKEN = "REPLACE_WITH_GITHUB_PAT"  # noqa: S105
-PLACEHOLDER_REPO = "owner/repo-name"
-
 
 def build() -> Shortcut:
     s = Shortcut(
@@ -47,36 +43,46 @@ def build() -> Shortcut:
         surfaces=["share", "quick-action"],
     )
 
-    # 1. Configuration block — token + repo as named variables.
-    token_text = s.add(GetText(text=PLACEHOLDER_TOKEN))
-    s.add(SetVariable(name="Token", input=token_text))
+    # 1. Configuration block — token + repo via Setup prompts at import time.
+    token_text = s.ask_text_on_import(
+        question="Your GitHub personal access token (fine-grained, contents: read+write)",
+        default="REPLACE_WITH_GITHUB_PAT",
+    )
+    token = s.set("Token", token_text)
 
-    repo_text = s.add(GetText(text=PLACEHOLDER_REPO))
-    s.add(SetVariable(name="Repo", input=repo_text))
+    repo_text = s.ask_text_on_import(
+        question="The repo to commit to (owner/name)",
+        default="owner/repo-name",
+    )
+    repo = s.set("Repo", repo_text)
 
     # 2. Source: clipboard contents.
     note = s.add(GetClipboard())
     s.add(SetVariable(name="Note", input=note))
 
     # 3. Filename: yyyy-MM-dd_HH-mm-ss
-    stamp = s.add(
-        FormatDate(
-            input=CurrentDate,
-            date_style="Custom",
-            custom_format="yyyy-MM-dd_HH-mm-ss",
-        )
-    )
-    s.add(SetVariable(name="Stamp", input=stamp))
-
-    base_text = s.add(
-        GetText(
-            text=Text(
-                "note_{stamp}",
-                substitutions={"stamp": NamedVar("Stamp")},
+    stamp = s.set(
+        "Stamp",
+        s.add(
+            FormatDate(
+                input=CurrentDate,
+                date_style="Custom",
+                custom_format="yyyy-MM-dd_HH-mm-ss",
             )
-        )
+        ),
     )
-    s.add(SetVariable(name="Base", input=base_text))
+
+    base = s.set(
+        "Base",
+        s.add(
+            GetText(
+                text=Text(
+                    "note_{stamp}",
+                    substitutions={"stamp": stamp},
+                )
+            )
+        ),
+    )
 
     # 4. Encode the note content for the GitHub Files API.
     encoded = s.add(Base64Encode(input=NamedVar("Note")))
@@ -88,14 +94,14 @@ def build() -> Shortcut:
             regex=True,
         )
     )
-    s.add(SetVariable(name="ContentB64", input=stripped))
+    content_b64 = s.set("ContentB64", stripped)
 
     # 5. Build the request URL.
     url_text = s.add(
         GetText(
             text=Text(
                 "https://api.github.com/repos/{repo}/contents/notes/{base}.md",
-                substitutions={"repo": NamedVar("Repo"), "base": NamedVar("Base")},
+                substitutions={"repo": repo, "base": base},
             )
         )
     )
@@ -103,7 +109,7 @@ def build() -> Shortcut:
     # 6. PUT to GitHub Files API.  body is the JSON object Apple inlines
     #    into WFJSONValues.  GitHub: PUT contents/{path} with
     #    {"message": "...", "content": "<base64>"}.
-    auth_header = Text("Bearer {tok}", substitutions={"tok": NamedVar("Token")})
+    auth_header = Text("Bearer {tok}", substitutions={"tok": token})
     s.add(
         DownloadURL(
             url=url_text,
@@ -114,10 +120,8 @@ def build() -> Shortcut:
                 "X-GitHub-Api-Version": "2022-11-28",
             },
             body={
-                "message": Text(
-                    "Add note {base}", substitutions={"base": NamedVar("Base")}
-                ),
-                "content": NamedVar("ContentB64"),
+                "message": Text("Add note {base}", substitutions={"base": base}),
+                "content": content_b64,
             },
             body_type="JSON",
         )
@@ -130,8 +134,8 @@ def build() -> Shortcut:
             body=Text(
                 "Saved {base}.md to {repo}.",
                 substitutions={
-                    "base": NamedVar("Base"),
-                    "repo": NamedVar("Repo"),
+                    "base": base,
+                    "repo": repo,
                 },
             ),
         )
@@ -144,7 +148,7 @@ def main() -> None:
     out = Path.home() / "Desktop" / f"{s.name}.shortcut"
     s.save_signed(out)
     print(f"wrote {out}")
-    print("⚠️  Open in Shortcuts and replace the placeholder token/repo before running.")
+    print("\nImport, fill in the two Setup prompts (token + repo), and run.")
 
 
 if __name__ == "__main__":
