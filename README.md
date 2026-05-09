@@ -58,9 +58,9 @@ it reads whatever is on your clipboard and shows it in a notification.
 ## Examples
 
 Four real-target shortcuts live in `examples/`. All use the Setup-section
-pattern (FU-9): token and repo are placeholder `Text` actions that Shortcuts
-prompts the user to fill in at import time — never bake a real PAT into a
-signed file.
+pattern (FU-9): token and repo are emitted as `WFWorkflowImportQuestions`
+entries — Shortcuts shows them as a form at import time, with answers wired
+into hidden `GetText` action slots. Never bake a real PAT into a signed file.
 
 - **`vault_note_to_git.py`** — clipboard → Apple Intelligence polish → GitHub
   Files API PUT → notification. On-device validated: iPhone iOS 26.4.2 +
@@ -77,6 +77,10 @@ signed file.
 - **`share_to_inbox.py`** — share-sheet trigger (`ActionExtension` surface);
   branches on URL vs text; writes a timestamped markdown file to `inbox/` in
   the target repo.
+
+- **`note_to_github.py`** — clipboard text → GitHub Files API PUT. The
+  simplest end-to-end GitHub-target example; compact single-function form
+  with no helper decomposition.
 
 ---
 

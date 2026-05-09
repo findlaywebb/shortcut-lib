@@ -14,3 +14,6 @@ samples/private/
 *.shortcut.xml
 # scratch space for sub-agent research dumps (Apple docs etc.)
 docs/apple_raw/
+
+# Claude Code working dir (worktrees, transcripts, etc.)
+.claude/
