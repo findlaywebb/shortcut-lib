@@ -7,8 +7,12 @@ __pycache__/
 dist/
 build/
 .coverage
-# decoded shortcut artefacts and personal samples that may contain secrets
-samples/decoded/
+# Personal samples and any decoded copy of them may contain secrets.
+# The 20 public samples (samples/*.shortcut) decode to
+# samples/decoded/*.xml and are checked in — they're Apple gallery
+# shortcuts with no secrets. samples/private/ and samples/decoded/private/
+# stay ignored.
+samples/decoded/private/
 samples/private/
 *.shortcut.bplist
 *.shortcut.xml
