@@ -49,3 +49,25 @@ def test_set_variable_empty_name_raises() -> None:
     action = SetVariable(name="", input="value")
     with pytest.raises(SchemaError, match="name"):
         action.to_action_dict()
+
+
+def test_set_variable_empty_input_emits_empty_string() -> None:
+    """SetVariable(input="") emits WFInput as "" rather than omitting it.
+
+    SetVariable routes input through coerce_value, not coerce_text_field.
+    coerce_value passes plain scalars (including "") through unchanged,
+    and _params emits WFInput whenever input is not None.
+    An empty string is not None, so WFInput="" appears in the wire dict.
+    This contrasts with input=None, which causes WFInput to be omitted
+    entirely — the two have different wire representations.
+    """
+    params = SetVariable(name="X", input="").to_action_dict()[
+        "WFWorkflowActionParameters"
+    ]
+    assert params["WFInput"] == ""
+
+    # Contrast: input=None omits WFInput entirely.
+    params_none = SetVariable(name="X", input=None).to_action_dict()[
+        "WFWorkflowActionParameters"
+    ]
+    assert "WFInput" not in params_none

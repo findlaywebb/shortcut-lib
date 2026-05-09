@@ -45,6 +45,22 @@ def test_use_model_requires_prompt() -> None:
         UseModel().to_action_dict()
 
 
+def test_use_model_empty_prompt_emits_empty_string() -> None:
+    """UseModel(prompt="") emits WFLLMPrompt="" rather than raising.
+
+    The guard in _params is ``if self.prompt is None``, so only None
+    triggers SchemaError. An empty string is not None; it passes the
+    guard and is emitted verbatim via coerce_text_field, which returns
+    a str unchanged.
+
+    This is a surprising distinction: prompt="" and prompt=None have
+    very different wire outcomes (empty string emitted vs. error raised).
+    The test pins this so any future tightening of the guard is deliberate.
+    """
+    params = UseModel(prompt="").to_action_dict()["WFWorkflowActionParameters"]
+    assert params["WFLLMPrompt"] == ""
+
+
 def test_adjust_tone_emits_text_and_tone() -> None:
     action = AdjustTone(text="hello world", tone="friendly").to_action_dict()
     params = action["WFWorkflowActionParameters"]

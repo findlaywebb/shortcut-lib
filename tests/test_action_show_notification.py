@@ -79,3 +79,17 @@ def test_show_notification_omits_empty_body() -> None:
     params = action.to_action_dict()["WFWorkflowActionParameters"]
     assert params["WFNotificationActionTitle"] == "Hello"
     assert "WFNotificationActionBody" not in params
+
+
+def test_show_notification_empty_title_and_body_both_omitted() -> None:
+    """Empty string for both title and body omits both WF keys entirely.
+
+    ShowNotification guards each field with ``if coerced != ""``, so an
+    empty string and a missing value (None would bypass coerce_text_field)
+    both result in omission. The params dict only carries UUID.
+    """
+    params = ShowNotification(title="", body="").to_action_dict()[
+        "WFWorkflowActionParameters"
+    ]
+    assert "WFNotificationActionTitle" not in params
+    assert "WFNotificationActionBody" not in params
