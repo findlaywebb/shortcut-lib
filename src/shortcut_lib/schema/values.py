@@ -34,8 +34,36 @@ class Output(Value):
 
 
 @dataclass(frozen=True)
-class NamedVar(Value):
-    """Reference to a named variable created by a Set Variable action."""
+class NamedVar[T](Value):
+    """Reference to a named variable created by a Set Variable action.
+
+    The phantom type parameter ``T`` carries (informationally) the type of
+    the variable's bound value. It does not gate parameter slots today —
+    every slot accepts ``ParamValue`` — but it lets call sites annotate
+    intent and prepares the schema for per-slot typing in a later release.
+
+    Two construction paths:
+
+    1. Direct: ``NamedVar("Token")``. Useful when the binding lives in a
+       different scope from the use site. The variable name is a string
+       literal; typos here are silent (iOS shows an empty value at runtime).
+    2. Via :meth:`shortcut_lib.builder.Shortcut.set`: returns a typed
+       handle bound to a Python identifier. Recommended whenever the bind
+       and use sites live in the same builder, because typos at use sites
+       become :class:`NameError` at static-type-check time.
+
+    Example:
+
+    .. code-block:: python
+
+        token = s.set("Token", token_text)            # NamedVar[Any] handle
+        # …
+        auth = Text("Bearer {t}", substitutions={"t": token})  # use the handle
+
+        # Equivalent direct form (no static check on the name):
+        s.add(SetVariable(name="Token", input=token_text))
+        auth = Text("Bearer {t}", substitutions={"t": NamedVar("Token")})
+    """
 
     name: str
 

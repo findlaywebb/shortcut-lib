@@ -8,8 +8,10 @@ from typing import Any, ClassVar
 from uuid import NAMESPACE_DNS, uuid5
 
 from shortcut_lib.encode import SignMode, encode_to_bplist, sign_to_file
+from shortcut_lib.schema.actions.set_variable import SetVariable
 from shortcut_lib.schema.base import Action, RawAction, SchemaError
 from shortcut_lib.schema.compose import RunWorkflow, _BoundSelf, _SelfRef
+from shortcut_lib.schema.values import NamedVar
 
 
 def _derive_workflow_uuid(name: str) -> str:
@@ -153,6 +155,34 @@ class Shortcut:
         """Append several actions in order."""
         for a in actions:
             self.add(a)
+
+    def set(self, name: str, value: Any) -> NamedVar:
+        """Bind ``value`` to a named variable; return a typed handle.
+
+        Convenience wrapper for the common pattern::
+
+            s.add(SetVariable(name=name, input=value))
+            ref = NamedVar(name)
+
+        Equivalent in wire format, but the returned :class:`NamedVar[T]`
+        lives on a Python identifier — typos at later use sites become
+        :class:`NameError` at static-type-check time rather than silent
+        empty values on iOS.
+
+        Example:
+
+        .. code-block:: python
+
+            token = s.set("Token", token_text)
+            auth = Text("Bearer {t}", substitutions={"t": token})
+
+        The phantom type parameter ``T`` is informational; annotate
+        explicitly if you want it to read at the call site::
+
+            token: NamedVar[str] = s.set("Token", token_text)
+        """
+        self.add(SetVariable(name=name, input=value))
+        return NamedVar(name)
 
     def to_workflow(self) -> dict[str, Any]:
         """Emit the WFWorkflow* top-level dict ready for encoding."""
