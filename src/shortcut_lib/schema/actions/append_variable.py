@@ -12,10 +12,25 @@ from shortcut_lib.schema.registry import register
 @register
 @dataclass
 class AppendVariable(Action):
-    """Append the input to a named variable.
+    """Add to Variable — append a value to a named variable.
 
-    Useful for accumulating items inside a Repeat block. The variable is
-    created on first append if it doesn't exist.
+    Adds the input to the end of an existing Shortcuts variable, creating
+    it on first use. Emits ``WFVariableName`` and (optionally) ``WFInput``
+    in the ``is.workflow.actions.appendvariable`` plist entry.
+
+    Useful for accumulating items inside a Repeat block; the variable
+    grows into a list with one entry per loop iteration.
+
+    Args:
+        name: The Shortcuts variable name to append to (``WFVariableName``).
+            Raises :class:`~shortcut_lib.schema.base.SchemaError` if empty.
+        input: The value to append. Pass another :class:`~shortcut_lib.schema.base.Action`
+            to chain off its output, a plain string, or any
+            :class:`~shortcut_lib.schema.base.Value`. Omitted from the plist
+            when ``None``.
+
+    Sample citation:
+        samples/decoded/dictionary.xml:147 — plain ``WFVariableName`` form.
     """
 
     name: str = ""

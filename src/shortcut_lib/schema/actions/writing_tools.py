@@ -44,9 +44,36 @@ def _text_param(text: Any) -> dict[str, Any]:
 @register
 @dataclass
 class AdjustTone(Action):
-    """Rewrite text in a target tone (e.g. "professional", "friendly").
+    """Adjust Tone — rewrite text in a specified tone using Writing Tools.
 
-    Apple identifier: ``com.apple.WritingTools.WritingToolsAppIntentsExtension.AdjustToneIntent``.
+    Wraps ``com.apple.WritingTools.WritingToolsAppIntentsExtension.AdjustToneIntent``
+    (iOS 26+). Uses Apple Writing Tools to recast the input text in the
+    requested tone without changing its core meaning.
+
+    Unlike :class:`~shortcut_lib.schema.actions.transcribe_audio.TranscribeAudio`,
+    no ``AppIntentDescriptor`` dict is emitted — verified against
+    ``samples/decoded/intelly.xml:94``.
+
+    Args:
+        text: The text to rewrite (``text`` — camelCase AppIntent key).
+            Required; raises :class:`~shortcut_lib.schema.base.SchemaError`
+            if ``None``. Pass a plain string, a
+            :class:`~shortcut_lib.schema.values.Text` template, or any
+            :class:`~shortcut_lib.schema.base.Action` /
+            :class:`~shortcut_lib.schema.base.Value`.
+        tone: The target tone (``tone``). One of ``"friendly"``,
+            ``"professional"``, ``"concise"``, ``"casual"``. Defaults to
+            ``"professional"``. Only ``"professional"`` is confirmed from
+            corpus; the others are the remaining Writing Tools picker
+            options. Raises
+            :class:`~shortcut_lib.schema.base.SchemaError` for unknown values.
+
+    Returns:
+        The rewritten text (output name: "Adjusted Text").
+
+    Sample citation:
+        samples/decoded/intelly.xml:94 — ``tone: professional``, ``text``
+        from a prior action output.
     """
 
     text: ParamValue = None
@@ -73,9 +100,25 @@ class AdjustTone(Action):
 @register
 @dataclass
 class FormatList(Action):
-    """Format free-form text into a structured list.
+    """Format into List — convert free-form text into a structured list.
 
-    Apple identifier: ``com.apple.WritingTools.WritingToolsAppIntentsExtension.FormatListIntent``.
+    Wraps ``com.apple.WritingTools.WritingToolsAppIntentsExtension.FormatListIntent``
+    (iOS 26+). Uses Apple Writing Tools to parse bullet points, numbered
+    items, or free prose from the input and return a structured list.
+
+    No ``AppIntentDescriptor`` dict is emitted — verified against
+    ``samples/decoded/intelly.xml:107``.
+
+    Args:
+        text: The source text to convert (``text`` — camelCase AppIntent
+            key). Required; raises
+            :class:`~shortcut_lib.schema.base.SchemaError` if ``None``.
+
+    Returns:
+        The formatted list text (output name: "Formatted List").
+
+    Sample citation:
+        samples/decoded/intelly.xml:107 — ``text`` from a prior output.
     """
 
     text: ParamValue = None
@@ -92,9 +135,25 @@ class FormatList(Action):
 @register
 @dataclass
 class RewriteText(Action):
-    """Improve clarity / grammar of input text.
+    """Rewrite — improve the clarity and grammar of input text.
 
-    Apple identifier: ``com.apple.WritingTools.WritingToolsAppIntentsExtension.RewriteTextIntent``.
+    Wraps ``com.apple.WritingTools.WritingToolsAppIntentsExtension.RewriteTextIntent``
+    (iOS 26+). Uses Apple Writing Tools to clean up phrasing, fix
+    grammatical errors, and improve readability without changing meaning.
+
+    No ``AppIntentDescriptor`` dict is emitted — verified against
+    ``samples/decoded/intelly.xml:118``.
+
+    Args:
+        text: The text to rewrite (``text`` — camelCase AppIntent key).
+            Required; raises
+            :class:`~shortcut_lib.schema.base.SchemaError` if ``None``.
+
+    Returns:
+        The rewritten text (output name: "Rewritten Text").
+
+    Sample citation:
+        samples/decoded/intelly.xml:118 — ``text`` from a prior output.
     """
 
     text: ParamValue = None
@@ -111,10 +170,32 @@ class RewriteText(Action):
 @register
 @dataclass
 class SummarizeText(Action):
-    """Summarise input text. Defaults to a paragraph; pass
-    ``summary_type="createKeyPoints"`` for a bullet list.
+    """Summarize — distil input text into a shorter summary.
 
-    Apple identifier: ``com.apple.WritingTools.WritingToolsAppIntentsExtension.SummarizeTextIntent``.
+    Wraps ``com.apple.WritingTools.WritingToolsAppIntentsExtension.SummarizeTextIntent``
+    (iOS 26+). Uses Apple Writing Tools to produce a condensed version of
+    the input. The default output is a prose paragraph; pass
+    ``summary_type="createKeyPoints"`` for a bullet-point list instead.
+
+    No ``AppIntentDescriptor`` dict is emitted — verified against
+    ``samples/decoded/intelly.xml:129``.
+
+    Args:
+        text: The text to summarise (``text`` — camelCase AppIntent key).
+            Required; raises
+            :class:`~shortcut_lib.schema.base.SchemaError` if ``None``.
+        summary_type: Controls the output format (``summaryType``).
+            ``None`` omits the key — Apple defaults to a prose paragraph.
+            Pass ``"createKeyPoints"`` for a bullet list. Other values
+            are not confirmed from corpus samples.
+
+    Returns:
+        The summary text (output name: "Summary").
+
+    Sample citations:
+        samples/decoded/intelly.xml:129 — default paragraph summary (no
+        summaryType key).
+        samples/decoded/intelly.xml:140 — ``summaryType: createKeyPoints``.
     """
 
     text: ParamValue = None

@@ -16,15 +16,40 @@ _VALID_SEPARATORS: frozenset[str] = frozenset(get_args(WFTextSeparator))
 @register
 @dataclass
 class TextSplit(Action):
-    """Split text into a list using the given separator.
+    """Split Text — split text into a list on a chosen separator.
+
+    Wraps ``is.workflow.actions.text.split``. Breaks a text string into a
+    list of substrings. The separator key is omitted for the default
+    ``"New Lines"`` mode — matching Apple's wire-format convention.
 
     Args:
-        input: The text to split. Pass an Action to chain off its output,
-            a literal string, or any Value.
-        separator: One of "New Lines", "Spaces", "Every Character", or
-            "Custom". Defaults to "New Lines".
-        custom_separator: The delimiter string. Required when
-            ``separator`` is "Custom"; ignored otherwise.
+        input: The text to split (``text``). Pass an
+            :class:`~shortcut_lib.schema.base.Action` to chain off its
+            output, a literal string, or any
+            :class:`~shortcut_lib.schema.base.Value`. Omitted when ``None``.
+        separator: The split mode (``separator``). One of ``"New Lines"``
+            (default), ``"Spaces"``, ``"Every Character"``, or
+            ``"Custom"``. Apple omits the plist key for ``"New Lines"`` —
+            the default; all other values are emitted explicitly. Raises
+            :class:`~shortcut_lib.schema.base.SchemaError` for unknown values.
+        custom_separator: The delimiter string
+            (``WFTextCustomSeparator``). Required when ``separator`` is
+            ``"Custom"``; raises
+            :class:`~shortcut_lib.schema.base.SchemaError` at emit time if
+            missing. Ignored for all other separator modes.
+
+    Returns:
+        The list of split substrings (output name: "Split Text").
+
+    Quirks:
+        The Python field is named ``input`` (library convention) but the
+        plist key is ``text`` (camelCase AppIntent convention) — a
+        wire-key mismatch.
+
+    Sample citations:
+        samples/decoded/batch_add_reminders.xml:190 — ``"New Lines"``
+        default (no separator key emitted).
+        samples/decoded/dictionary.xml:794 — explicit separator value.
     """
 
     identifier: ClassVar[str] = "is.workflow.actions.text.split"

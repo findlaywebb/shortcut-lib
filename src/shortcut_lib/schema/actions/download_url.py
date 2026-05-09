@@ -100,36 +100,58 @@ def _encode_wf_dict(d: dict[str, Any]) -> dict[str, Any]:
 @register
 @dataclass
 class DownloadURL(Action):
-    """Make an HTTP request and return the response body.
+    """Get Contents of URL — make an HTTP request and return the response body.
 
-    Wraps ``is.workflow.actions.downloadurl`` — Apple's "Get Contents of URL".
+    Wraps ``is.workflow.actions.downloadurl`` (Apple's display name is
+    "Get Contents of URL"). Issues an HTTP request and returns the raw
+    response body as a content item.
 
     Supports GET (no body), and POST/PUT/PATCH/DELETE with either a JSON
-    dict body or a raw variable body.  Headers are always optional.
+    dict body or a raw variable body. Headers are always optional.
 
     Args:
-        url: The target URL. Can be a plain string, a :class:`~shortcut_lib.schema.values.Text`
-            template, or any Action whose output is a URL string.  Required.
-        method: HTTP verb. Defaults to ``"GET"``. Apple omits the key for GET,
-            so it only appears in the plist for non-GET requests.
-        headers: Optional dict of header name → value. Values can be plain
-            strings or any coercible Value/Action (e.g. a NamedVar). Emitted
-            as ``WFHTTPHeaders`` in WFDictionaryFieldValue format.
+        url: The target URL (``WFURL``). Required. Must be a plain string,
+            a :class:`~shortcut_lib.schema.values.Text` template, or any
+            Action whose output is a URL string. This slot is a
+            ``WFTextTokenString`` — a bare ``WFTextTokenAttachment`` imports
+            as "No URL Specified" at runtime.
+        method: HTTP verb (``WFHTTPMethod``). Defaults to ``"GET"``. Apple
+            omits the key for GET; it only appears in the plist for non-GET
+            requests.
+        headers: Dict of header name → value (``WFHTTPHeaders``). Values
+            can be plain strings or any coercible Value/Action (e.g. a
+            NamedVar). Encoded as ``WFDictionaryFieldValue``. When set,
+            ``ShowHeaders=True`` is also emitted (a UI-only toggle with no
+            runtime effect). Omitted when ``None`` or empty.
         body: The request body. Interpretation depends on ``body_type``:
-            - ``"JSON"`` or ``"Form"``: ``body`` must be a ``dict[str, Any]``;
-              it is encoded as ``WFJSONValues`` / ``WFFormValues``.
-            - ``"Plain Text"`` or ``"File"``: ``body`` is any Action or Value
-              whose output is used verbatim as ``WFRequestVariable``.
-            Omitted when ``None``.
-        body_type: Controls how ``body`` is encoded. One of ``"JSON"``,
-            ``"Form"``, ``"Plain Text"``, ``"File"``, ``"Multipart"``.
-            Required if ``body`` is set; omitted otherwise.
+
+            - ``"JSON"`` → ``body`` must be a ``dict``; encoded as
+              ``WFJSONValues`` in ``WFDictionaryFieldValue`` format.
+            - ``"Form"`` → ``WFFormValues`` (key unconfirmed; raises
+              :class:`~shortcut_lib.schema.base.SchemaError` until verified).
+            - ``"Plain Text"`` / ``"File"`` → any Action or Value; emitted
+              as ``WFRequestVariable``.
+
+            Omitted when ``None``. Requires ``body_type`` when set.
+        body_type: How to encode ``body`` (``WFHTTPBodyType``). One of
+            ``"JSON"``, ``"Plain Text"``, ``"File"``. Required when ``body``
+            is set; omitted otherwise.
+
+    Returns:
+        The raw response body (output name: "Contents of URL").
 
     Note:
-        ``ShowHeaders`` (a boolean plist key) is emitted as ``True`` whenever
-        headers are provided. It controls whether Shortcuts.app shows the header
-        editor in the UI — it has no effect on runtime behaviour but is present
-        in every real shortcut that has headers configured.
+        ``body_type="Form"`` raises :class:`~shortcut_lib.schema.base.SchemaError`
+        — the ``WFFormValues`` plist key is not yet confirmed against decoded
+        samples. Use a :class:`~shortcut_lib.schema.base.RawAction` if you
+        need it now.
+
+    Sample citations:
+        samples/decoded/get_contents_of_url.xml:11 — plain GET.
+        samples/decoded/get_contents_of_url.xml:59 — GET with headers.
+        samples/decoded/get_contents_of_url.xml:92 — POST with JSON body.
+        samples/decoded/get_contents_of_url.xml:125 — POST with JSON body
+        and custom headers.
     """
 
     identifier: ClassVar[str] = "is.workflow.actions.downloadurl"

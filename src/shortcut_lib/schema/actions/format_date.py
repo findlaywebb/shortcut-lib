@@ -27,18 +27,42 @@ _VALID_TIME_STYLES: frozenset[str] = frozenset(get_args(WFTimeStyle))
 @register
 @dataclass
 class FormatDate(Action):
-    """Format a date as a string using a date/time style or custom pattern.
+    """Format Date — convert a date to a formatted string.
+
+    Wraps ``is.workflow.actions.format.date``. Takes a date value and
+    returns a string representation using a built-in style or a custom
+    Unicode date-format pattern.
 
     Args:
-        input: Date to format. Pass an Action, Output, MagicVar (e.g.
-            CurrentDate), or any Value. Corresponds to Apple's ``WFDate``
-            parameter; the name ``input`` matches the library convention.
-        date_style: One of "None", "Short", "Medium", "Long", "Custom",
-            "Relative", "RFC 2822", "ISO 8601". Defaults to "Short".
-        time_style: One of "None", "Short", "Medium", "Long". Optional;
-            when omitted the key is excluded from the emitted dict.
-        custom_format: Format string (e.g. ``"yyyy-MM-dd"``) used only
-            when ``date_style`` is "Custom". Required in that case.
+        input: Date to format (``WFDate``). Pass an
+            :class:`~shortcut_lib.schema.base.Action`, an
+            :class:`~shortcut_lib.schema.values.Output`, a magic variable
+            (e.g. ``CurrentDate``), or any
+            :class:`~shortcut_lib.schema.base.Value`. This slot is a
+            ``WFTextTokenString`` — a bare ``WFTextTokenAttachment``
+            produces an empty string at runtime. Omitted when ``None``.
+        date_style: How the date part is formatted (``WFDateFormatStyle``).
+            One of ``"None"``, ``"Short"``, ``"Medium"``, ``"Long"``,
+            ``"Custom"``, ``"Relative"``, ``"RFC 2822"``, ``"ISO 8601"``.
+            Defaults to ``"Short"``. Raises
+            :class:`~shortcut_lib.schema.base.SchemaError` for unknown values.
+        time_style: How the time part is formatted (``WFTimeFormatStyle``).
+            One of ``"None"``, ``"Short"``, ``"Medium"``, ``"Long"``.
+            Omitted from the plist when ``None`` — Apple applies its own
+            default in that case.
+        custom_format: Unicode date-format string, e.g. ``"yyyy-MM-dd HH:mm"``
+            (``WFDateFormat``). Required when ``date_style="Custom"``;
+            ignored otherwise. Raises
+            :class:`~shortcut_lib.schema.base.SchemaError` if
+            ``date_style="Custom"`` and this is empty.
+
+    Returns:
+        The formatted date string (output name: "Formatted Date").
+
+    Sample citations:
+        samples/decoded/dictionary.xml:491 — Short date_style, no time_style.
+        samples/decoded/rename_files.xml:693 — custom format with time.
+        samples/decoded/daily_standup.xml:879 — ISO 8601 style.
     """
 
     identifier: ClassVar[str] = "is.workflow.actions.format.date"

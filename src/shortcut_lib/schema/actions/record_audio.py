@@ -17,19 +17,31 @@ _DEFAULT_START = "Immediately"
 @register
 @dataclass
 class RecordAudio(Action):
-    """Record audio from the device microphone.
+    """Record Audio — record audio from the device microphone.
 
-    Verified against ``samples/decoded/private/voice_note_to_github.xml``.
-    Only ``WFRecordingStart`` appears in that sample; additional parameter
-    keys (``quality``, ``end``, ``WFRecordingTimeInterval``) are listed in
-    Jellycore but do not appear in any decoded sample, so they are omitted
-    here. Pass them via ``RawAction`` if needed.
+    Wraps ``is.workflow.actions.recordaudio``. Opens the in-app audio
+    recorder and returns the captured audio file when recording stops.
 
     Args:
-        start: When recording begins. ``"Immediately"`` (default) starts as
-            soon as the action runs. ``"On Tap"`` waits for the user.
+        start: When recording begins (``WFRecordingStart``). One of:
 
-    Output: the recorded audio file.
+            - ``"Immediately"`` (default) — recording starts as soon as
+              the action runs; no user interaction needed before capture.
+            - ``"On Tap"`` — displays the recorder UI and waits for the
+              user to tap the record button.
+
+    Returns:
+        The recorded audio file (output name: "Recording").
+
+    Quirks:
+        Jellycore lists additional parameters (``quality``, ``end``,
+        ``WFRecordingTimeInterval``) that do not appear in any decoded
+        corpus sample. They are omitted here; use
+        :class:`~shortcut_lib.schema.base.RawAction` if you need them.
+
+    Sample citation:
+        samples/decoded/dictionary.xml:1531 — ``WFRecordingStart:
+        Immediately`` (default mode).
     """
 
     identifier: ClassVar[str] = "is.workflow.actions.recordaudio"

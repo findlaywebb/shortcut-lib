@@ -12,13 +12,19 @@ from shortcut_lib.schema.registry import register
 @register
 @dataclass
 class GetClipboard(Action):
-    """Return the current clipboard contents as a content item.
+    """Get Clipboard — read the current system clipboard contents.
 
-    No parameters — Apple's action reads the clipboard unconditionally.
-    The output is the clipboard value, available as a magic variable in
-    subsequent actions.
+    Wraps ``is.workflow.actions.getclipboard``. Takes no parameters and
+    reads the clipboard unconditionally at the point the action runs.
+    The clipboard value is returned as a content item and is also
+    available as a magic variable in subsequent actions.
 
-    Output name: "Clipboard"
+    Returns:
+        The clipboard contents as a content item (output name: "Clipboard").
+
+    Sample citations:
+        samples/decoded/clean_up_clipboard.xml:11 — bare action, no params.
+        samples/decoded/adjust_clipboard.xml:11 — bare action, no params.
     """
 
     identifier: ClassVar[str] = "is.workflow.actions.getclipboard"
