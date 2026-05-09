@@ -1,8 +1,8 @@
 # V1.5 autonomous batches — summary for return
 
 **Session:** 2026-05-09 autonomous run while user was out.
-**Branches under `v15/`:** 19 unmerged.
-**Reviews under `docs/architecture-review/v15-reviews/`:** 16 per-branch sonnet reviews + 3 opus deep reviews under `docs/architecture-review/v15-deep-review/`.
+**Branches under `v15/`:** 27 unmerged.
+**Reviews under `docs/architecture-review/v15-reviews/`:** 26 per-branch sonnet reviews + 3 opus deep reviews under `docs/architecture-review/v15-deep-review/`.
 
 ## How to read this
 
@@ -56,11 +56,32 @@ Three **deep reviews** (Section A: action coverage, Section B: schema infrastruc
 | `v15/v1-examples-typed-handles` | `6750f0f` | Deep review C headline: canonical example used "less typed" form | 40 NamedVar string-refs eliminated across the four V1 examples; helpers now return handles instead of being void |
 | `v15/wire-format-quirks-doc` | `d731fc7` | Deep review A: no central wire-format-quirks inventory | New `docs/wire-format-quirks.md` cataloguing 17 bare-key actions, 23 wire-key/python-name mismatches, 5 envelope conventions |
 
+### Batch 6 — more high-frequency action coverage
+
+| Branch | Latest head | Review | Verdict |
+|---|---|---|---|
+| `v15/model-share` | `9af2dd3` | `share.md` | GREEN |
+| `v15/model-sendemail` | `7459b8b` | `sendemail.md` | GREEN |
+| `v15/model-round` | `b5fa038` | `round.md` | GREEN; Literal speculation honestly documented (1/3 mode + 0/11 place sample-confirmed) |
+| `v15/model-photo-getters` | `50b26bc` | `photo-getters.md` | GREEN; both `getlastphoto` and `getlastscreenshot` share the same `WFGetLatestPhotoCount` wire key |
+
+### Batch 7 — tier-2 action coverage + SKILL refresh
+
+| Branch | Latest head | Review | Verdict |
+|---|---|---|---|
+| `v15/model-gettraveltime` | `aae1eeb` | `gettraveltime.md` | GREEN; the brief speculated `coerce_text_field` for `WFDestination` but the agent correctly used `coerce_value` per corpus |
+| `v15/model-readinglist` | `b7e4a45` | `readinglist.md` | GREEN; `WFURL` here is `WFTextTokenAttachment` (NOT `WFTextTokenString` like `DownloadURL.WFURL`) — a useful distinction documented in the review |
+| `v15/model-resizewindow` | `5b375f7` | `resizewindow.md` | GREEN; 2/11 Literal values sample-confirmed, 9 from Apple surface honestly documented |
+| `v15/skill-refresh-make-shortcut` | `571bd66` | `skill-refresh-make-shortcut.md` | APPROVE with **merge-order constraint**: must merge AFTER `v15/v1-examples-typed-handles` because the SKILL cross-references `examples/vault_note_to_git.py` and teaches the new typed-handle pattern that `v1-examples-typed-handles` puts in that file |
+
 ## Suggested merge order
 
-All 19 branches are independent of each other (one known small conflict on `docs/known_identifiers.md` regenerations: 4 branches have hash `1c2d9afe…` for that file, 5 have `ea99b712…` — see deep-review A for the merge-order constraint). They branched from `main` after `6f499a9` (V1 closeout) + `589e500` (.gitignore cleanup).
+All 27 branches are independent of each other except for one **hard constraint** and one **soft constraint**:
 
-Recommended order:
+- **HARD: `v15/v1-examples-typed-handles` must merge BEFORE `v15/skill-refresh-make-shortcut`.** The SKILL teaches the typed-handle pattern and cross-references `examples/vault_note_to_git.py`; on `main` that file uses the OLD pattern, but `v1-examples-typed-handles` migrates it. If skill-refresh merges first, the cross-reference points at code that contradicts what the SKILL teaches.
+- **SOFT: divergent `docs/known_identifiers.md` regenerations** across batch-1 vs batch-A branches (4 with hash `1c2d9afe…`, 5 with `ea99b712…`). Resolves by merge order; not a correctness issue.
+
+Recommended tiered order:
 
 1. **Foundational (no deps, smallest blast radius first):**
    - `v15/fu10-downloadurl-factories`
@@ -69,18 +90,23 @@ Recommended order:
    - `v15/test-helpers-extract`
 2. **Schema infrastructure:**
    - `v15/fu12-validate-workflow`
-3. **Action coverage (bulk):**
-   - `v15/model-file-rename`, `v15/model-text-combine`, `v15/model-addnewreminder`, `v15/model-sendmessage`, `v15/model-previewdocument`, `v15/model-filter-calendarevents`, `v15/model-showresult`, `v15/model-choosefromlist`, `v15/model-list-helpers`, `v15/model-alert`
-4. **Examples + docs (after action coverage so the modernized examples can reference all the new actions):**
-   - `v15/v1-examples-typed-handles`
+3. **Action coverage (bulk; order doesn't matter within tier):**
+   - Batch 2: `v15/model-file-rename`, `v15/model-text-combine`, `v15/model-addnewreminder`
+   - Batch 3: `v15/model-sendmessage`, `v15/model-previewdocument`, `v15/model-filter-calendarevents`
+   - Batch 4: `v15/model-showresult`, `v15/model-choosefromlist`, `v15/model-list-helpers`, `v15/model-alert`
+   - Batch 6: `v15/model-share`, `v15/model-sendemail`, `v15/model-round`, `v15/model-photo-getters`
+   - Batch 7: `v15/model-gettraveltime`, `v15/model-readinglist`, `v15/model-resizewindow`
+4. **Examples (after action coverage):**
+   - `v15/v1-examples-typed-handles` ← **must precede the SKILL refresh**
    - `v15/note-to-github-modernize`
-5. **Docs / discoverability (last so counts and tables reflect the merged state):**
+5. **Docs / SKILLs / discoverability (last):**
+   - `v15/skill-refresh-make-shortcut` ← gated on (4) above
    - `v15/schema-gaps-inventory`
    - `v15/readme-release-notes`
 
-Within each tier, merge order doesn't matter for correctness. Whatever's easiest in your GUI.
+Within each tier (excepting the HARD constraint above), merge order doesn't matter for correctness.
 
-After merging all 19, run `prek run --all-files` and `uv run pytest -q` to confirm. Test count should land somewhere around **400+ passing** (started at 336; ~75 new tests across the action branches; ~5 from FU-12 fixes; small additions from extract / quirks).
+After merging all 27, run `prek run --all-files` and `uv run pytest -q` to confirm. Test count should land somewhere around **450+ passing** (started at 336; ~150+ new tests across action branches + envelope oracle + factory methods + Var[T] + FU-12 fixes).
 
 ## What landed without a branch (committed directly to `main`)
 
