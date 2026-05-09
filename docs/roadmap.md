@@ -51,8 +51,8 @@ make, edit, or polish.
 | Deep review action list | Closed; B1–B8, SF-batch1–7, N-batch nits all landed; envelope sweep FU-7 closed |
 | Architecture review (V1 plan) | Done; 7-agent two-round review at `docs/architecture-review/`; synthesis decisions all executed |
 | Licence + attribution | Done; GPL-3.0-or-later, NOTICE, narrative `docs/sources.md` |
-| **Initial milestone (v0.9-equivalent)** | **Done.** Three real targets shipped, FU-9 Setup-section authoring, factory methods, `Var[T]` typed handles. |
-| **v1.0.0 status** | **In progress.** Per the 2026-05-09 redefinition: v1.0.0 = comprehensive corpus action coverage (~365 identifiers remaining, 31 on V1.5 branches, ~12% covered after batches merge) + clear docs per action. |
+| **v0.1.0 (initial milestone)** | **Done — tagged 2026-05-09.** Three real targets shipped, FU-9 Setup-section authoring, factory methods, `Var[T]` typed handles. |
+| **v1.0.0 status** | **In progress.** Per the 2026-05-09 redefinition: v1.0.0 = comprehensive corpus action coverage (~365 identifiers remaining, ~35 on V1.5 branches, ~13% covered after batches merge) + clear docs per action. Many 0.X minor versions to go before 1.0. |
 
 ## Phases
 
@@ -172,13 +172,17 @@ E1. ✅ **Vault Note → LLM → Git.** `examples/vault_note_to_git.py`
 - **2026-05-09** — v1.0.0 criterion redefined by the user:
   *"v1.0.0 will be when we can make any shortcut with any of the
   existing actions, with clear docs on each action."* Supersedes the
-  prior 3-targets framing. The earlier "V1 done" milestone is more
-  like v0.9 under this criterion. v1.0.0 requires comprehensive
-  corpus action coverage (currently ~13% post-V1.5-batches-merge)
-  plus a uniform per-action documentation pass. Continue modelling
-  actions in batches; doc-quality audit accompanies the coverage
-  push. RawAction passthrough is a fallback, not a substitute, for
+  prior 3-targets framing. v1.0.0 requires comprehensive corpus
+  action coverage (currently ~13% post-V1.5-batches-merge) plus a
+  uniform per-action documentation pass. Continue modelling actions
+  in batches; doc-quality audit accompanies the coverage push.
+  RawAction passthrough is a fallback, not a substitute, for
   Apple-known actions.
+- **2026-05-09** — Versioning convention: pre-1.0 minor numbers are
+  an alpha/beta sequence (0.99 → 0.100 valid before 1.0); 0.X does
+  not imply a progress bar toward 1.0. The prior "V1 done" milestone
+  was tagged **v0.1.0** — the first of many 0.X minor versions on
+  the road to v1.0.
 
 ## Open questions
 
