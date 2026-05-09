@@ -70,7 +70,7 @@ def _add_config(s: Shortcut) -> None:
 
 def _add_input(s: Shortcut) -> None:
     """Prompt the user for the task text and store as ``TaskText``."""
-    task = s.add(AskForInput(prompt="Task text", input_type="Text"))
+    task = s.add(AskForInput.text(prompt="Task text"))
     s.set("TaskText", task)
 
 

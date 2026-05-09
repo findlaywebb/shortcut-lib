@@ -87,9 +87,8 @@ def _add_metadata_gate(s: Shortcut) -> None:
     can reference it unconditionally. "Add metadata" prompts the user for
     tags or context; "Done" writes an empty string.
     """
-    ask = AskForInput(
+    ask = AskForInput.text(
         prompt="Tags / extra context (optional)",
-        input_type="Text",
         default_answer="",
     )
     s.add(

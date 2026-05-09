@@ -53,7 +53,7 @@ def build_if() -> Shortcut:
     - Pairing of head / else / close markers is automatic.
     """
     s = Shortcut(name="Coin Flip", surfaces=[])
-    answer = s.add(AskForInput(prompt="Heads or tails?"))
+    answer = s.add(AskForInput.text(prompt="Heads or tails?"))
     s.add(
         If(
             operand=answer,

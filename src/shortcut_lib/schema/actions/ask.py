@@ -32,8 +32,23 @@ _DEFAULT_ANSWER_KEY: dict[str, str] = {
 class AskForInput(Action):
     """Prompt the user to enter a value.
 
-    Input type controls the keyboard/picker shown. The ``default_answer``
-    is routed to a type-specific WF* key:
+    Prefer the type-specific factory methods — they expose only the
+    parameters valid for that input type, so an invalid combination is a
+    ``TypeError`` at the call site rather than a ``SchemaError`` after
+    construction::
+
+        ask = AskForInput.text(prompt="Name?")
+        num = AskForInput.number(prompt="How many?", allows_decimal=True)
+        dt  = AskForInput.datetime(prompt="When?")
+
+    The ``allows_decimal`` and ``allows_negative`` keyword arguments appear
+    only on :meth:`number` — passing them to ``.text()`` or any other
+    factory is a ``TypeError`` at the call site (Python's normal kwarg
+    check), not a deferred ``SchemaError``.
+
+    The direct constructor ``AskForInput(input_type=..., ...)`` still
+    works and is preserved for backward compatibility and for cases where
+    ``input_type`` is determined at runtime:
 
     - ``Text`` / ``URL`` → ``WFAskActionDefaultAnswer``
     - ``Number`` → ``WFAskActionDefaultAnswerNumber``
@@ -77,6 +92,87 @@ class AskForInput(Action):
                         f"input_type='Number'; got input_type="
                         f"{self.input_type!r}."
                     )
+
+    # ------------------------------------------------------------------
+    # Factory methods — preferred over the direct constructor
+    # ------------------------------------------------------------------
+
+    @classmethod
+    def text(
+        cls,
+        *,
+        prompt: ParamValue = "",
+        default_answer: str | None = None,
+    ) -> AskForInput:
+        """Return an AskForInput configured for plain-text keyboard input."""
+        return cls(prompt=prompt, input_type="Text", default_answer=default_answer)
+
+    @classmethod
+    def url(
+        cls,
+        *,
+        prompt: ParamValue = "",
+        default_answer: str | None = None,
+    ) -> AskForInput:
+        """Return an AskForInput configured for URL keyboard input."""
+        return cls(prompt=prompt, input_type="URL", default_answer=default_answer)
+
+    @classmethod
+    def number(
+        cls,
+        *,
+        prompt: ParamValue = "",
+        default_answer: str | None = None,
+        allows_decimal: bool | None = None,
+        allows_negative: bool | None = None,
+    ) -> AskForInput:
+        """Return an AskForInput configured for numeric keyboard input.
+
+        Only this factory exposes ``allows_decimal`` and
+        ``allows_negative`` — the flags are meaningless for other input
+        types, so passing them to ``.text()``, ``.url()``, etc. is a
+        ``TypeError`` at the call site rather than a deferred
+        ``SchemaError``.
+        """
+        return cls(
+            prompt=prompt,
+            input_type="Number",
+            default_answer=default_answer,
+            allows_decimal=allows_decimal,
+            allows_negative=allows_negative,
+        )
+
+    @classmethod
+    def date(
+        cls,
+        *,
+        prompt: ParamValue = "",
+        default_answer: str | None = None,
+    ) -> AskForInput:
+        """Return an AskForInput configured for date picker input."""
+        return cls(prompt=prompt, input_type="Date", default_answer=default_answer)
+
+    @classmethod
+    def time(
+        cls,
+        *,
+        prompt: ParamValue = "",
+        default_answer: str | None = None,
+    ) -> AskForInput:
+        """Return an AskForInput configured for time picker input."""
+        return cls(prompt=prompt, input_type="Time", default_answer=default_answer)
+
+    @classmethod
+    def datetime(
+        cls,
+        *,
+        prompt: ParamValue = "",
+        default_answer: str | None = None,
+    ) -> AskForInput:
+        """Return an AskForInput configured for date-and-time picker input."""
+        return cls(
+            prompt=prompt, input_type="Date and Time", default_answer=default_answer
+        )
 
     def _params(self) -> dict[str, Any]:
         out: dict[str, Any] = {}

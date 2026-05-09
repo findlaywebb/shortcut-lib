@@ -90,6 +90,53 @@ def test_ask_url_uses_text_default_key() -> None:
     assert params["WFAskActionDefaultAnswer"] == "https://example.com"
 
 
+def test_ask_text_factory() -> None:
+    """AskForInput.text() produces a Text-type action with the right wire shape."""
+    params = AskForInput.text(prompt="X", default_answer="hello").to_action_dict()[
+        "WFWorkflowActionParameters"
+    ]
+    assert params["WFInputType"] == "Text"
+    assert params["WFAskActionPrompt"] == "X"
+    assert params["WFAskActionDefaultAnswer"] == "hello"
+    assert "WFAskActionAllowsDecimalNumbers" not in params
+    assert "WFAskActionAllowsNegativeNumbers" not in params
+
+
+def test_ask_number_factory() -> None:
+    """AskForInput.number() produces Number type with decimal/negative flags."""
+    params = AskForInput.number(prompt="X", allows_decimal=True).to_action_dict()[
+        "WFWorkflowActionParameters"
+    ]
+    assert params["WFInputType"] == "Number"
+    assert params["WFAskActionAllowsDecimalNumbers"] is True
+    assert "WFAskActionAllowsNegativeNumbers" not in params
+
+
+def test_ask_text_no_allows_decimal_kwarg() -> None:
+    """AskForInput.text() does not accept allows_decimal — TypeError at call time."""
+    import pytest
+
+    with pytest.raises(TypeError):
+        AskForInput.text(prompt="X", allows_decimal=True)  # ty: ignore[unknown-argument]
+
+
+def test_ask_factory_round_trip_equals_direct() -> None:
+    """Factory params are identical to direct constructor for Number type.
+
+    UUIDs differ per-instance, so compare the parameters dict only.
+    """
+    via_factory = AskForInput.number(prompt="X", allows_decimal=True).to_action_dict()[
+        "WFWorkflowActionParameters"
+    ]
+    via_direct = AskForInput(
+        prompt="X", input_type="Number", allows_decimal=True
+    ).to_action_dict()["WFWorkflowActionParameters"]
+    # Exclude the UUID — it is unique per instance by design.
+    via_factory.pop("UUID", None)
+    via_direct.pop("UUID", None)
+    assert via_factory == via_direct
+
+
 def test_ask_registered() -> None:
     """AskForInput appears in list_actions() with the correct identifier."""
     actions = list_actions()
