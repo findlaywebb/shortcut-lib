@@ -174,6 +174,47 @@ def test_validate_output_uuid_valid_back_ref_is_clean() -> None:
     assert all(f.code != "output-uuid-orphan" for f in findings)
 
 
+def test_validate_output_uuid_forward_reference_flagged() -> None:
+    """ActionOutput referencing a later action's UUID is flagged.
+
+    iOS resolves ActionOutput references in execution order; a forward
+    reference (action 0 referencing action 1's UUID) cannot resolve
+    because action 1 hasn't run yet when action 0 emits.
+    """
+    workflow = _minimal_workflow(
+        [
+            # Action 0 references action 1's UUID — invalid forward ref.
+            {
+                "WFWorkflowActionIdentifier": "is.workflow.actions.setclipboard",
+                "WFWorkflowActionParameters": {
+                    "UUID": _UUID_A,
+                    "WFInput": {
+                        "Value": {
+                            "OutputName": "Dictated Text",
+                            "OutputUUID": _UUID_B,  # belongs to action 1, not yet emitted
+                            "Type": "ActionOutput",
+                        },
+                        "WFSerializationType": "WFTextTokenAttachment",
+                    },
+                },
+            },
+            {
+                "WFWorkflowActionIdentifier": "is.workflow.actions.dictatetext",
+                "WFWorkflowActionParameters": {"UUID": _UUID_B},
+            },
+        ]
+    )
+    findings = validate_workflow(workflow)
+    orphans = [f for f in findings if f.code == "output-uuid-orphan"]
+    assert len(orphans) == 1
+    f = orphans[0]
+    assert f.severity == "error"
+    assert f.action_index == 0
+    # Message should reference the forward UUID; existence later in the
+    # flow doesn't make a forward reference valid.
+    assert _UUID_B in f.message
+
+
 # ---------------------------------------------------------------------------
 # 5. import-question-action-index-out-of-range (error)
 # ---------------------------------------------------------------------------

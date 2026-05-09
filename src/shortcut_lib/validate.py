@@ -1,24 +1,14 @@
 """Consolidated structural validation for Apple Shortcuts workflow dicts.
 
-Exposes a single ``validate_workflow(workflow)`` entry point that runs every
-built-in structural validator and returns a flat list of
-:class:`ValidationFinding` objects.  Consumers (MCP server, audit CLI) call
-this function instead of re-implementing individual checks.
+``validate_workflow(workflow)`` runs every built-in validator and returns a
+flat list of :class:`ValidationFinding` objects.  Consumers (MCP server,
+audit CLI) call this instead of re-implementing individual checks.  The
+workflow dict matches what ``Shortcut.to_workflow()`` emits and
+``decode_file(...).workflow`` returns.
 
-The workflow dict is the same shape as what ``Shortcut.to_workflow()`` emits
-and ``decode_file(...).workflow`` returns — i.e. a top-level mapping of
-``WFWorkflow*`` keys.
-
-Validator registry
-------------------
-Each validator is a module-private function with the signature::
-
-    def _validate_<name>(
-        actions: list[dict], workflow: dict[str, Any], oracle: dict[str, Any]
-    ) -> list[ValidationFinding]
-
-Validators are collected and called in definition order by
-``validate_workflow``.  Adding a new validator is a one-line registration.
+Each validator is a module-private function ``_validate_<name>(actions,
+workflow, oracle) -> list[ValidationFinding]``; new validators register
+with one line in ``validate_workflow``.
 """
 
 from __future__ import annotations
