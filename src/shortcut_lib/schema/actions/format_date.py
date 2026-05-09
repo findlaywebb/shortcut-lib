@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, ClassVar
+from typing import Any, ClassVar, Literal, get_args
 
 from shortcut_lib.schema.base import (
     Action,
@@ -13,10 +13,15 @@ from shortcut_lib.schema.base import (
 )
 from shortcut_lib.schema.registry import register
 
-_VALID_DATE_STYLES = frozenset(
-    {"None", "Short", "Medium", "Long", "Custom", "Relative", "RFC 2822", "ISO 8601"}
-)
-_VALID_TIME_STYLES = frozenset({"None", "Short", "Medium", "Long"})
+# Closed set of date/time style strings shown in Shortcuts.app's Format Date
+# action dropdowns. Confirmed against Apple's plist wire format.
+WFDateStyle = Literal[
+    "None", "Short", "Medium", "Long", "Custom", "Relative", "RFC 2822", "ISO 8601"
+]
+WFTimeStyle = Literal["None", "Short", "Medium", "Long"]
+
+_VALID_DATE_STYLES: frozenset[str] = frozenset(get_args(WFDateStyle))
+_VALID_TIME_STYLES: frozenset[str] = frozenset(get_args(WFTimeStyle))
 
 
 @register
@@ -40,8 +45,8 @@ class FormatDate(Action):
     default_output_name: ClassVar[str] = "Formatted Date"
 
     input: ParamValue = None
-    date_style: str = field(default="Short")
-    time_style: str | None = field(default=None)
+    date_style: WFDateStyle = field(default="Short")
+    time_style: WFTimeStyle | None = field(default=None)
     custom_format: str | None = field(default=None)
 
     def __post_init__(self) -> None:

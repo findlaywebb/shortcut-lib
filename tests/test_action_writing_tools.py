@@ -44,10 +44,10 @@ def test_adjust_tone_valid_casual() -> None:
 def test_adjust_tone_invalid_raises() -> None:
     """AdjustTone with an unknown tone raises SchemaError naming the bad value."""
     with pytest.raises(SchemaError, match="'formal'"):
-        AdjustTone(text="Some text", tone="formal")
+        AdjustTone(text="Some text", tone="formal")  # ty: ignore[invalid-argument-type]  # intentional bad value
 
 
 def test_adjust_tone_invalid_message_includes_valid_set() -> None:
     """SchemaError message for bad tone lists the valid options."""
     with pytest.raises(SchemaError, match="professional"):
-        AdjustTone(text="Some text", tone="robotic")
+        AdjustTone(text="Some text", tone="robotic")  # ty: ignore[invalid-argument-type]  # intentional bad value

@@ -59,7 +59,7 @@ def test_ask_invalid_input_type_raises() -> None:
     from shortcut_lib.schema import SchemaError
 
     with pytest.raises(SchemaError, match=r"not a.*valid Apple input type"):
-        AskForInput(input_type="number")  # lowercase typo
+        AskForInput(input_type="number")  # ty: ignore[invalid-argument-type]  # intentional bad value
 
 
 def test_ask_date_and_time_routes_default_to_dedicated_key() -> None:

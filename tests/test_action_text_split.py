@@ -64,7 +64,7 @@ def test_text_split_registered() -> None:
 def test_text_split_invalid_separator_raises() -> None:
     """An unrecognised separator raises SchemaError naming the bad value."""
     with pytest.raises(SchemaError, match="'Commas'"):
-        TextSplit(input="a,b,c", separator="Commas")
+        TextSplit(input="a,b,c", separator="Commas")  # ty: ignore[invalid-argument-type]  # intentional bad value
 
 
 def test_text_split_valid_separators_accepted() -> None:

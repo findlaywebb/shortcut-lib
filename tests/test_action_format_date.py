@@ -86,10 +86,10 @@ def test_format_date_no_input_omits_wfdate() -> None:
 def test_format_date_invalid_style_raises() -> None:
     """An unrecognised date_style raises SchemaError naming the bad value."""
     with pytest.raises(SchemaError, match="'Weekly'"):
-        FormatDate(date_style="Weekly")
+        FormatDate(date_style="Weekly")  # ty: ignore[invalid-argument-type]  # intentional bad value
 
 
 def test_format_date_invalid_time_style_raises() -> None:
     """An unrecognised time_style raises SchemaError naming the bad value."""
     with pytest.raises(SchemaError, match="'Extended'"):
-        FormatDate(time_style="Extended")
+        FormatDate(time_style="Extended")  # ty: ignore[invalid-argument-type]  # intentional bad value

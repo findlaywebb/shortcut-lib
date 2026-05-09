@@ -3,15 +3,15 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, ClassVar
+from typing import Any, ClassVar, Literal, get_args
 
 from shortcut_lib.schema.base import Action, ParamValue, SchemaError, coerce_text_field
 from shortcut_lib.schema.registry import register
 
+# Closed set of input types shown in Shortcuts.app's Ask for Input action.
 # Apple plist key is WFInputType, not "type" (Jellycore's field name).
-_VALID_TYPES: frozenset[str] = frozenset(
-    {"Text", "URL", "Number", "Date", "Time", "Date and Time"}
-)
+WFAskInputType = Literal["Text", "URL", "Number", "Date", "Time", "Date and Time"]
+_VALID_TYPES: frozenset[str] = frozenset(get_args(WFAskInputType))
 
 # Maps input_type to the WF* parameter key Apple uses for default_answer.
 # "Date and Time" is verified via samples/decoded/add_expiry_reminder.xml.
@@ -54,7 +54,7 @@ class AskForInput(Action):
     default_output_name: ClassVar[str] = "Provided Input"
 
     prompt: ParamValue = ""
-    input_type: str = "Text"
+    input_type: WFAskInputType = "Text"
     default_answer: str | None = None
     allows_decimal: bool | None = None
     allows_negative: bool | None = None

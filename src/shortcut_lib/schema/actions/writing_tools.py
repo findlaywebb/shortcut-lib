@@ -20,7 +20,7 @@ emit it as a bare ``text`` key (camelCase, AppIntent convention).
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, ClassVar
+from typing import Any, ClassVar, Literal, get_args
 
 from shortcut_lib.schema.base import Action, ParamValue, SchemaError, coerce_value
 from shortcut_lib.schema.registry import register
@@ -29,9 +29,8 @@ from shortcut_lib.schema.registry import register
 # Only "professional" is confirmed from intelly.shortcut; the remaining three are
 # the other tones shown in the Writing Tools picker. Add here if more are
 # discovered in wild samples.
-_VALID_TONES: frozenset[str] = frozenset(
-    {"friendly", "professional", "concise", "casual"}
-)
+WFAdjustTone = Literal["friendly", "professional", "concise", "casual"]
+_VALID_TONES: frozenset[str] = frozenset(get_args(WFAdjustTone))
 
 
 def _text_param(text: Any) -> dict[str, Any]:
@@ -51,7 +50,7 @@ class AdjustTone(Action):
     """
 
     text: ParamValue = None
-    tone: str = "professional"
+    tone: WFAdjustTone = "professional"
 
     identifier: ClassVar[str] = (
         "com.apple.WritingTools.WritingToolsAppIntentsExtension.AdjustToneIntent"

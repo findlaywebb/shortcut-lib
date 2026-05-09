@@ -3,12 +3,14 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, ClassVar
+from typing import Any, ClassVar, Literal, get_args
 
 from shortcut_lib.schema.base import Action, ParamValue, SchemaError, coerce_value
 from shortcut_lib.schema.registry import register
 
-_VALID_SEPARATORS = {"New Lines", "Spaces", "Every Character", "Custom"}
+# Closed set of separator strings shown in Shortcuts.app's Split Text dropdown.
+WFTextSeparator = Literal["New Lines", "Spaces", "Every Character", "Custom"]
+_VALID_SEPARATORS: frozenset[str] = frozenset(get_args(WFTextSeparator))
 
 
 @register
@@ -29,7 +31,7 @@ class TextSplit(Action):
     default_output_name: ClassVar[str] = "Split Text"
 
     input: ParamValue = None
-    separator: str = "New Lines"
+    separator: WFTextSeparator = "New Lines"
     custom_separator: str | None = None
 
     def __post_init__(self) -> None:
