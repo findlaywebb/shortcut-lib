@@ -499,8 +499,9 @@ covered 7 actions. Many remain. Add equivalence tests opportunistically
 when modifying an action's schema.
 
 **FU-4 — `samples/private/voice_note_to_github.shortcut` PAT.**
-The original file may have a live GitHub PAT baked in. The gitignore
-keeps it local but rotate it if not already.
+✅ Done. The user rotated the PAT on 2026-05-09; the file remains
+gitignored (along with the entire `samples/private/` directory). No
+public-repo leak risk.
 
 **FU-5 — Format `--format outline` alias for `--format buzz`.**
 The user picked "buzz" but `outline` was a contender; both could
@@ -529,11 +530,53 @@ file exists" rule by using millisecond filename precision. A robust
 path needs GET-first-then-PUT-with-sha, which requires a JSON-extract
 action we haven't modelled. Punt unless a sub-ms collision shows up.
 
-**FU-9 — Setup-section authoring (`WFWorkflowImportQuestions`).** The
-example asks the user to edit placeholder Text actions in
-Shortcuts.app after import. Apple's Setup section can prompt for
-values on import; first-class authoring support would let the lib
-emit ready-to-use shortcuts. Sits under C4 (workflow-level metadata).
+**FU-9 — Setup-section authoring (`WFWorkflowImportQuestions`).** ✅
+Done 2026-05-09. `Shortcut.ask_on_import(action, parameter_key,
+question, default=None)` (generic) and `Shortcut.ask_text_on_import(
+question, default="") -> Action` (sugar). Action lookup uses Python
+identity, not UUID, to support lifted samples whose actions have no
+UUID in the plist (e.g. `start_pomodoro` action 9). All three V1
+example shortcuts use the new API. V1 limitation: setup questions
+target top-level actions only — nested-in-control-flow targeting is
+V1.5.
+
+**FU-10 — Factory methods for `DownloadURL` body shape.** Same
+pattern as the AskForInput factory methods landed in V1: `body_type`
+governs whether `body` is a `dict` (JSON / Form) or a Value/Action
+(Plain Text / File). Factory methods like `DownloadURL.json(url,
+body, headers=...)`, `DownloadURL.plain_text(url, body)`, and
+`DownloadURL.get(url, headers=...)` would surface the right `body`
+type at the call site without overload pyright pain. More involved
+than `AskForInput` because the body type also governs the wire key
+(`WFJSONValues` vs `WFRequestVariable`). V1.5.
+
+**FU-11 — RawAction UUID asymmetry.** ✅ Done 2026-05-09.
+`RawAction.to_action_dict` now writes `self.uuid` into the emitted
+`WFWorkflowActionParameters` so a fresh `RawAction(...).output()`
+resolves cleanly. Empty `self.uuid` (lift round-trip from a sample
+whose action carried no UUID) preserves the wire-format quirk by
+omitting the key. Tests at `tests/test_raw_action.py`.
+
+**FU-12 — Validation-engine ownership.** Implicit consensus from
+the architecture review (Tests R2 §3) that the lib should own a
+single `validate_workflow(workflow) -> list[ValidationFinding]`
+function consumed by both the (V1.5) MCP server and any future audit
+CLI. Today, validation is split across `__post_init__` raises in
+each action, the envelope oracle, the equivalence sweep, and the
+lift round-trip. A consolidated entry point would surface findings
+uniformly to LLM authors and external consumers. Sketch: read the
+oracle JSON, walk the schema-emitted dict, return a structured
+finding list. V1.5.
+
+**FU-13 — V1 xfail debt.** Three xfailed equivalence tests in
+`tests/test_wire_format_equivalence.py` need resolution:
+- `test_repeat_count_wire_format` — corpus only has a demo placeholder.
+  Need a sample with a configured non-default count.
+- `test_choose_from_menu_wire_format` — sample (`read_later.xml`)
+  was authored with an older Shortcuts editor. Need a fresh
+  ChooseFromMenu sample from current Shortcuts.app.
+- `test_text_split_wire_format` — schema doesn't model the
+  `Show-text` UI toggle that one sample carries. Add the field.
 
 ---
 

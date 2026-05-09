@@ -33,22 +33,25 @@ make, edit, or polish.
 6. **Personal use polish bar.** Don't over-invest in packaging, but errors
    and docstrings deserve real care because they're the LLM's interface.
 
-## Current state (2026-05-08)
+## Current state (2026-05-09)
 
 | Layer | Status |
 |-------|--------|
-| Decode (AEA → AA → bplist) | Done; 20 public + 1 private sample; 678 actions; 388 distinct ids |
+| Decode (AEA → AA → bplist) | Done; 20 public + 1 private sample; 687 actions; 393 distinct ids |
 | Jellycore facts extraction | Done; 288 actions + 77 enums + 9 structural ids |
 | Coverage analysis | Done; ~62% of identifiers in kitchen-sink sample |
 | LLM-readable decode output | Done; `--format buzz` (informational; non-round-tripping) |
-| Encoder + round-trip | Done; bplist + `shortcuts sign`; 262 tests incl. round-trip, lift round-trip, wire-format equivalence |
-| Schema layer (Tier 0/1/2 + Apple Intelligence) | Done; 24 leaf actions + control flow (`If`, `RepeatCount`, `RepeatEach`, `ChooseFromMenu`) + values (`Text`, `NamedVar`, `Output`, `Self`) + `RunWorkflow` composition; auto-discovering registry; `RawAction` passthrough |
-| Workflow-level metadata (C4) | Partial; `_extra` preserves un-modelled top-level keys on lift; first-class authoring API for icon / surfaces / accepted-input / output classes is the next gap |
-| Skills (make/edit/decode) | Done; in-repo at `skills/`, symlinked into `~/.claude/skills/` |
+| Encoder + round-trip | Done; bplist + `shortcuts sign`; 336 tests incl. round-trip, lift round-trip, wire-format equivalence (24 leaf actions + 4 control-flow), envelope-shape oracle |
+| Schema layer (Tier 0/1/2 + Apple Intelligence) | Done; 24 leaf actions + control flow + values (`Text`, `NamedVar[T]`, `Output`, `Self`) + `RunWorkflow` composition; auto-discovering registry; `RawAction` passthrough; Literal-typed enums; factory methods for AskForInput's dependent fields |
+| Wire-format envelope discipline | Done; `coerce_text_field` for WFTextTokenString slots; `data/observed_envelope_types.json` scanner JSON as CI artefact |
+| Workflow-level metadata (C4) | C4.1 done — `WFWorkflowImportQuestions` Setup-section authoring (FU-9); `_extra` preserves remaining un-modelled top-level keys on lift |
+| Skills (make/edit/decode) | Done; in-repo at `skills/`, symlinked into `~/.claude/skills/`; composition section updated for V2 single-shortcut pattern |
 | Apple docs digest (vault) | Done; 8 notes under `~/Documents/FMP/tech/Apple_Shortcuts/` |
-| Goal shortcut (`Vault Note To Git`) | Done; validated on iPhone (iOS 26.4.2 + Apple Intelligence) on 2026-05-09. Single self-contained shortcut; clipboard → polish → GitHub commit. Notes in `examples/VALIDATION_vault_note_to_git.md` |
-| Deep review action list | Closed; B1–B8, SF-batch1–7, N-batch nits all landed |
+| Real targets shipped | V1 hits four: vault-note-to-git (clipboard → polish → GitHub, validated on iPhone 2026-05-09); voice-note-to-git (record → transcribe → 2x GitHub PUT); spotlight-quick-task (Spotlight → daily-folder); share-to-inbox (share-sheet → vault inbox) |
+| Deep review action list | Closed; B1–B8, SF-batch1–7, N-batch nits all landed; envelope sweep FU-7 closed |
+| Architecture review (V1 plan) | Done; 7-agent two-round review at `docs/architecture-review/`; synthesis decisions all executed |
 | Licence + attribution | Done; GPL-3.0-or-later, NOTICE, narrative `docs/sources.md` |
+| **V1 status** | **Done** (pending v1.0 tag + repo-public flip — user's call) |
 
 ## Phases
 
@@ -81,10 +84,15 @@ C2. ✅ **Tier 1 — top sample-frequency actions.** `setvariable`, `gettext`,
 C3. ✅ **Tier 2 — vault target actions.** `recordaudio`,
     `TranscribeAudioAction`, `downloadurl`, `base64encode`, plus
     Apple Intelligence (`UseModel`, Writing Tools).
-C4. 🟡 **Workflow-level metadata.** `_extra` preserves un-modelled top-
-    level keys on lift; first-class authoring API for icon, surfaces
-    (`WFWorkflowTypes`), accepted/output content item classes, and
-    import questions is the next gap.
+C4. 🟢 **Workflow-level metadata** — partial.
+    - ✅ `WFWorkflowImportQuestions` (Setup section) — `Shortcut.ask_on_import`,
+      `Shortcut.ask_text_on_import` (FU-9, 2026-05-09).
+    - ✅ Surfaces — `surfaces=[…]` field; `SURFACE_TO_TYPE` map plus
+      string passthrough for any unmodelled `WFWorkflowTypes` strings.
+    - ⏳ First-class authoring for icon, accepted/output content item
+      classes (today: string lists in `accepted_input`/`output_classes`).
+    - ⏳ `_extra` still preserves remaining un-modelled top-level keys
+      on lift; round-trip works.
 
 ### Phase D — Skills _(done)_
 
@@ -147,6 +155,18 @@ E1. ✅ **Vault Note → LLM → Git.** `examples/vault_note_to_git.py`
   was selectively wrong — Apple is permissive for plain literals but
   not for variable references. A deliberate sweep over all action
   parameter slots is filed as FU-7.
+- **2026-05-09** — Architecture review at the V1 seam: 7-agent
+  two-round review (`docs/architecture-review/`), synthesis decisions
+  ratified by user (personal-tool-first timeline + SDK-quality every
+  commit; loaded V1 bar; private until v1.0; natural-language
+  compiler deferred — lib is what LLMs *call into*, not what calls
+  LLMs). V1 plan executed in one day: SKILL.md fix, Literal
+  migration, control-flow demo, `Var[T]` typed handles, envelope
+  scanner + JSON oracle, 21-action equivalence sweep (4 schema bugs
+  surfaced + fixed), FU-9 Setup-section authoring, three real
+  targets (voice-note, spotlight-quick-task, share-to-inbox),
+  AskForInput factory methods, RawAction UUID-asymmetry guard.
+  V1 done; v1.0 tag + repo-public flip is the user's call.
 
 ## Open questions
 
