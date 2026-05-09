@@ -789,19 +789,12 @@ def test_text_replace_wire_format() -> None:
 
 
 # ---------------------------------------------------------------------------
-# Test 19 — TextSplit  [SCHEMA BUG DOCUMENTED — EXPECTED TO FAIL]
+# Test 19 — TextSplit
 # ---------------------------------------------------------------------------
 
 
-@pytest.mark.xfail(
-    reason="Schema doesn't model the Show-text UI toggle that the sample carries "
-    "(samples/decoded/batch_add_reminders.xml:9 has Show-text=True). The other "
-    "fields match after the separator-default-omission fix; only Show-text is "
-    "missing. Add Show-text as an optional schema field to fix.",
-    strict=True,
-)
 def test_text_split_wire_format() -> None:
-    """TextSplit schema vs the ``is.workflow.actions.text.split`` sample.
+    """TextSplit schema matches the ``is.workflow.actions.text.split`` sample.
 
     Source: samples/decoded/batch_add_reminders.xml, action index 9.
     Sample params (after normalisation):
@@ -809,12 +802,9 @@ def test_text_split_wire_format() -> None:
         text = WFTextTokenAttachment referencing NamedVar "Reminders to Add"
         (separator key ABSENT — Apple omits it for the default "New Lines")
 
-    SCHEMA BUG FOUND:
-    The schema always emits ``separator: "New Lines"``.  Five samples in the
-    corpus all omit the separator key when using the default.
-    Fix: suppress the key when separator == "New Lines".
-
-    This test is EXPECTED TO FAIL until the schema is fixed.
+    ``Show-text`` is now modelled as a UI-only boolean toggle on ``TextSplit``.
+    Passing ``show_text=True`` makes the schema's emit match the sample's wire
+    format exactly; the sample round-trips cleanly after normalisation.
     """
     if not BATCH_REMINDERS.exists():
         pytest.skip(f"Sample not found: {BATCH_REMINDERS}")
@@ -827,14 +817,12 @@ def test_text_split_wire_format() -> None:
     sample_norm = _normalise(sample_action)
 
     reminders_var = NamedVar("Reminders to Add")
-    schema_action = TextSplit(input=reminders_var, separator="New Lines")
+    schema_action = TextSplit(
+        input=reminders_var, separator="New Lines", show_text=True
+    )
     schema_norm = _normalise(schema_action.to_action_dict())
 
-    assert schema_norm == sample_norm, (
-        "Schema emits 'separator: \"New Lines\"' but Apple omits the key for "
-        "the default value.  Five samples confirm this.  "
-        "Fix: suppress separator key when value == default."
-    )
+    assert schema_norm == sample_norm
 
 
 # ---------------------------------------------------------------------------

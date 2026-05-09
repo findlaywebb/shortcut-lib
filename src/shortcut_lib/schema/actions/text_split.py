@@ -25,6 +25,9 @@ class TextSplit(Action):
             "Custom". Defaults to "New Lines".
         custom_separator: The delimiter string. Required when
             ``separator`` is "Custom"; ignored otherwise.
+        show_text: UI-only toggle. Apple emits ``Show-text: True`` when
+            the "Show Text" toggle is visible in the editor. No runtime
+            semantic effect; opt-in to match real samples.
     """
 
     identifier: ClassVar[str] = "is.workflow.actions.text.split"
@@ -33,6 +36,7 @@ class TextSplit(Action):
     input: ParamValue = None
     separator: WFTextSeparator = "New Lines"
     custom_separator: str | None = None
+    show_text: bool | None = None
 
     def __post_init__(self) -> None:
         if self.separator not in _VALID_SEPARATORS:
@@ -56,4 +60,6 @@ class TextSplit(Action):
             out["separator"] = self.separator
         if self.separator == "Custom":
             out["WFTextCustomSeparator"] = self.custom_separator
+        if self.show_text is not None:
+            out["Show-text"] = self.show_text
         return out
