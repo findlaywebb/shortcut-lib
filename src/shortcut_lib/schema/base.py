@@ -149,13 +149,22 @@ class RawAction(Action):
     raw_params: dict[str, Any] = field(default_factory=dict)
 
     def to_action_dict(self) -> dict[str, Any]:
-        # raw_params already contains UUID and any other Apple-side keys —
-        # return as-is rather than going through _params + injection.
         if not self.raw_identifier:
             raise SchemaError("RawAction needs raw_identifier")
+        # Keep ``self.uuid`` (the dataclass field used by ``.output()``) and
+        # the emitted action's UUID in sync. A freshly-authored
+        # ``RawAction(raw_identifier="…", raw_params={})`` would otherwise
+        # have a fresh ``self.uuid`` but no UUID in the emitted dict; a
+        # downstream ``raw.output()`` reference would then point at a UUID
+        # the action doesn't carry, resolving as a dangling ref on iOS.
+        # When ``self.uuid`` is empty (lift round-trip from a sample whose
+        # action carried no UUID), preserve that wire-format quirk.
+        params = dict(self.raw_params)
+        if self.uuid:
+            params["UUID"] = self.uuid
         return {
             "WFWorkflowActionIdentifier": self.raw_identifier,
-            "WFWorkflowActionParameters": dict(self.raw_params),
+            "WFWorkflowActionParameters": params,
         }
 
     def _params(self) -> dict[str, Any]:
