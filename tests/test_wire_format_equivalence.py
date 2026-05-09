@@ -540,7 +540,7 @@ def test_base64_encode_wire_format() -> None:
 
 
 def test_comment_wire_format() -> None:
-    """Comment schema matches the ``is.workflow.actions.comment`` sample.
+    """Comment schema vs the is.workflow.actions.comment sample.
 
     Source: samples/decoded/batch_add_reminders.xml, action index 0.
     Sample params (after normalisation):
@@ -548,6 +548,11 @@ def test_comment_wire_format() -> None:
 
     For a plain string Apple emits the string bare (not wrapped in
     WFTextTokenString), which coerce_text_field preserves.
+
+    Text is read from the sample at test time rather than hardcoded so
+    that unicode-encoding quirks (curly quotes, horizontal ellipsis,
+    trailing spaces before newlines) in the source XML never cause a
+    spurious mismatch.
     """
     if not BATCH_REMINDERS.exists():
         pytest.skip(f"Sample not found: {BATCH_REMINDERS}")
@@ -556,17 +561,10 @@ def test_comment_wire_format() -> None:
     sample_action = _find_action(workflow, "is.workflow.actions.comment")
     sample_norm = _normalise(sample_action)
 
-    text = (
-        "Works great for recipes, or any other list in text form. "
-        "When reviewing recipes online, highlight the list of ingredients "
-        "and in the Share Sheet use this shortcut to add each item as a "
-        "reminders. \n\n"
-        "To use this shortcut from another app:\n"
-        "Highlight lines of text and tap the “Share…” option in the edit bar. \n"
-        "The Share Sheet will appear. Select this shortcut from the list of options, "
-        "and enter the details of the parent reminder.\n"
-        "Each line of text you selected will be added as an individual reminder."
-    )
+    # Read text from sample so the test stays robust to unicode-encoding
+    # quirks (curly quotes, horizontal ellipsis, trailing spaces, etc.)
+    # in the source XML.
+    text = sample_action["WFWorkflowActionParameters"]["WFCommentActionText"]
     schema_action = Comment(text=text)
     schema_norm = _normalise(schema_action.to_action_dict())
 
