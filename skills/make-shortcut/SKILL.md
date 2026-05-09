@@ -117,29 +117,65 @@ testing once imported: `shortcuts run "<Name>"`.
 
 ## Composition pattern
 
-Larger shortcuts decompose into helpers + an orchestrator, like Python
-modules. **See `~/personal/shortcut-lib/examples/vault_note_to_git.py`
-for a worked example** — a polish helper, a push helper, and a top-level
-orchestrator linked via `RunWorkflow`.
+Larger shortcuts decompose into Python helper functions that each accept
+the builder and append actions to it. The result is one `Shortcut` object
+and one emitted `.shortcut` file. **See
+`~/personal/shortcut-lib/examples/vault_note_to_git.py` for the
+canonical example** — `_add_config`, `_add_polish`, and `_add_push` each
+take `s: Shortcut`, call `s.add(...)`, and leave no return value when the
+caller doesn't need to chain; the top-level `build()` calls them in
+sequence.
 
 Sketch:
 
 ```python
-# Helper: takes text input via ShortcutInput, returns polished text
-polish = Shortcut(name="Polish With LLM")
-polish.add(SetVariable(name="Note", input=ShortcutInput))
-# ... polish actions
+from shortcut_lib.builder import Shortcut
+from shortcut_lib.schema import NamedVar, Text
+from shortcut_lib.schema.actions.get_clipboard import GetClipboard
+from shortcut_lib.schema.actions.set_variable import SetVariable
+from shortcut_lib.schema.actions.use_model import UseModel
+from shortcut_lib.schema.actions.show_notification import ShowNotification
 
-# Orchestrator: composes helpers
-main = Shortcut(name="Vault To Git")
-text = main.add(GetClipboard())
-polished = main.add(RunWorkflow(target=polish, input=text))
-main.add(ShowNotification(body=polished))
+
+def _add_polish(s: Shortcut) -> None:
+    """Read clipboard, polish via Apple Intelligence, store as ``Polished``."""
+    note = s.add(GetClipboard())
+    s.add(SetVariable(name="Note", input=note))
+    polished = s.add(
+        UseModel(
+            prompt=Text(
+                "Polish this note:\n\n{n}",
+                substitutions={"n": NamedVar("Note")},
+            ),
+            model="Apple Intelligence",
+        )
+    )
+    s.add(SetVariable(name="Polished", input=polished))
+
+
+def _add_notify(s: Shortcut) -> None:
+    """Show a success notification."""
+    s.add(ShowNotification(title="Done", body=NamedVar("Polished")))
+
+
+def build() -> Shortcut:
+    s = Shortcut(name="Polish Note")
+    _add_polish(s)
+    _add_notify(s)
+    return s
 ```
 
-Each helper is its own `.shortcut` file and gets imported separately.
-Orchestrator references helpers by their `workflow_identifier` (set at
-construction). This is the "module" pattern for Shortcuts.
+Helper functions are plain Python — no new concepts, no cross-file
+linking, no extra import steps for the user. The entire workflow ships in
+one `.shortcut` file.
+
+`RunWorkflow` is still in the schema for the narrow case where a
+*genuinely separate trigger* is required — Setup-only auth helpers or
+iCloud-shared utilities where each shortcut lives independently on the
+device. Do not use it to compose steps within a single logical workflow:
+iOS reassigns shortcut UUIDs at import time, so any `workflow_identifier`
+baked into a locally-signed `.shortcut` will not resolve after import,
+and the user would have to re-select the target shortcut by hand.
 
 ## Editing existing shortcuts
 
