@@ -169,14 +169,21 @@ def test_repeat_count_round_trips() -> None:
 
 
 def test_repeat_each_with_variable_input() -> None:
+    """``RepeatEach.WFInput`` is a plain WFTextTokenAttachment, not the two-layer
+    ``{Type: Variable, Variable: ...}`` envelope ``If`` uses.
+
+    Confirmed against samples/decoded/batch_add_reminders.xml:10 and
+    samples/decoded/set_weekend_chores.xml.
+    """
     s = Shortcut(name="ForEach")
     items = NamedVar("MyList")
     s.add(RepeatEach(items=items, body=[SetClipboard(input="row")]))
     head_input = s.to_workflow()["WFWorkflowActions"][0]["WFWorkflowActionParameters"][
         "WFInput"
     ]
-    assert head_input["Type"] == "Variable"
-    assert head_input["Variable"]["Value"]["VariableName"] == "MyList"
+    assert head_input["WFSerializationType"] == "WFTextTokenAttachment"
+    assert head_input["Value"]["VariableName"] == "MyList"
+    assert head_input["Value"]["Type"] == "Variable"
 
 
 def test_text_template_computes_utf16_ranges() -> None:

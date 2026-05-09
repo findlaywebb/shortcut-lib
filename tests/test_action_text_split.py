@@ -10,12 +10,16 @@ from shortcut_lib.schema.registry import list_actions
 
 
 def test_text_split_new_lines_default() -> None:
-    """Default separator is New Lines; only 'separator' key is emitted."""
+    """Default separator omits the key (matches Apple's emission).
+
+    Apple omits the ``separator`` key for the default "New Lines"; five
+    corpus samples confirm (e.g. samples/decoded/batch_add_reminders.xml:9).
+    """
     result = TextSplit(input="hello\nworld").to_action_dict()
 
     assert result["WFWorkflowActionIdentifier"] == "is.workflow.actions.text.split"
     params = result["WFWorkflowActionParameters"]
-    assert params["separator"] == "New Lines"
+    assert "separator" not in params
     assert params["text"] == "hello\nworld"
     assert "WFTextCustomSeparator" not in params
 
@@ -68,8 +72,20 @@ def test_text_split_invalid_separator_raises() -> None:
 
 
 def test_text_split_valid_separators_accepted() -> None:
-    """All four valid separators are accepted without error."""
-    for sep in ("New Lines", "Spaces", "Every Character"):
+    """All valid separators construct without error.
+
+    "New Lines" is the default and is omitted from the emitted dict
+    (matches Apple); the other two valid non-Custom separators are
+    emitted verbatim.
+    """
+    # The default is omitted from the emitted dict.
+    default_params = TextSplit(input="abc").to_action_dict()[
+        "WFWorkflowActionParameters"
+    ]
+    assert "separator" not in default_params
+
+    # Non-default separators are emitted.
+    for sep in ("Spaces", "Every Character"):
         action = TextSplit(input="abc", separator=sep)
         params = action.to_action_dict()["WFWorkflowActionParameters"]
         assert params["separator"] == sep

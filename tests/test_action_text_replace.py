@@ -58,7 +58,10 @@ def test_text_replace_with_regex_flag() -> None:
 
     assert params["WFReplaceTextRegularExpression"] is True
     assert params["WFReplaceTextFind"] == r"\s+"
-    assert params["WFReplaceTextReplace"] == ""
+    # Apple omits WFReplaceTextReplace when the value is empty — confirmed
+    # against samples/decoded/dictionary.xml:42. Runtime "delete matches"
+    # behaviour is preserved; the key is just absent from the wire.
+    assert "WFReplaceTextReplace" not in params
 
 
 def test_text_replace_omits_unset_flags() -> None:

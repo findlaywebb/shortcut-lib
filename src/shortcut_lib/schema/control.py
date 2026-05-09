@@ -209,11 +209,15 @@ class RepeatEach(_ControlAction):
             raise SchemaError(
                 "RepeatEach requires `items` (a list-typed Output or value)"
             )
+        # WFInput on repeat.each is a plain WFTextTokenAttachment, not the
+        # two-layer {Type: Variable, Variable: ...} that If uses. Confirmed
+        # against samples/decoded/batch_add_reminders.xml:10 and
+        # samples/decoded/set_weekend_chores.xml.
         head: dict[str, Any] = {
             "GroupingIdentifier": self.grouping_identifier,
             "UUID": self.uuid,
             "WFControlFlowMode": 0,
-            "WFInput": _wrap_variable_input(self.items),
+            "WFInput": coerce_value(self.items),
         }
         return _close_grouping(
             self.identifier, head, self.body, self.grouping_identifier

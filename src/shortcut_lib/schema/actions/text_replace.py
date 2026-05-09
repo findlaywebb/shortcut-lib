@@ -56,8 +56,12 @@ class TextReplace(Action):
             out["WFInput"] = coerce_text_field(self.input)
         # Find/Replace are WFTextTokenString slots when not bare literals;
         # route variable refs through coerce_text_field for the right envelope.
-        out["WFReplaceTextFind"] = coerce_text_field(self.find)
-        out["WFReplaceTextReplace"] = coerce_text_field(self.replace)
+        # Apple omits both keys when the value is an empty string (the demo /
+        # unconfigured shape in samples/decoded/dictionary.xml:42); honour that.
+        if self.find != "":
+            out["WFReplaceTextFind"] = coerce_text_field(self.find)
+        if self.replace != "":
+            out["WFReplaceTextReplace"] = coerce_text_field(self.replace)
         if self.case_sensitive is not None:
             out["WFReplaceTextCaseSensitive"] = self.case_sensitive
         if self.regex is not None:

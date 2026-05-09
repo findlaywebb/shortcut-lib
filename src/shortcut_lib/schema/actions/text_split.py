@@ -50,7 +50,10 @@ class TextSplit(Action):
         out: dict[str, Any] = {}
         if self.input is not None:
             out["text"] = coerce_value(self.input)
-        out["separator"] = self.separator
+        # Apple omits the separator key for the default "New Lines"; five
+        # corpus samples confirm (e.g. samples/decoded/batch_add_reminders.xml:9).
+        if self.separator != "New Lines":
+            out["separator"] = self.separator
         if self.separator == "Custom":
             out["WFTextCustomSeparator"] = self.custom_separator
         return out
