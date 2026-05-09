@@ -1,14 +1,27 @@
+<!--
+Generated against:
+  main @ 422c520405c55fb4aedee1af58f2fc71c14ccf3f
+  data/observed_envelope_types.json @ 2026-05-09T08:09:34.980297+00:00
+
+To regenerate: re-run the inventory walk in the schema-gaps brief
+(see docs/architecture-review/v15-deep-review/B-schema-infrastructure.md).
+After significant V1.5 merges, the modelled-vs-unmodelled counts in
+Section 5 may drift; refresh by running list_actions() on the new
+state and updating the table.
+-->
+
 # Schema Gaps Inventory
 
-_Generated 2026-05-09 against 20 decoded corpus samples. Use this document to
-select the next modelling batch._
+_Generated 2026-05-09 against 21 decoded corpus samples (20 public +
+1 gitignored private). Use this document to select the next modelling batch._
 
 ---
 
 ## 1. Snapshot
 
-The decoded corpus covers 661 total action invocations across 20 sample
-shortcuts, producing 393 distinct `WFWorkflowActionIdentifier` values.
+The decoded corpus covers 687 total action invocations across 21 sample
+shortcuts (20 public + 1 gitignored private), producing 393 distinct
+`WFWorkflowActionIdentifier` values.
 Of these, 29 are currently registered in the schema library: 24 leaf
 actions (fully typed, `@register`-decorated) and 5 control-flow constructs
 (`If`, `RepeatEach`, `RepeatCount`, `ChooseFromMenu`, `RunWorkflow`).
@@ -44,12 +57,14 @@ modelled. The 364 unmodelled identifiers split into 6 with 4+ appearances
     `batch_add_reminders.xml:12`, `dictionary.xml:418`
   - Observed param keys: `WFCalendarItemTitle`, `WFCalendarItemNotes`,
     `WFAlertCondition`, `WFAlertEnabled`, `WFAlertCustomTime`,
-    `WFAlertLocationRadius`, `WFCalendarItemCalendar`, `WFFlag`,
-    `WFParentTask`, `WFURL` (10 keys)
+    `WFAlertLocationRadius`, `WFCalendarItemCalendar`, `WFParentTask`,
+    `WFURL` (9 wire keys observed in corpus; `WFFlag` is not present in the
+    21-sample corpus — 4 of the 9 are dict-envelope slots, 5 are bare
+    scalars/strings)
   - Jellycore params: not in catalogue
-  - Apparent complexity: **medium** (10 distinct keys; mix of plain strings,
-    `WFQuantityFieldValue` for `WFAlertLocationRadius`, bare booleans for
-    `WFAlertEnabled`)
+  - Apparent complexity: **medium** (9 distinct observed keys; mix of plain
+    strings, `WFQuantityFieldValue` for `WFAlertLocationRadius`, bare
+    booleans for `WFAlertEnabled`)
   - Closed-set string fields: `WFAlertCondition` (time/location), likely
     Literal candidates
   - Dict-typed params: none observed directly, but `WFAlertLocationRadius`
@@ -62,10 +77,12 @@ modelled. The 364 unmodelled identifiers split into 6 with 4+ appearances
   - Corpus count: 5
   - Samples: `daily_standup.xml:5`, `daily_standup.xml:12`,
     `daily_standup.xml:19`, `dictionary.xml:40`, and 1 more
-  - Observed param keys: `text`, `WFTextSeparator`, `Show-text` (3 keys)
+  - Observed param keys: `text`, `WFTextSeparator` (2 wire keys observed in
+    corpus; `Show-text` is a boolean scalar — not a dict-envelope slot and
+    not seen in the 21-sample corpus)
   - Jellycore params: `text`, `combine`, `WFTextCustomSeparator`
-  - Apparent complexity: **low** (3 keys; `WFTextSeparator` is a closed set:
-    "New Lines", "Spaces", "Custom", etc.)
+  - Apparent complexity: **low** (2 observed keys; `WFTextSeparator` is a
+    closed set: "New Lines", "Spaces", "Custom", etc.)
   - Closed-set string fields: `WFTextSeparator` -- strong Literal candidate
   - Dict-typed params: none
   - Recommendation: **model next batch**. Low complexity; `WFTextSeparator`
@@ -76,12 +93,13 @@ modelled. The 364 unmodelled identifiers split into 6 with 4+ appearances
   - Corpus count: 5
   - Samples: `markup_and_send.xml:1`, `dictionary.xml:173`,
     `dictionary.xml:328`, `dictionary.xml:331`, and 1 more
-  - Observed param keys: `WFSendMessageContent`, `WFSendMessageActionRecipients`,
-    `IntentAppDefinition` (3 keys)
+  - Observed param keys: `WFSendMessageContent`, `WFSendMessageActionRecipients`
+    (2 wire keys observed in corpus; `IntentAppDefinition` is not seen in
+    `sendmessage` samples — it appears in `timer.start` and was a cross-action
+    confusion in an earlier draft)
   - Jellycore params: not in catalogue
-  - Apparent complexity: **medium** (3 keys; `WFSendMessageActionRecipients`
-    is a contact-reference type -- similar to `com.apple.mobilephone.call`;
-    `IntentAppDefinition` is an app-routing dict seen in `timer.start` also)
+  - Apparent complexity: **medium** (2 observed keys; `WFSendMessageActionRecipients`
+    is a contact-reference type -- similar to `com.apple.mobilephone.call`)
   - Closed-set string fields: none
   - Dict-typed params: `IntentAppDefinition` (app routing object -- V2
     territory for full typing, but can be accepted as `dict[str, Any]` for V1)
@@ -136,8 +154,9 @@ and a brief note. Jellycore-unknown identifiers are marked `(jc:-)`.
 - `is.workflow.actions.round` -- "Round Number" -- 3 --
   params: `WFInput`, `WFRoundMode` -- low; `WFRoundMode` is a Literal
 - `is.workflow.actions.alert` -- "Show Alert" -- 2 --
-  params: `WFAlertActionMessage`, `WFAlertActionTitle`,
-  `WFAlertActionCancelButtonShown` -- low; 3 params, familiar text pattern
+  params: `WFAlertActionMessage`, `WFAlertActionTitle` (2 observed wire keys;
+  `WFAlertActionCancelButtonShown` is not present in the corpus) -- low;
+  familiar text pattern
 - `is.workflow.actions.showresult` -- "Show Result" -- 2 --
   params: `Text` -- trivially low; single text slot
 - `is.workflow.actions.list` -- "List" -- 2 --
@@ -245,8 +264,6 @@ and a brief note. Jellycore-unknown identifiers are marked `(jc:-)`.
   params: `WFContentItemInputParameter` -- medium (filter predicate; V2)
 - `is.workflow.actions.getarticle` -- "Get Article" -- 2 --
   params: `WFWebPage` -- low
-- `is.workflow.actions.getwebpagecontents` -- "Contents of URL" -- 2 --
-  params: `WFInput` -- low
 
   _The remaining ~40 Tier-2 entries (music/podcast/maps/contacts/calendar
   actions) are catalogued in `data/observed_envelope_types.json` and
@@ -370,7 +387,7 @@ the type is already in the library.
 _Medium complexity; high user utility; requires Quantity shape for location
 alert radius._
 
-- `is.workflow.actions.addnewreminder` (10 observed params; all Optional
+- `is.workflow.actions.addnewreminder` (9 observed params; all Optional
   except title)
 
 Rationale: Standalone batch because it has the richest parameter set in
@@ -383,8 +400,8 @@ value type is already modelled.
 _Medium complexity; contact/app-routing references handled as `dict[str, Any]`
 for V1._
 
-- `is.workflow.actions.alert` (3 params; straightforward)
-- `is.workflow.actions.sendmessage` (3 params; `WFSendMessageActionRecipients`
+- `is.workflow.actions.alert` (2 observed params; straightforward)
+- `is.workflow.actions.sendmessage` (2 observed params; `WFSendMessageActionRecipients`
   as `list[dict[str, Any]]` passthrough)
 
 Rationale: `alert` is simple. `sendmessage` requires a contact-reference
