@@ -72,3 +72,29 @@ version), the test would catch it immediately.
   consistency with the broader test suite matters.
 - No `from_action_dict` / round-trip parsing exists, consistent with the rest of the
   v15 series.
+
+## 2026-05-10 merge-readiness pass
+
+**Verdict:** Pass
+
+**Branch HEAD:** `ddc52b6` (matches _SUMMARY.md record `ddc52b6`)
+
+**Merge against main:**
+- Result: clean
+- Conflict files: none
+- Resolution: Automatic merge succeeded with no conflicts; 26 commits on main added new samples, review files, and schema modules that are orthogonal to ShowResult.
+
+**Pytest on merged state:** 340 passed, 6 skipped, 3 xfailed in 11.34s
+
+**prek:** green (all 8 hooks: trim whitespace, fix end of files, check yaml, check for added large files, ruff lint, ruff format, uv-lock, ty)
+
+**Drift / observations:**
+- Main has advanced 26 commits (new corpus samples, additional action schemas, deep-review docs). None touch `showresult` or the `Text` wire-key convention.
+- The `docs/known_identifiers.md` file had an unstaged regeneration in the worktree (corpus counts updated); restored to HEAD before merge attempt — this is the expected soft-conflict pattern noted in the brief, and it will re-emit correctly post-merge.
+- No sibling actions on main use a Title-Case unprefixed wire key; the `Text` key remains the sole documented exception, correctly grounded in corpus and locked down by the wire-format equivalence test.
+
+**Minor corrections applied:**
+- none
+
+**Concerns for higher-tier review:**
+- none
