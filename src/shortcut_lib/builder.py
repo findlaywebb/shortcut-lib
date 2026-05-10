@@ -281,7 +281,7 @@ class Shortcut:
             action=get_text,
             parameter_key="WFTextActionText",
             question=question,
-            default=default if default else None,
+            default=default or None,
         )
         return get_text
 
