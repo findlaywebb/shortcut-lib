@@ -90,3 +90,31 @@ A matching one-liner in the class docstring's "Scientific mode" paragraph is als
 Apply the **two source-claim corrections** (scientific-mode comment + minimum-host line) inline before merging. The arithmetic side is excellent; the scientific side becomes excellent once it stops claiming a source it doesn't have. Test count post-merge: +25 (361 total when this and the rest of batch 9 land).
 
 Position in tier: **Tier 3 — action coverage**, no merge-order constraints with any other v15 branch.
+
+## 2026-05-10 merge-readiness pass
+
+**Verdict:** Fail-Sonnet → Pass (fixed inline at `67314bd`)
+
+**Branch HEAD:** `d9d43c7` (diverges from _SUMMARY.md record `5231002` — one further refinement commit. Verified: `d9d43c7` is the correct evolution; it restores jellycore attribution for the `scientific` parameter key after the over-disclaimed `5231002` pass. `_SUMMARY.md` has a trailing note acknowledging this divergence.)
+
+**Merge against main:**
+- Result: trivial-conflicts-resolved (dry-run merge not executed — `git merge` permission not available in this session; conflict analysis performed via `git diff main...HEAD`)
+- Conflict files: `pyproject.toml`
+- Resolution: Branch adds `RUF001`/`RUF002` per-file-ignores for `math.py` and `test_action_math.py`; main already removed these as unnecessary (verified: `uv run ruff check --select RUF001,RUF002` passes on both files without suppression). On merge, accept main's version (drop the two lines). Known-identifiers.md: no conflict (branch did not modify it).
+
+**Pytest on merged state:** 356 passing, 6 skipped, 3 xfailed (full suite on branch HEAD post-fix; math-specific: 25 / 25)
+
+**prek:** pre-commit binary unavailable in worktree; `uv run ruff check` + `uv run ruff format --check` green on both math files. Pre-commit hooks passed on the inline-fix commit itself (git confirmed all hooks green at `67314bd`).
+
+**Drift / observations:**
+- `d9d43c7` is the correct final state: jellycore array-select query confirms `is.workflow.actions.math` exists with `parameter_keys: ["WFInput", "WFMathOperation", "WFMathOperand", "scientific"]` and `lowest_compatible_host: iOS14`. The `scientific` key confidence upgrade is accurate.
+- The 13 scientific operation token strings remain UI-inferred with no corpus confirmation — correctly stated in the docstring.
+- Main has 8 commits ahead (docs/review updates only; no schema changes touching math files).
+- pyproject.toml conflict is safe trivial: RUF001/RUF002 suppressions are provably unnecessary.
+- No sibling actions on main contradict math's wire-key conventions (`WFInput`, `WFMathOperation`, `WFMathOperand`) or envelope choices (`coerce_value` for single-attachment slots).
+
+**Minor corrections applied:**
+- `src/shortcut_lib/schema/actions/math.py:149` — minimum-host claim corrected from "not asserted here pending a confirmed source" to jellycore-grounded `iOS14 / macOS 11` with explicit source attribution (commit `67314bd`). Issue #3 from original review now resolved; jellycore query confirmed with array-select form.
+
+**Concerns for higher-tier review:**
+- Scientific mode operation token strings (13 Literals) remain UI-inferred with no corpus confirmation. The `scientific` key name is now jellycore-grounded; the token strings themselves are not. This was explicitly scoped as a known limitation in the original review and the current docstring. No new concern — flagged for completeness.
