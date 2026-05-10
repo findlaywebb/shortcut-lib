@@ -180,3 +180,29 @@ substantive content — the lifting flow, the `_extra` guarantee, the surgical e
 patterns, the duplication gotcha, and the Strategy A/B/C ladder — is accurate,
 executable, and well-framed. The SKILL is a meaningful improvement over the V1
 version and is consistent with its companion `make-shortcut` refresh.
+
+## 2026-05-10 merge-readiness pass
+
+**Verdict:** Fail-Sonnet → Pass (fixed inline at `ecd0ce5`)
+
+**Branch HEAD:** `ecd0ce5` (diverges from _SUMMARY.md record `8f4c73c` — one additional inline-fix commit added during this pass)
+
+**Merge against main:**
+- Result: clean
+- Conflict files: none
+- Resolution: `git merge main --no-commit --no-ff` completed automatically; no conflicts in `docs/known_identifiers.md` or anywhere else. All `main`-only files are additions (new review docs, CLAUDE.md, .gitignore updates) with no overlap with this branch's single changed file (`skills/edit-shortcut/SKILL.md`).
+
+**Pytest on merged state:** 330 passing, 6 skipped, 3 xfailed, 8 warnings
+
+**prek:** skipped (doc-only branch; no Python files changed; hook suite passed during fix commit)
+
+**Drift / observations:**
+- Branch changes exactly one file: `skills/edit-shortcut/SKILL.md`. Main's 14-commit advance adds only review docs, CLAUDE.md, and minor infra. No schema, test, or envelope changes that could contradict this branch.
+- No `docs/known_identifiers.md` conflict — the file was not touched by this branch at all (the brief's note about a potential dirty-worktree `M docs/known_identifiers.md` did not materialise).
+- Cross-skill style with the `make-shortcut` refresh (confirmed by prior review) is unaffected by main's advance.
+
+**Minor corrections applied:**
+- `skills/edit-shortcut/SKILL.md:293` — "you'll get a duplicate on re-emit" → "you'll silently overwrite the `setup_questions`-derived list on re-emit". Fixes the wording nit flagged in the 2026-05-09 review: `out.update(self._extra)` overwrites, it does not produce a duplicate key. (commit `ecd0ce5`)
+
+**Concerns for higher-tier review:**
+- none
