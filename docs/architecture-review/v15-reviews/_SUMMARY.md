@@ -163,7 +163,7 @@ These were flagged across the reviews + deep reviews but deliberately NOT action
 - **`Quantity`-typed field for `AddNewReminder.alert_location_radius`** — currently raw dict pass-through.
 - **`content_item_filter` dict-type guard on `FilterCalendarEvents`** — two-line defensive check.
 - **`properties.calendarevents` companion action** — surfaced in `dictionary.xml`; not modelled.
-- **`WFItemIndex` without `WFItemSpecifier` Apple quirk** on `GetItemFromList` — needs a fresh sample to confirm.
+- ~~**`WFItemIndex` without `WFItemSpecifier` Apple quirk** on `GetItemFromList` — needs a fresh sample to confirm.~~ **CLOSED 2026-05-10** by `v15/model-getitemfromlist` (`ab0e553`): `tile_last_2_windows.xml:89-92` shows `WFItemIndex="2"` co-exists with `WFItemSpecifier="Last Item"` — Apple preserves the last-typed index regardless of which specifier is currently active. The `GetItemFromList` schema emits `WFItemIndex` whenever set, unconditionally on specifier (round-trip-faithful).
 - **The 3 V1 xfails:** `RepeatCount` configured-count sample, `ChooseFromMenu` fresh sample (fixed in the V1 sweep: `TextSplit` Show-text); the first two remain.
 - **TextCombine cross-field check** moved from `_params` to `__post_init__` (pattern-outliers cleanup, deep review A).
 - **Three actions missing `__post_init__`** (deep review A; identify which during cleanup).
@@ -172,6 +172,22 @@ These were flagged across the reviews + deep reviews but deliberately NOT action
 - **Doc sweep checklist post-V1.5-merge** (deep review C): ~15 docs need updates.
 - **Schema-gaps Batch B onwards** (per `docs/schema-gaps.md`): list/selection actions beyond what was modelled here, then filter family (V2), then surface integrations.
 - **More tier-2 action models:** `share` (3), `sendemail` (3), `gettraveltime` (3), `getlastphoto`/`getlastscreenshot` (3 each), `round` (3), etc.
+
+## Infra finding — jellycore_facts.json query shape
+
+Discovered on 2026-05-10 (during `v15/model-number-actions` review): the agent prompt template I used for batches 9–11 instructed sub-agents to verify jellycore entries with `jq '.["is.workflow.actions.X"]'`. **This silently returned `null` for every action** — the file structure is `{"actions": [...288 entries], "structural_identifiers": [...]}`, not a top-level map keyed by identifier. Correct query: `jq '.actions[] | select(.identifier == "is.workflow.actions.X")'`.
+
+Effect on prior batches:
+
+- **`v15/model-math`** — over-disclaimed; jellycore confirms `scientific` as a parameter key. **Fixed inline at `d9d43c7`** (refined "Source confidence" block in docstring).
+- **`v15/model-statistics`** — jellycore says `parameter_keys: ["Input", "operation"]`. Branch uses `WFStatisticsOperation`. Corpus exercises only the default ("Average"), so neither name is observable. **Real risk**: branch may be guessing wrong wire key. **Filed as follow-up**: needs a non-default-operation sample to disambiguate. If `operation` (lowercase) is correct, this is the same AppIntent convention seen on `Input`. Until then, the branch ships with the corpus-imitating speculation; document the uncertainty in the docstring before merge.
+- **`v15/model-adjustdate`** — jellycore says `["operation", "WFDuration", "WFDate"]`. Branch uses `WFAdjustOperation` (matches corpus). The lowercase `operation` in jellycore is the AppIntent abstraction-layer name, not the wire key. **No bug.**
+- **`v15/model-getitemfromlist`** — jellycore says `["WFInput", "type", "WFItemIndex", "WFItemRangeStart", "WFItemRangeEnd"]`. Branch uses `WFItemSpecifier` (matches corpus). Same pattern as adjustdate — `type` is AppIntent abstraction; corpus is the wire-format ground truth. **No bug.**
+- **`v15/model-list`** — jellycore says `["WFItems"]`. Branch uses `WFItems` (matches). **No bug.**
+- **`v15/model-calculateexpression`** — jellycore says `["Input"]`. Branch uses `Input` (matches). **No bug.**
+- **`v15/model-getdistance`** — genuinely absent from jellycore. Original "null" claim was correct.
+
+Memory entry saved: `feedback_jellycore_query_shape.md`. All future agent prompts use the array-select form.
 
 ## What this session deliberately did NOT do
 
