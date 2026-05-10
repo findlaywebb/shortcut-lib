@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
-from shortcut_lib.schema.base import Action, ParamValue, coerce_text_field
+from shortcut_lib.schema.base import Action, ParamValue, coerce_text_field, coerce_value
 from shortcut_lib.schema.registry import register
 
 
@@ -63,8 +63,6 @@ class SendEmail(Action):
         if self.to is not None:
             # Recipient envelope shape was not observed in the corpus; emit
             # whatever the caller provides verbatim (pass-through).
-            from shortcut_lib.schema.base import coerce_value
-
             out["WFSendEmailActionToRecipients"] = coerce_value(self.to)
         if self.show_compose_sheet is not None:
             out["WFSendEmailActionShowComposeSheet"] = self.show_compose_sheet
