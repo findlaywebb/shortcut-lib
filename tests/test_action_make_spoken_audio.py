@@ -125,16 +125,23 @@ def test_voice_none_omits_key() -> None:
 
 
 def test_language_emitted_when_set() -> None:
-    """language emits the 'language' key (Jellycore-listed, not corpus-observed)."""
+    """language emits WFSpeakTextLanguage (inferred from voice precedent).
+
+    Jellycore lists `language` (lowercase), but the corpus proves the
+    voice → WFSpeakTextVoice aliasing pattern; we apply the same pattern
+    to language. Not corpus-confirmed.
+    """
     action = MakeSpokenAudio(text="Bonjour", language="fr-FR")
     params = action.to_action_dict()["WFWorkflowActionParameters"]
-    assert params["language"] == "fr-FR"
+    assert params["WFSpeakTextLanguage"] == "fr-FR"
+    assert "language" not in params
 
 
 def test_language_none_omits_key() -> None:
-    """language=None (default) omits the 'language' key."""
+    """language=None (default) omits the WFSpeakTextLanguage key."""
     action = MakeSpokenAudio(text="Hello")
     params = action.to_action_dict()["WFWorkflowActionParameters"]
+    assert "WFSpeakTextLanguage" not in params
     assert "language" not in params
 
 
@@ -242,7 +249,7 @@ def test_all_options_combined() -> None:
     params = action.to_action_dict()["WFWorkflowActionParameters"]
     assert params["WFInput"] == "Good morning."
     assert params["WFSpeakTextVoice"] == "com.apple.speech.synthesis.voice.Samantha"
-    assert params["language"] == "en-US"
+    assert params["WFSpeakTextLanguage"] == "en-US"
     assert params["WFSpeakTextPitch"] == 1.1
     assert params["WFSpeakTextRate"] == 0.6
     assert params["UUID"] == "AAAAAAAA-BBBB-CCCC-DDDD-EEEEEEEEEEEE"

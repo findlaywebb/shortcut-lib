@@ -47,12 +47,19 @@ class MakeSpokenAudio(Action):
     ``jq '.actions[] | select(.identifier ==
     "is.workflow.actions.makespokenaudiofromtext")' data/jellycore_facts.json``):
 
-    * ``language`` — BCP-47 locale string (e.g. ``"en-US"``). Not observed
-      in any decoded sample. ``None`` omits the key.
-    * ``WFSpeakTextPitch`` — float, typically 0.0-2.0. Not observed. ``None``
-      omits the key.
-    * ``WFSpeakTextRate`` — float, typically 0.0-1.0. Not observed. ``None``
-      omits the key.
+    * ``WFSpeakTextLanguage`` — BCP-47 locale string (e.g. ``"en-US"``).
+      Jellycore lists this lowercase as ``language``, but the corpus
+      proves the parallel ``voice``/``WFSpeakTextVoice`` aliasing
+      pattern: jellycore's lowercase keys alias the WF-prefixed wire
+      keys for this action. The schema therefore emits
+      ``WFSpeakTextLanguage`` (inferred from the precedent, NOT
+      directly corpus-confirmed). A non-default-language sample would
+      validate this; until then treat as inferred. ``None`` omits.
+    * ``WFSpeakTextPitch`` — float, typically 0.0-2.0. Jellycore lists
+      this with the WF-prefix directly; matches the voice precedent.
+      Not corpus-observed. ``None`` omits the key.
+    * ``WFSpeakTextRate`` — float, typically 0.0-1.0. Same as pitch.
+      Not corpus-observed. ``None`` omits the key.
 
     All four optional fields default to ``None`` (omit). Pass them only when
     you need to override Apple's defaults explicitly.
@@ -68,8 +75,11 @@ class MakeSpokenAudio(Action):
             ``"com.apple.speech.synthesis.voice.Alex"``. Pass ``None`` to use
             the system-default voice. Emitted as a bare string.
         language: BCP-47 locale string for the speech language, e.g.
-            ``"en-US"``. Jellycore-listed but never observed in corpus.
-            Pass ``None`` to omit (device default).
+            ``"en-US"``. Emitted as ``WFSpeakTextLanguage`` (inferred
+            from the ``voice``→``WFSpeakTextVoice`` precedent; jellycore
+            lists this lowercase as ``language`` but corpus shows
+            jellycore's lowercase keys are AppIntent abstractions).
+            Pass ``None`` to omit.
         pitch: Speaking pitch as a float (Apple range: 0.0-2.0). Jellycore-
             listed but never observed in corpus. ``None`` omits the key.
         rate: Speaking rate as a float (Apple range: 0.0-1.0). Jellycore-
@@ -102,9 +112,11 @@ class MakeSpokenAudio(Action):
         if self.voice is not None:
             out["WFSpeakTextVoice"] = self.voice
 
-        # Jellycore-listed; never observed in corpus — emit only when set.
+        # Inferred wire keys (no corpus exercises any of these).
+        # Language: emit WFSpeakTextLanguage by analogy to the
+        # voice → WFSpeakTextVoice corpus-confirmed aliasing.
         if self.language is not None:
-            out["language"] = self.language
+            out["WFSpeakTextLanguage"] = self.language
         if self.pitch is not None:
             out["WFSpeakTextPitch"] = self.pitch
         if self.rate is not None:
