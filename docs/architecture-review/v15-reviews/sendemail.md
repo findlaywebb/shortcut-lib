@@ -134,3 +134,31 @@ Neither issue warrants blocking the merge.
 ## 10. Merge recommendation
 
 **Merge as-is.** All 11 tests pass, pre-commit is clean, corpus grounding is verified, and V1 punts are clearly documented. The deferred import and missing usage example can be addressed in a follow-up. Recipient encoding should be tracked as a "needs sample" follow-up but does not block merge.
+
+---
+
+## 2026-05-10 merge-readiness pass
+
+**Verdict:** Fail-Sonnet → Pass (fixed inline at `34dc081`)
+
+**Branch HEAD:** `34dc081` (diverges from _SUMMARY.md record `7459b8b` — additional inline-fix commit added during this pass)
+
+**Merge against main:**
+- Result: clean
+- Conflict files: none
+- Resolution: Automatic merge with no conflicts. `docs/known_identifiers.md` was not present in the diff; no soft-conflict resolution needed.
+
+**Pytest on merged state:** 342 passing, 0 failing (dry-run merge state). Branch-only state: 341 passing, 1 failing — `test_comment_wire_format` fails due to a unicode-encoding fix on `main` (`4f6567d`) not yet present on this branch; the failure resolves on merge.
+
+**prek:** pre-commit binary not available in worktree; ruff lint + ruff format run manually — green. All pre-commit hooks passed at the inline-fix commit (`34dc081`).
+
+**Drift / observations:**
+- `test_comment_wire_format` fails on branch-only state; this is a pre-existing divergence from `main`'s fix commit `4f6567d` (`fix(test): read comment text from sample for unicode robustness`). Resolves on merge — not introduced by this branch.
+- No sibling actions on `main` contradict wire-key conventions or envelope choices used by `send_email.py`.
+- The inferred `WFSendEmailActionToRecipients` key remains unverified by corpus — noted as V1.5+ follow-up; no change required before merge.
+
+**Minor corrections applied:**
+- `src/shortcut_lib/schema/actions/send_email.py:8` — hoisted `coerce_value` import from inside `_params()` to module level, consistent with rest of codebase (commit `34dc081`)
+
+**Concerns for higher-tier review:**
+- none
