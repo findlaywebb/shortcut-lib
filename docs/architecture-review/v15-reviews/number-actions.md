@@ -162,3 +162,32 @@ No other issues found.
 and the source attribution is honest for `RandomNumber`. Fix the `Number`
 docstring (one sentence to note the display-name inference) either in this
 branch before merge or as a follow-on, per preference. Not a blocker.
+
+---
+
+## 2026-05-10 merge-readiness pass
+
+**Verdict:** Pass
+
+**Branch HEAD:** `935dbbe` (matches _SUMMARY.md record `935dbbe`)
+
+**Merge against main:**
+- Result: clean
+- Conflict files: none
+- Resolution: No conflicts. The five commits main gained since the branch diverged are all docs/review commits (`docs/register batch 14 reviews`, `docs: add CLAUDE.md + agent rules`, etc.) that touch only the review index and review files. The branch adds four new files (two action modules, two test files) with no overlap.
+
+**Pytest on merged state:** 351 passing, 6 skipped, 3 xfailed
+
+**prek:** green
+
+**Drift / observations:**
+- The action registry uses auto-discovery (`pkgutil.iter_modules`), so `number.py` and `random_number.py` are registered without needing an `__init__.py` edit — consistent with all other action modules on main.
+- `coerce_value` is the correct envelope helper for numeric scalar slots. Sibling actions on main (e.g. `dictionary.py`) use the same pattern for non-text slots. No inconsistency.
+- The `Number.default_output_name = "Number"` issue flagged in the original review (Issue 1) is already resolved in the branch: commit `935dbbe` added the explicit inference disclaimer to the `Returns:` section of the docstring. The original review was written against `1c3c8cf`; the follow-up commit addressed it.
+- No sibling actions on main contradict this branch's wire-key naming or envelope choices.
+
+**Minor corrections applied:**
+- none
+
+**Concerns for higher-tier review:**
+- none — the `default_output_name` inference was the only open concern, and it is documented inline on the branch.
