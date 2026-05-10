@@ -80,6 +80,10 @@ The repo uses **autonomous batches** of action-coverage work:
 - Don't replace `coerce_text_field` with hand-rolled `WFTextTokenString` envelope construction — the helper exists for a reason (FU-7 envelope sweep).
 - Don't `--no-verify` a hook failure; fix the underlying issue.
 
+## Estimating work in this repo
+
+**Read `.claude/rules/velocity-and-estimation.md` before quoting any time estimate.** This project runs as fan-out of parallel sub-agents in isolated worktrees; default-quoted estimates from single-developer intuition have been 5–20× too long. Routine sessions produce ~40 commits and ~20 modelled actions; quote in those units, not hours.
+
 ## Universal rules from `~/.claude/CLAUDE.md`
 
 Google-style docstrings; type-annotate public functions; `pathlib.Path` over `os.path`; `raise ... from exc`; structured logging via `logger_config.setup_logger()`; max 500 lines per file; max 6 args / 10 branches / 40 statements per function. No emojis unless asked.
