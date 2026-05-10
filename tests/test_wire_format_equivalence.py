@@ -12,13 +12,25 @@ in the final report instead.
 
 from __future__ import annotations
 
-import copy
-import plistlib
 from pathlib import Path
-from typing import Any
 
 import pytest
 
+from _wire_helpers import (
+    find_action as _find_action,
+)
+from _wire_helpers import (
+    find_action_sequence as _find_action_sequence,
+)
+from _wire_helpers import (
+    load_sample as _load,
+)
+from _wire_helpers import (
+    normalise_action as _normalise,
+)
+from _wire_helpers import (
+    normalise_sequence as _normalise_sequence,
+)
 from shortcut_lib.schema.actions.append_variable import AppendVariable
 from shortcut_lib.schema.actions.ask import AskForInput
 from shortcut_lib.schema.actions.base64_encode import Base64Encode
@@ -65,103 +77,6 @@ ADJUST_CLIPBOARD = DECODED / "adjust_clipboard.xml"
 DICTIONARY = DECODED / "dictionary.xml"
 READ_LATER = DECODED / "read_later.xml"
 SET_WEEKEND = DECODED / "set_weekend_chores.xml"
-
-# ---------------------------------------------------------------------------
-# Helpers
-# ---------------------------------------------------------------------------
-
-
-def _load(path: Path) -> dict[str, Any]:
-    """Load a decoded plist XML file and return its top-level dict."""
-    return plistlib.loads(path.read_bytes())
-
-
-def _find_action(workflow: dict[str, Any], identifier: str) -> dict[str, Any]:
-    """Return the first action matching ``identifier`` or raise."""
-    for action in workflow["WFWorkflowActions"]:
-        if action["WFWorkflowActionIdentifier"] == identifier:
-            return action
-    raise KeyError(f"No action with identifier {identifier!r} in sample")
-
-
-def _strip_output_uuids(obj: Any) -> None:
-    """Recursively strip OutputUUID from all dicts so UUIDs don't matter."""
-    if isinstance(obj, dict):
-        obj.pop("OutputUUID", None)
-        for v in obj.values():
-            _strip_output_uuids(v)
-    elif isinstance(obj, list):
-        for v in obj:
-            _strip_output_uuids(v)
-
-
-def _normalise(action_dict: dict[str, Any]) -> dict[str, Any]:
-    """Strip non-deterministic fields so two action dicts are comparable.
-
-    Removes:
-    - ``UUID`` — each schema-built instance gets a fresh UUID4.
-    - ``CustomOutputName`` — optional label set by the user; irrelevant to
-      the structural wire format.
-    - ``OutputUUID`` from any nested variable references — they reference
-      other action UUIDs which differ between schema-built and sample copies.
-    """
-    out = copy.deepcopy(action_dict)
-    params = out.get("WFWorkflowActionParameters", {})
-    params.pop("UUID", None)
-    params.pop("CustomOutputName", None)
-    _strip_output_uuids(params)
-    return out
-
-
-def _normalise_sequence(
-    actions: list[dict[str, Any]],
-) -> list[dict[str, Any]]:
-    """Normalise a sequence of action dicts for control-flow comparison.
-
-    Strips ``UUID`` and ``GroupingIdentifier`` from every action in the
-    sequence, and strips ``OutputUUID`` from all nested attachments.
-    ``GroupingIdentifier`` is stripped because the schema generates a fresh
-    UUID4 for the grouping, which differs from the sample's literal value.
-    """
-    out: list[dict[str, Any]] = []
-    for action in actions:
-        normalised = copy.deepcopy(action)
-        params = normalised.get("WFWorkflowActionParameters", {})
-        params.pop("UUID", None)
-        params.pop("GroupingIdentifier", None)
-        params.pop("CustomOutputName", None)
-        _strip_output_uuids(params)
-        out.append(normalised)
-    return out
-
-
-def _find_action_sequence(
-    workflow: dict[str, Any],
-    head_identifier: str,
-    mode0_index: int,
-) -> list[dict[str, Any]]:
-    """Return the full multi-action sequence for a control-flow construct.
-
-    Starts at ``mode0_index`` (the head with ``WFControlFlowMode=0``) and
-    walks forward until the matching close (``WFControlFlowMode=2``) with
-    the same ``GroupingIdentifier``.  The close action is included.
-    """
-    actions = workflow["WFWorkflowActions"]
-    head = actions[mode0_index]
-    assert head["WFWorkflowActionIdentifier"] == head_identifier
-    gid = head["WFWorkflowActionParameters"]["GroupingIdentifier"]
-    seq: list[dict[str, Any]] = [head]
-    for j in range(mode0_index + 1, len(actions)):
-        a = actions[j]
-        seq.append(a)
-        params = a.get("WFWorkflowActionParameters", {})
-        if (
-            a["WFWorkflowActionIdentifier"] == head_identifier
-            and params.get("GroupingIdentifier") == gid
-            and params.get("WFControlFlowMode") == 2
-        ):
-            break
-    return seq
 
 
 # ---------------------------------------------------------------------------
