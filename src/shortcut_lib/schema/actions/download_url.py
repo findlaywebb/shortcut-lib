@@ -1,7 +1,7 @@
 """DownloadURL — make an HTTP request and return the response body.
 
 This is Apple's "Get Contents of URL" action. It supports all standard HTTP
-methods and three body-encoding modes observed in real shortcuts:
+methods and four body-encoding modes observed in real shortcuts:
 - "JSON"       — WFJSONValues dict, encoded as application/json
 - "Form"       — WFFormValues dict, encoded as multipart/form-data (TODO: unconfirmed key name)
 - "Plain Text" — WFRequestVariable, raw text body
@@ -14,7 +14,7 @@ The "JSON" and header shapes were verified against ``get_contents_of_url.xml``
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, ClassVar, cast
+from typing import Any, ClassVar, Literal, cast
 
 from shortcut_lib.schema.base import (
     Action,
@@ -104,8 +104,19 @@ class DownloadURL(Action):
 
     Wraps ``is.workflow.actions.downloadurl`` — Apple's "Get Contents of URL".
 
-    Supports GET (no body), and POST/PUT/PATCH/DELETE with either a JSON
-    dict body or a raw variable body.  Headers are always optional.
+    Prefer the request-shape factory methods — they expose only the
+    parameters valid for that body type, so an invalid combination is a
+    ``TypeError`` at the call site rather than a ``SchemaError`` after
+    construction::
+
+        DownloadURL.get("https://api.example.com/items")
+        DownloadURL.json("https://api.example.com/items", {"name": "x"})
+        DownloadURL.plain_text("https://api.example.com/upload", NamedVar("Body"))
+        DownloadURL.file("https://api.example.com/upload", NamedVar("Audio"), method="PUT")
+
+    The direct constructor ``DownloadURL(url=..., method=..., ...)`` still
+    works and is preserved for backward compatibility and for cases where
+    ``body_type`` is determined at runtime.
 
     Args:
         url: The target URL. Can be a plain string, a :class:`~shortcut_lib.schema.values.Text`
@@ -140,6 +151,101 @@ class DownloadURL(Action):
     headers: dict[str, Any] | None = field(default=None)
     body: ParamValue = None
     body_type: str | None = None
+
+    # ------------------------------------------------------------------
+    # Factory methods — preferred over the direct constructor
+    # ------------------------------------------------------------------
+
+    @classmethod
+    def get(
+        cls,
+        url: ParamValue,
+        *,
+        headers: dict[str, Any] | None = None,
+    ) -> DownloadURL:
+        """Return a GET request with no body.
+
+        Args:
+            url: Target URL — plain string, Text template, or Action output.
+            headers: Optional dict of header name → value.
+
+        Returns:
+            A DownloadURL configured for GET with no body.
+        """
+        return cls(url=url, method="GET", headers=headers)
+
+    @classmethod
+    def json(
+        cls,
+        url: ParamValue,
+        body: dict[str, Any],
+        *,
+        method: Literal["POST", "PUT", "PATCH", "DELETE"] = "POST",
+        headers: dict[str, Any] | None = None,
+    ) -> DownloadURL:
+        """Return a request with a JSON body encoded as WFJSONValues.
+
+        Args:
+            url: Target URL — plain string, Text template, or Action output.
+            body: Dict of key → value pairs. Values may be plain strings or
+                any coercible Value/Action token.
+            method: HTTP verb. Defaults to ``"POST"``.
+            headers: Optional dict of header name → value.
+
+        Returns:
+            A DownloadURL configured with body_type="JSON".
+        """
+        return cls(url=url, method=method, headers=headers, body=body, body_type="JSON")
+
+    @classmethod
+    def plain_text(
+        cls,
+        url: ParamValue,
+        body: ParamValue,
+        *,
+        method: Literal["POST", "PUT", "PATCH", "DELETE"] = "POST",
+        headers: dict[str, Any] | None = None,
+    ) -> DownloadURL:
+        """Return a request with a plain-text body encoded as WFRequestVariable.
+
+        Args:
+            url: Target URL — plain string, Text template, or Action output.
+            body: Any Value or Action whose output becomes the raw request body.
+            method: HTTP verb. Defaults to ``"POST"``.
+            headers: Optional dict of header name → value.
+
+        Returns:
+            A DownloadURL configured with body_type="Plain Text".
+        """
+        return cls(
+            url=url, method=method, headers=headers, body=body, body_type="Plain Text"
+        )
+
+    @classmethod
+    def file(
+        cls,
+        url: ParamValue,
+        body: ParamValue,
+        *,
+        method: Literal["POST", "PUT", "PATCH", "DELETE"] = "POST",
+        headers: dict[str, Any] | None = None,
+    ) -> DownloadURL:
+        """Return a request with a file body encoded as WFRequestVariable.
+
+        Uses the same WFRequestVariable wire encoding as :meth:`plain_text`
+        but sets body_type="File", which tells Shortcuts to treat the body
+        as binary file data rather than text.
+
+        Args:
+            url: Target URL — plain string, Text template, or Action output.
+            body: Any Value or Action whose output becomes the raw request body.
+            method: HTTP verb. Defaults to ``"POST"``.
+            headers: Optional dict of header name → value.
+
+        Returns:
+            A DownloadURL configured with body_type="File".
+        """
+        return cls(url=url, method=method, headers=headers, body=body, body_type="File")
 
     def _params(self) -> dict[str, Any]:
         """Return the WF parameter dict for this HTTP request action."""

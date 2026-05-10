@@ -8,6 +8,8 @@ Wire-format expectations are derived from two decoded samples:
 
 from __future__ import annotations
 
+from typing import Any
+
 import pytest
 
 import shortcut_lib.schema.actions.download_url  # noqa: F401 — trigger registration
@@ -408,3 +410,116 @@ def test_form_body_type_raises() -> None:
         match="body_type='Form' is not yet verified against samples",
     ):
         action.to_action_dict()
+
+
+# ---------------------------------------------------------------------------
+# Tests 15-21 - Factory methods
+# ---------------------------------------------------------------------------
+
+
+def test_get_factory() -> None:
+    """DownloadURL.get() produces no WFHTTPMethod, no WFHTTPBodyType, no body keys."""
+    action = DownloadURL.get("https://x")
+    params = _params(action)
+
+    assert "WFHTTPMethod" not in params
+    assert "WFHTTPBodyType" not in params
+    assert "WFJSONValues" not in params
+    assert "WFRequestVariable" not in params
+    assert params["WFURL"] == "https://x"
+
+
+def test_json_factory_post() -> None:
+    """DownloadURL.json() defaults to POST and emits WFHTTPBodyType=JSON."""
+    action = DownloadURL.json("url", {"k": "v"})
+    params = _params(action)
+
+    assert params["WFHTTPMethod"] == "POST"
+    assert params["WFHTTPBodyType"] == "JSON"
+    items = params["WFJSONValues"]["Value"]["WFDictionaryFieldValueItems"]
+    assert len(items) == 1
+    assert items[0]["WFKey"]["Value"]["string"] == "k"
+    assert items[0]["WFValue"]["Value"]["string"] == "v"
+    assert "WFRequestVariable" not in params
+
+
+def test_json_factory_put() -> None:
+    """DownloadURL.json(..., method='PUT') emits WFHTTPMethod=PUT."""
+    action = DownloadURL.json("url", {"k": "v"}, method="PUT")
+    params = _params(action)
+
+    assert params["WFHTTPMethod"] == "PUT"
+    assert params["WFHTTPBodyType"] == "JSON"
+
+
+def test_plain_text_factory() -> None:
+    """DownloadURL.plain_text() emits WFHTTPBodyType='Plain Text' and WFRequestVariable."""
+    body_var = NamedVar("Body")
+    action = DownloadURL.plain_text("url", body_var, method="POST")
+    params = _params(action)
+
+    assert params["WFHTTPMethod"] == "POST"
+    assert params["WFHTTPBodyType"] == "Plain Text"
+    assert "WFRequestVariable" in params
+    assert "WFJSONValues" not in params
+
+    req_var = params["WFRequestVariable"]
+    assert req_var["WFSerializationType"] == "WFTextTokenAttachment"
+    assert req_var["Value"]["VariableName"] == "Body"
+
+
+def test_file_factory() -> None:
+    """DownloadURL.file() emits WFHTTPBodyType='File' and WFRequestVariable."""
+    audio_var = NamedVar("Audio")
+    action = DownloadURL.file("url", audio_var, method="PUT")
+    params = _params(action)
+
+    assert params["WFHTTPMethod"] == "PUT"
+    assert params["WFHTTPBodyType"] == "File"
+    assert "WFRequestVariable" in params
+    assert "WFJSONValues" not in params
+
+    req_var = params["WFRequestVariable"]
+    assert req_var["WFSerializationType"] == "WFTextTokenAttachment"
+    assert req_var["Value"]["VariableName"] == "Audio"
+
+
+def test_get_factory_no_body_kwarg() -> None:
+    """DownloadURL.get() does not accept a body keyword argument.
+
+    We spread a ``dict[str, Any]`` so ty sees a valid ``**kwargs`` expansion
+    (the spread type matches ``headers: dict[str, Any] | None``) while the
+    runtime rejects the unknown key ``"body"`` with a ``TypeError``.  ty
+    already confirms this statically; this test asserts the runtime behaviour.
+    """
+    bad_kwargs: dict[str, Any] = {"body": NamedVar("X")}
+    with pytest.raises(TypeError):
+        DownloadURL.get("url", **bad_kwargs)
+
+
+def test_factory_round_trip_equals_direct() -> None:
+    """Factory and direct constructor produce identical to_action_dict() output.
+
+    UUIDs differ per instance, so we compare params minus UUID.
+    """
+    url = "https://api.example.com/items"
+    body = {"k": "v"}
+    headers = {"H": "v"}
+
+    via_factory = DownloadURL.json(url, body, headers=headers)
+    via_direct = DownloadURL(
+        url=url,
+        method="POST",
+        body=body,
+        body_type="JSON",
+        headers=headers,
+    )
+
+    factory_params = _params(via_factory)
+    direct_params = _params(via_direct)
+
+    # Strip UUID before comparison (each instance gets a fresh one).
+    factory_params.pop("UUID", None)
+    direct_params.pop("UUID", None)
+
+    assert factory_params == direct_params
