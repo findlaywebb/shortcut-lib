@@ -89,3 +89,25 @@ def test_text_split_valid_separators_accepted() -> None:
         action = TextSplit(input="abc", separator=sep)
         params = action.to_action_dict()["WFWorkflowActionParameters"]
         assert params["separator"] == sep
+
+
+def test_text_split_show_text_emitted_when_set() -> None:
+    """show_text=True emits ``Show-text: True`` in the wire format.
+
+    Apple emits this UI-only boolean toggle when the Show Text element is
+    visible in the editor.  It has no runtime semantic effect.
+    """
+    params = TextSplit(input="x", show_text=True).to_action_dict()[
+        "WFWorkflowActionParameters"
+    ]
+    assert params["Show-text"] is True
+
+
+def test_text_split_show_text_omitted_by_default() -> None:
+    """show_text defaults to None and ``Show-text`` is absent from the emit.
+
+    Apple omits the key entirely when the toggle is not set; the schema
+    matches this by only emitting when the field is explicitly provided.
+    """
+    params = TextSplit(input="x").to_action_dict()["WFWorkflowActionParameters"]
+    assert "Show-text" not in params
