@@ -65,3 +65,32 @@ The implementation is as simple as it should be for a single-parameter action:
 ## 5. Merge recommendation
 
 **Merge as-is.** No changes required.
+
+---
+
+## 2026-05-10 merge-readiness pass
+
+**Verdict:** Pass
+
+**Branch HEAD:** `afb0f68` (matches _SUMMARY.md record `afb0f68`)
+
+**Merge against main:**
+- Result: clean
+- Conflict files: none
+- Resolution: automatic merge succeeded with no conflicts; branch adds only two new files (`src/shortcut_lib/schema/actions/preview_document.py`, `tests/test_action_preview_document.py`) which have no overlap with any main advancement.
+
+**Pytest on merged state:** 338 passing, 0 failing (6 skipped, 3 xfailed). One transient failure (`test_signs_to_disk`) appeared on the first run but passed when run in isolation and on two subsequent full-suite runs — pre-existing flaky test unrelated to this branch.
+
+**prek:** skipped (pre-commit binary not installed in worktree; ruff check/format previously confirmed clean on initial review)
+
+**Drift / observations:**
+- Main has advanced 27 commits since branch cut, adding 30+ review files, new sample XMLs, and test infrastructure (`test_wire_format_equivalence.py`). None conflict with this branch's additions.
+- The `docs/architecture-review/v15-reviews/` directory did not exist in the worktree (branch predates it); the review file was carried forward from main for this pass.
+- No sibling actions on main contradict the wire-key (`WFInput`) or envelope (`WFTextTokenAttachment` via `coerce_value`) choices made here.
+- New `test_wire_format_equivalence.py` from main runs cleanly against the merged state; `previewdocument` is not in its parametrize list (it uses a dedicated test file instead), no gap.
+
+**Minor corrections applied:**
+- none
+
+**Concerns for higher-tier review:**
+- none
