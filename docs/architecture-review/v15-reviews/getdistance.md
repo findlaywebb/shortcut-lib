@@ -107,3 +107,31 @@ None. No pre-existing issues surfaced in adjacent code. No schema, naming, or st
 ## 9. Merge recommendation
 
 **Merge as-is.** Tests pass, prek clean, wire key confirmed against corpus, envelope shape verified, jellycore null cross-checked, no speculative fields, documentation is exemplary. This is a clean, honest, minimal action model.
+
+## 2026-05-10 merge-readiness pass
+
+**Verdict:** Pass
+
+**Branch HEAD:** `5a26095` (matches _SUMMARY.md record `5a26095`)
+
+**Merge against main:**
+- Result: clean
+- Conflict files: none
+- Resolution: Automatic merge succeeded with no conflicts; the review file (`docs/architecture-review/v15-reviews/getdistance.md`) lives on main (added after the branch was cut) and merges in cleanly.
+
+**Pytest on merged state:** 346 passing, 0 failing (6 skipped, 3 xfailed)
+
+**prek:** green (trailing-whitespace, EOF, YAML, large-file, ruff lint, ruff format, uv-lock, ty — all passed)
+
+**Drift / observations:**
+- Branch HEAD `5a26095` matches the recorded SHA in the task brief. No drift.
+- The review file was committed to main after the branch was cut; it does not appear in the branch diff but merges in cleanly.
+- No sibling actions on main contradict `WFGetDistanceDestination` — the `gettraveltime` review on main explicitly calls out the wire-key distinction (`WFDestination` vs `WFGetDistanceDestination`), consistent with this branch's claims.
+- Test count grew from 15 (original branch review) to 346 on merged state, reflecting main advancing with other batch merges. All green.
+- `v15/model-getdistance` is not yet listed in `_SUMMARY.md` (it post-dates the last recorded batch). No action required here; the summary update is a main-thread task.
+
+**Minor corrections applied:**
+- none
+
+**Concerns for higher-tier review:**
+- none
