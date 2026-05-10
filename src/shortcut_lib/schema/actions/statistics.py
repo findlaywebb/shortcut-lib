@@ -16,12 +16,25 @@ from shortcut_lib.schema.registry import register
 # Closed set of aggregate operations shown in Shortcuts.app's "Get Statistic
 # of Numbers" action dropdown.
 #
-# Source: both corpus appearances omit ``WFStatisticsOperation``, confirming
-# "Average" is Apple's default. The full set of operation strings is derived
-# from the Shortcuts.app UI and the Apple Shortcuts URL-scheme documentation;
-# jellycore_facts.json has **no entry** for ``is.workflow.actions.statistics``
-# (verified: ``jq '.["is.workflow.actions.statistics"]' data/jellycore_facts.json``
-# returns ``null``), so no jellycore source is claimed here.
+# Source confidence:
+#
+# * **Both corpus appearances omit the operation key**, confirming "Average"
+#   is Apple's default but giving no evidence of the wire-key spelling for
+#   non-default operations.
+# * **Jellycore lists ``parameter_keys: ["Input", "operation"]``** (lowercase
+#   ``operation``) for ``is.workflow.actions.statistics``. This implementation
+#   currently emits ``WFStatisticsOperation`` (WF-prefixed). Given the
+#   AppIntent-style pattern (the action uses bare ``Input`` rather than
+#   ``WFInput``), the wire key may actually be lowercase ``operation`` to
+#   match. Until a corpus sample exercises a non-default operation, the
+#   wire-key spelling is **uncertain**; the schema may need to switch to
+#   ``operation`` if a non-Average sample surfaces. Tests pin only the
+#   default-omit behaviour, which is unambiguous.
+# * **The 9 operation token strings below** ("Average", "Minimum", ...) are
+#   Shortcuts.app UI labels. Jellycore does not enumerate values, only the
+#   parameter name. They are the project's best inference; treat any
+#   round-trip equivalence test that exercises a non-default operation as
+#   speculative until corpus evidence arrives.
 WFStatisticsOperation = Literal[
     "Average",
     "Minimum",
@@ -118,6 +131,11 @@ class Statistics(Action):
 
     def _params(self) -> dict[str, Any]:
         """Return the Input and WFStatisticsOperation parameter dict.
+
+        NOTE: the wire-key spelling for the operation is unverified —
+        jellycore lists ``operation`` (lowercase) but the corpus contains
+        no non-default sample. See the module docstring's "Source
+        confidence" block.
 
         Apple omits ``WFStatisticsOperation`` when the operation is "Average"
         (the default). Both corpus observations confirm this — neither sets
