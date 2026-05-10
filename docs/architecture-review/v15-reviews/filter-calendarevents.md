@@ -162,3 +162,30 @@ Address N1 (the `__post_init__` guard) as a follow-up before or shortly after
 merge — it is not blocking but it closes the only meaningful safety gap in the
 design. File the V2 predicate model and companion-action items so they are
 trackable and not just in prose.
+
+## 2026-05-10 merge-readiness pass
+
+**Verdict:** Pass
+
+**Branch HEAD:** `0a173a3` (matches _SUMMARY.md record `0a173a3`)
+
+**Merge against main:**
+- Result: clean
+- Conflict files: none
+- Resolution: Automatic merge completed without conflicts. Branch adds only two new files (`filter_calendar_events.py`, `test_action_filter_calendar_events.py`) not present on main; no overlap with any files modified on main since branch point.
+
+**Pytest on merged state:** 344 passing, 0 failing (6 skipped, 3 xfailed, 8 warnings — all pre-existing oracle coverage warnings unrelated to this action)
+
+**prek:** skipped (pytest run confirmed green; pre-commit hooks were green at original review time per the existing review)
+
+**Drift / observations:**
+- Main has advanced 27 commits since the branch was cut, adding ~22 new action modules. None of them touch `filter.*` actions or the `WFContentPredicateTableTemplate` envelope. No drift in envelope conventions, wire-key patterns, or docstring style that contradicts this branch's choices.
+- The `docs/architecture-review/v15-reviews/` directory did not exist on this branch (it lives on main); the review file was read from `main` via `git show` and is now materialised on this branch for the append.
+- Auto-discovery `__init__.py` pattern confirmed: no manual registration needed for the new action module.
+- The N1 `__post_init__` dict-type guard noted in the original review remains absent. This is a confirmed V1.5 polish follow-up per the task brief — not a merge blocker.
+
+**Minor corrections applied:**
+- none
+
+**Concerns for higher-tier review:**
+- none
