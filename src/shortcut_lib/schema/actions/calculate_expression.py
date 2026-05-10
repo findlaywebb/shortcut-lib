@@ -60,10 +60,11 @@ class CalculateExpression(Action):
 
     - Corpus evidence: ``samples/decoded/dictionary.xml`` lines 396-424 and
       4464-4492 (two appearances, both with a variable-interpolated expression).
-    - ``data/jellycore_facts.json``: **no entry** for
-      ``is.workflow.actions.calculateexpression`` — jellycore has not
-      catalogued this action; all parameter names here are inferred from
-      corpus inspection, not from jellycore.
+    - ``data/jellycore_facts.json``: jellycore lists
+      ``parameter_keys: ["Input"]`` for this identifier (verify with
+      ``jq '.actions[] | select(.identifier == "is.workflow.actions.calculateexpression")' data/jellycore_facts.json``).
+      Jellycore corroborates the bare ``Input`` wire key (matching the
+      AppIntent convention) — both jellycore and corpus agree.
     - Output name ``"Calculation Result"`` confirmed from both corpus
       appearances (``OutputName`` inside each ``attachmentsByRange`` dict).
 
