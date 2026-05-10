@@ -168,3 +168,30 @@ None requiring action. The one cosmetic finding:
 can be fixed in a follow-up if desired. All substantive claims are verified,
 the guard policy is defensible, the test suite covers the corpus faithfully,
 and the documentation sets the bar for this series.
+
+## 2026-05-10 merge-readiness pass
+
+**Verdict:** Fail-Sonnet → Pass (fixed inline at `24f46b5`)
+
+**Branch HEAD:** `24f46b5` (diverges from _SUMMARY.md record `97f730d` — branch has 3 commits ahead of main: original schema commit `97f730d`, follow-up jellycore correction `ee83557`, and inline review fix `24f46b5`)
+
+**Merge against main:**
+- Result: clean
+- Conflict files: none
+- Resolution: No conflicts; main changes (CLAUDE.md, action-modelling.md, new v15-review files) merged without any overlap with branch additions.
+
+**Pytest on merged state:** 342 passing, 0 failing, 7 skipped, 3 xfailed
+
+**prek:** green (all 8 hooks passed on inline correction commit)
+
+**Drift / observations:**
+- Branch HEAD is `24f46b5` (3 commits ahead of main), not the `97f730d` recorded in _SUMMARY.md. The extra commit `ee83557` corrected a stale "no jellycore entry" claim — jellycore does have an entry for `is.workflow.actions.calculateexpression` with `parameter_keys: ["Input"]`. This was verified with the array-select form. The docstring on the branch correctly reflects the jellycore corroboration.
+- Jellycore entry confirmed: `jq '.actions[] | select(.identifier == "is.workflow.actions.calculateexpression")' data/jellycore_facts.json` returns `display_name: "Calculate Expression"`, `parameter_keys: ["Input"]`. Both jellycore and corpus agree on the bare `Input` wire key.
+- No sibling action drift found: the `Math` action's use of `WFInput` (distinct from this action's `Input`) remains correct per the review. No new sibling actions on main contradict the wire-key or envelope claims.
+- The review file for this branch existed only on main (not on the branch) — written to the branch here so the section lands correctly on merge.
+
+**Minor corrections applied:**
+- `src/shortcut_lib/schema/actions/calculate_expression.py:61` — corrected corpus line citations from "396-424 and 4464-4492" to "394-424 and 4462-4492" (opening `<dict>` at those lines, consistent with test file citation style) (commit `24f46b5`)
+
+**Concerns for higher-tier review:**
+- none
