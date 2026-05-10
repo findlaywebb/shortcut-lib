@@ -71,8 +71,11 @@ class Statistics(Action):
     **Source notes**
 
     - Corpus: 2 appearances in ``samples/decoded/dictionary.xml``.
-    - Jellycore: **no entry** for this action identifier (verified directly
-      against ``data/jellycore_facts.json``). No jellycore attribution is made.
+    - Jellycore: **entry exists** with ``parameter_keys: ["Input",
+      "operation"]`` (lowercase ``operation``). The branch currently
+      emits ``WFStatisticsOperation`` — the disagreement is unresolved
+      pending a non-default-operation corpus sample. See the module
+      docstring's "Source confidence" block above.
     - ``observed_envelope_types.json`` entry: ``Input`` → ``WFTextTokenAttachment``
       (2 of 2 observations).
 
