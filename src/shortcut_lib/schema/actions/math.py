@@ -35,12 +35,19 @@ WFMathOperation = Literal[
 # used when a scientific operation is active (except for "x^y", where it
 # supplies the exponent).
 #
-# Wire-format strings inferred from Apple's Shortcuts.app UI labels
-# (iOS 17 / macOS 14). Neither jellycore nor any decoded corpus sample
-# confirms the ``scientific`` parameter key, the operation token strings,
-# or the ``x^y`` exponent rule — they are speculative pending a fresh
-# sample exercising scientific mode. Use the exact codepoints below;
-# do not substitute ASCII approximations.
+# Source confidence:
+#   * The ``scientific`` parameter KEY is confirmed by jellycore
+#     (data/jellycore_facts.json — parameter_keys for
+#     is.workflow.actions.math: ["WFInput", "WFMathOperation",
+#     "WFMathOperand", "scientific"]).
+#   * The 13 operation TOKEN STRINGS below (e.g. "√", "sin(x)",
+#     "x^y") and the rule that "x^y" still consumes WFMathOperand as
+#     the exponent are inferred from Apple's Shortcuts.app UI labels
+#     (iOS 17 / macOS 14); no decoded corpus sample exercises any
+#     scientific operation, so the exact wire encoding of each token
+#     is pending a fresh sample.
+# Use the exact codepoints below; do not substitute ASCII
+# approximations.
 WFScientificOperation = Literal[
     "√",  # square root — U+221A SQUARE ROOT
     "x^2",  # square
@@ -121,9 +128,11 @@ class Math(Action):
     parameter key and suppresses ``WFMathOperation``.  For ``"x^y"``
     the ``operand`` is emitted as the exponent.
 
-    *Note: scientific mode is not corpus-confirmed. The parameter key
-    name, the operation token strings, and the exponent rule for x^y
-    are inferred from Apple's UI alone; see the module docstring.*
+    *Note on scientific mode:* the ``scientific`` parameter key is
+    jellycore-confirmed; the 13 operation token strings and the rule
+    that ``x^y`` consumes ``WFMathOperand`` are inferred from Apple's
+    UI and are pending a corpus sample. See the module docstring's
+    "Source confidence" block.
 
     **Corpus evidence** (``samples/decoded/dictionary.xml``):
 
