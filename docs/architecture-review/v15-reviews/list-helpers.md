@@ -165,3 +165,35 @@ good, and the known gaps (I1–I3) are tracked here rather than being silent.
 
 The `WFItemIndex` co-emission finding (I1) should become an issue file
 before or immediately after merge so it is not lost.
+
+## 2026-05-10 merge-readiness pass
+
+**Verdict:** Request-Human
+
+**Branch HEAD:** `ecbea30` (matches _SUMMARY.md record `ecbea30`)
+
+**Merge against main:**
+- Result: aborted — dry-run merge denied by permission system; manual inspection performed instead
+- Conflict files: `src/shortcut_lib/schema/actions/get_item_from_list.py`, `tests/test_action_get_item_from_list.py`
+- Resolution: See drift/observations below — `v15/model-getitemfromlist` (Batch 11) introduces the same two files with a different implementation. These two branches cannot both land without a human deciding which `GetItemFromList` schema wins.
+
+**Pytest on merged state:** 370 passing, 6 skipped, 3 xfailed (branch-only state, not post-merge); prek clean.
+
+**prek:** green (all 8 checks passed on branch state)
+
+**Drift / observations:**
+- `v15/model-getitemfromlist` (Batch 11, head `6d7953a`) introduces `src/shortcut_lib/schema/actions/get_item_from_list.py` and `tests/test_action_get_item_from_list.py` — the same file paths as this branch. When both try to land on `main`, the second merge will have a hard conflict on both files.
+- The two implementations diverge on three substantive dimensions:
+  1. **Specifier Literal strings**: this branch uses `"Item At Index"` / `"Item Range"` (title-case "At", capitalised "Range"); Batch 11 uses `"Item at Index"` / `"Items in Range"` (lowercase "at", plural "Items"). Neither form is corpus-confirmed (no sample shows `WFItemSpecifier` set to either). The correct form requires a fresh corpus sample with a non-default specifier.
+  2. **WFItemIndex emission policy**: this branch only emits `WFItemIndex` for `specifier="Item At Index"`, producing round-trip fidelity loss (issue I1 in the original review). Batch 11 always emits `WFItemIndex` whenever set — round-trip faithful per the `tile_last_2_windows.xml:89-92` corpus evidence.
+  3. **Python field name**: this branch uses `index`; Batch 11 uses `item_index`.
+- Batch 11's resolution of I1 is the more correct design (corpus-faithful `WFItemIndex` emission, documented with exact line citations). If the user intends to merge both branches, the `GetItemFromList` parts of this branch should be **superseded by** `v15/model-getitemfromlist` — only `count.py` and `test_action_count.py` from this branch are unique and conflict-free.
+- `count.py` and `test_action_count.py` are not touched by any other branch and will merge cleanly regardless of order.
+- No sibling actions on `main` contradict the `Count` schema. The `Input` (bare, AppIntent-style) wire key is consistent with `calculateexpression.py` and `statistics.py` on their respective branches.
+
+**Minor corrections applied:**
+- none
+
+**Concerns for higher-tier review:**
+- The `GetItemFromList` implementation in this branch is superseded by the more corpus-faithful `v15/model-getitemfromlist` (Batch 11). The user should decide one of: (a) skip merging this branch's `get_item_from_list.py` / `test_action_get_item_from_list.py` and rely on Batch 11, (b) manually cherry-pick only `count.py` + `test_action_count.py` from this branch, or (c) merge in the correct order (Batch 11 first) and accept that this branch's getitemfromlist files will conflict/be overwritten. The `Count` action in this branch is clean and has no conflict.
+- The specifier string capitalisation (`"Item At Index"` vs `"Item at Index"`) needs corpus confirmation before either form is treated as authoritative. A fresh sample with a non-default specifier would resolve this.
