@@ -306,15 +306,15 @@ auditor confirms the lib is a full-cycle Shortcuts tool, not just an author.
 
 ## Appendix — The Competitive Gap in One Table
 
-| Platform | Can produce `.shortcut` files | LLM ergonomics | Apple-native signing | Offline / on-device |
-|---|---|---|---|---|
-| Zapier / Make / n8n | No | Yes (workflow authoring) | No | No |
-| Apple Shortcuts.app | Yes (GUI only) | No | Yes | Yes |
-| `python-shortcuts` (PyPI) | Yes | No (human author) | No | N/A |
-| Cherri (transpiler) | Yes | Partial (LLM can write Cherri syntax) | No | N/A |
-| `mcp-server-apple-shortcuts` | No (run only) | Yes (MCP tools) | N/A | macOS only |
-| **shortcut-lib (today)** | **Yes** | **Yes (designed for it)** | **Yes** | **Yes** |
-| **shortcuts-sdk (target)** | **Yes** | **Yes + MCP server** | **Yes** | **Yes** |
+| Platform                     | Can produce `.shortcut` files | LLM ergonomics                        | Apple-native signing | Offline / on-device |
+| ---------------------------- | ----------------------------- | ------------------------------------- | -------------------- | ------------------- |
+| Zapier / Make / n8n          | No                            | Yes (workflow authoring)              | No                   | No                  |
+| Apple Shortcuts.app          | Yes (GUI only)                | No                                    | Yes                  | Yes                 |
+| `python-shortcuts` (PyPI)    | Yes                           | No (human author)                     | No                   | N/A                 |
+| Cherri (transpiler)          | Yes                           | Partial (LLM can write Cherri syntax) | No                   | N/A                 |
+| `mcp-server-apple-shortcuts` | No (run only)                 | Yes (MCP tools)                       | N/A                  | macOS only          |
+| **shortcut-lib (today)**     | **Yes**                       | **Yes (designed for it)**             | **Yes**              | **Yes**             |
+| **shortcuts-sdk (target)**   | **Yes**                       | **Yes + MCP server**                  | **Yes**              | **Yes**             |
 
 The gap is real. No existing tool combines all four columns. The lib already
 occupies that intersection; the strategic moves above make it visible.
