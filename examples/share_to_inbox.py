@@ -82,27 +82,43 @@ _ACCEPTED_INPUT: list[str] = [
 ]
 
 
-def _add_config(s: Shortcut) -> None:
-    """Collect Token and Repo via Setup prompts shown at import time."""
+def _add_config(s: Shortcut) -> tuple[NamedVar, NamedVar]:
+    """Collect Token and Repo via Setup prompts shown at import time.
+
+    Returns:
+        Tuple of (token, repo) typed handles for use downstream.
+    """
     token_text = s.ask_text_on_import(
         question="Your GitHub personal access token (fine-grained, contents: read+write)",
         default="REPLACE_WITH_GITHUB_PAT",
     )
-    s.set("Token", token_text)
+    token = s.set("Token", token_text)
     repo_text = s.ask_text_on_import(
         question="The repo to write inbox notes to (owner/name)",
         default="owner/repo-name",
     )
-    s.set("Repo", repo_text)
+    repo = s.set("Repo", repo_text)
+    return token, repo
 
 
-def _add_capture(s: Shortcut) -> None:
-    """Capture share-sheet input as the named variable ``Input``."""
-    s.set("Input", ShortcutInput)
+def _add_capture(s: Shortcut) -> NamedVar:
+    """Capture share-sheet input as the named variable ``Input``.
+
+    Returns:
+        Typed handle for the Input variable.
+    """
+    input_var = s.set("Input", ShortcutInput)
+    return input_var
 
 
 def _url_branch_body() -> list:
-    """Return actions for the URL branch: YAML front-matter + bare URL body."""
+    """Return actions for the URL branch: YAML front-matter + bare URL body.
+
+    Uses NamedVar string references intentionally: branch body actions are
+    constructed outside the builder's s.set() path and run inside an If
+    construct, so typed handles from the outer scope are not available at
+    wire-format resolution time.
+    """
     stamp_ref = NamedVar("Stamp")
     input_ref = NamedVar("Input")
     body_text = GetText(
@@ -124,7 +140,13 @@ def _url_branch_body() -> list:
 
 
 def _text_branch_body() -> list:
-    """Return actions for the text branch: YAML front-matter + blockquote."""
+    """Return actions for the text branch: YAML front-matter + blockquote.
+
+    Uses NamedVar string references intentionally: branch body actions are
+    constructed outside the builder's s.set() path and run inside an If
+    construct, so typed handles from the outer scope are not available at
+    wire-format resolution time.
+    """
     stamp_ref = NamedVar("Stamp")
     input_ref = NamedVar("Input")
     body_text = GetText(
@@ -145,8 +167,12 @@ def _text_branch_body() -> list:
     return [body_text, body_var]
 
 
-def _add_stamp(s: Shortcut) -> None:
-    """Produce a millisecond-precision timestamp and store as ``Stamp``."""
+def _add_stamp(s: Shortcut) -> NamedVar:
+    """Produce a millisecond-precision timestamp and store as ``Stamp``.
+
+    Returns:
+        Typed handle for the Stamp variable.
+    """
     stamp = s.add(
         FormatDate(
             input=CurrentDate,
@@ -154,35 +180,52 @@ def _add_stamp(s: Shortcut) -> None:
             custom_format="yyyy-MM-dd_HH-mm-ss-SSS",
         )
     )
-    s.add(SetVariable(name="Stamp", input=stamp))
+    stamp_var = s.set("Stamp", stamp)
+    return stamp_var
 
 
-def _add_branch(s: Shortcut) -> None:
-    """Branch on input type (URL heuristic) and set ``Body`` in each branch."""
+def _add_branch(s: Shortcut, input_var: NamedVar) -> NamedVar:
+    """Branch on input type (URL heuristic) and set ``Body`` in each branch.
+
+    Returns:
+        Typed handle for the Body variable (set inside the If branches;
+        NamedVar string retained as Body is written in cross-scope branch
+        bodies constructed outside s.set()).
+    """
     s.add(
         If(
-            operand=NamedVar("Input"),
+            operand=input_var,
             op="contains",
             value="://",
             then=_url_branch_body(),
             otherwise=_text_branch_body(),
         )
     )
+    # NamedVar string retained: Body is set inside If branch bodies
+    # constructed outside s.set(), so a typed handle is not available
+    # from this call site.
+    return NamedVar("Body")
 
 
-def _add_push(s: Shortcut) -> None:
+def _add_push(
+    s: Shortcut,
+    body_var: NamedVar,
+    stamp_var: NamedVar,
+    token: NamedVar,
+    repo: NamedVar,
+) -> None:
     """Compose filename, encode ``Body``, and PUT to the GitHub Files API."""
     base_text = s.add(
         GetText(
             text=Text(
                 "share_{stamp}",
-                substitutions={"stamp": NamedVar("Stamp")},
+                substitutions={"stamp": stamp_var},
             )
         )
     )
-    s.add(SetVariable(name="Base", input=base_text))
+    base_var = s.set("Base", base_text)
 
-    encoded = s.add(Base64Encode(input=NamedVar("Body")))
+    encoded = s.add(Base64Encode(input=body_var))
     stripped = s.add(
         TextReplace(
             input=encoded,
@@ -191,17 +234,17 @@ def _add_push(s: Shortcut) -> None:
             regex=True,
         )
     )
-    s.add(SetVariable(name="ContentB64", input=stripped))
+    content_b64 = s.set("ContentB64", stripped)
 
     url_text = s.add(
         GetText(
             text=Text(
                 "https://api.github.com/repos/{repo}/contents/inbox/{base}.md",
-                substitutions={"repo": NamedVar("Repo"), "base": NamedVar("Base")},
+                substitutions={"repo": repo, "base": base_var},
             )
         )
     )
-    auth_header = Text("Bearer {tok}", substitutions={"tok": NamedVar("Token")})
+    auth_header = Text("Bearer {tok}", substitutions={"tok": token})
     s.add(
         DownloadURL(
             url=url_text,
@@ -214,9 +257,9 @@ def _add_push(s: Shortcut) -> None:
             body={
                 "message": Text(
                     "Add inbox note {base}",
-                    substitutions={"base": NamedVar("Base")},
+                    substitutions={"base": base_var},
                 ),
-                "content": NamedVar("ContentB64"),
+                "content": content_b64,
             },
             body_type="JSON",
         )
@@ -227,7 +270,7 @@ def _add_push(s: Shortcut) -> None:
             title="Saved to inbox",
             body=Text(
                 "inbox/{base}.md written to {repo}.",
-                substitutions={"base": NamedVar("Base"), "repo": NamedVar("Repo")},
+                substitutions={"base": base_var, "repo": repo},
             ),
         )
     )
@@ -240,11 +283,11 @@ def build() -> Shortcut:
         surfaces=["share", "quick-action"],
         accepted_input=_ACCEPTED_INPUT,
     )
-    _add_config(s)
-    _add_capture(s)
-    _add_stamp(s)
-    _add_branch(s)
-    _add_push(s)
+    token, repo = _add_config(s)
+    input_var = _add_capture(s)
+    stamp_var = _add_stamp(s)
+    body_var = _add_branch(s, input_var)
+    _add_push(s, body_var, stamp_var, token, repo)
     return s
 
 

@@ -34,45 +34,59 @@ from shortcut_lib.schema.actions.download_url import DownloadURL
 from shortcut_lib.schema.actions.format_date import FormatDate
 from shortcut_lib.schema.actions.get_clipboard import GetClipboard
 from shortcut_lib.schema.actions.get_text import GetText
-from shortcut_lib.schema.actions.set_variable import SetVariable
 from shortcut_lib.schema.actions.show_notification import ShowNotification
 from shortcut_lib.schema.actions.text_replace import TextReplace
 from shortcut_lib.schema.actions.use_model import UseModel
 from shortcut_lib.schema.values import CurrentDate
 
 
-def _add_config(s: Shortcut) -> None:
-    """Collect Token and Repo via Setup prompts shown at import time."""
+def _add_config(s: Shortcut) -> tuple[NamedVar, NamedVar]:
+    """Collect Token and Repo via Setup prompts shown at import time.
+
+    Returns:
+        Tuple of (token, repo) typed handles for use downstream.
+    """
     token_text = s.ask_text_on_import(
         question="Your GitHub personal access token (fine-grained, contents: read+write)",
         default="REPLACE_WITH_GITHUB_PAT",
     )
-    s.set("Token", token_text)
+    token = s.set("Token", token_text)
     repo_text = s.ask_text_on_import(
         question="The repo to commit to (owner/name)",
         default="owner/repo-name",
     )
-    s.set("Repo", repo_text)
+    repo = s.set("Repo", repo_text)
+    return token, repo
 
 
-def _add_polish(s: Shortcut) -> None:
-    """Read the clipboard, polish via Apple Intelligence, store as ``Polished``."""
+def _add_polish(s: Shortcut) -> NamedVar:
+    """Read the clipboard, polish via Apple Intelligence, store as ``Polished``.
+
+    Returns:
+        Typed handle for the Polished variable.
+    """
     note = s.add(GetClipboard())
-    s.add(SetVariable(name="Note", input=note))
+    note_var = s.set("Note", note)
     polished = s.add(
         UseModel(
             prompt=Text(
                 "Polish this note for clarity and tone, preserving meaning. "
                 "Return only the polished text, no commentary:\n\n{n}",
-                substitutions={"n": NamedVar("Note")},
+                substitutions={"n": note_var},
             ),
             model="Apple Intelligence",
         )
     )
-    s.add(SetVariable(name="Polished", input=polished))
+    polished_var = s.set("Polished", polished)
+    return polished_var
 
 
-def _add_push(s: Shortcut) -> None:
+def _add_push(
+    s: Shortcut,
+    polished_var: NamedVar,
+    token: NamedVar,
+    repo: NamedVar,
+) -> None:
     """Encode ``Polished`` and PUT it to the GitHub Files API."""
     # Filename: yyyy-MM-dd_HH-mm-ss-SSS — ms precision keeps re-runs from
     # colliding on the GitHub side (PUT returns 422 "sha wasn't supplied"
@@ -84,19 +98,19 @@ def _add_push(s: Shortcut) -> None:
             custom_format="yyyy-MM-dd_HH-mm-ss-SSS",
         )
     )
-    s.add(SetVariable(name="Stamp", input=stamp))
+    stamp_var = s.set("Stamp", stamp)
 
     base_text = s.add(
         GetText(
             text=Text(
                 "note_{stamp}",
-                substitutions={"stamp": NamedVar("Stamp")},
+                substitutions={"stamp": stamp_var},
             )
         )
     )
-    s.add(SetVariable(name="Base", input=base_text))
+    base_var = s.set("Base", base_text)
 
-    encoded = s.add(Base64Encode(input=NamedVar("Polished")))
+    encoded = s.add(Base64Encode(input=polished_var))
     stripped = s.add(
         TextReplace(
             input=encoded,
@@ -105,17 +119,17 @@ def _add_push(s: Shortcut) -> None:
             regex=True,
         )
     )
-    s.add(SetVariable(name="ContentB64", input=stripped))
+    content_b64 = s.set("ContentB64", stripped)
 
     url_text = s.add(
         GetText(
             text=Text(
                 "https://api.github.com/repos/{repo}/contents/notes/{base}.md",
-                substitutions={"repo": NamedVar("Repo"), "base": NamedVar("Base")},
+                substitutions={"repo": repo, "base": base_var},
             )
         )
     )
-    auth_header = Text("Bearer {tok}", substitutions={"tok": NamedVar("Token")})
+    auth_header = Text("Bearer {tok}", substitutions={"tok": token})
     s.add(
         DownloadURL(
             url=url_text,
@@ -126,10 +140,8 @@ def _add_push(s: Shortcut) -> None:
                 "X-GitHub-Api-Version": "2022-11-28",
             },
             body={
-                "message": Text(
-                    "Add note {base}", substitutions={"base": NamedVar("Base")}
-                ),
-                "content": NamedVar("ContentB64"),
+                "message": Text("Add note {base}", substitutions={"base": base_var}),
+                "content": content_b64,
             },
             body_type="JSON",
         )
@@ -140,7 +152,7 @@ def _add_push(s: Shortcut) -> None:
             title="Pushed to GitHub",
             body=Text(
                 "Saved notes/{base}.md to {repo}.",
-                substitutions={"base": NamedVar("Base"), "repo": NamedVar("Repo")},
+                substitutions={"base": base_var, "repo": repo},
             ),
         )
     )
@@ -148,9 +160,9 @@ def _add_push(s: Shortcut) -> None:
 
 def build() -> Shortcut:
     s = Shortcut(name="Vault Note To Git", surfaces=["share", "quick-action"])
-    _add_config(s)
-    _add_polish(s)
-    _add_push(s)
+    token, repo = _add_config(s)
+    polished_var = _add_polish(s)
+    _add_push(s, polished_var, token, repo)
     return s
 
 

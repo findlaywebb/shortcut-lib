@@ -57,35 +57,52 @@ from shortcut_lib.schema.actions.transcribe_audio import TranscribeAudio
 from shortcut_lib.schema.values import CurrentDate
 
 
-def _add_config(s: Shortcut) -> None:
-    """Collect Token and Repo via Setup prompts shown at import time."""
+def _add_config(s: Shortcut) -> tuple[NamedVar, NamedVar]:
+    """Collect Token and Repo via Setup prompts shown at import time.
+
+    Returns:
+        Tuple of (token, repo) typed handles for use downstream.
+    """
     token_text = s.ask_text_on_import(
         question="Your GitHub personal access token (fine-grained, contents: read+write)",
         default="REPLACE_WITH_GITHUB_PAT",
     )
-    s.set("Token", token_text)
+    token = s.set("Token", token_text)
     repo_text = s.ask_text_on_import(
         question="The repo to commit to (owner/name)",
         default="owner/repo-name",
     )
-    s.set("Repo", repo_text)
+    repo = s.set("Repo", repo_text)
+    return token, repo
 
 
-def _add_record_and_transcribe(s: Shortcut) -> None:
-    """Record audio then transcribe it; store both as named variables."""
+def _add_record_and_transcribe(s: Shortcut) -> tuple[NamedVar, NamedVar]:
+    """Record audio then transcribe it; store both as named variables.
+
+    Returns:
+        Tuple of (audio, transcript) typed handles for use downstream.
+    """
     audio = s.add(RecordAudio(start="Immediately"))
-    s.set("Audio", audio)
+    audio_var = s.set("Audio", audio)
 
-    transcript = s.add(TranscribeAudio(audio_file=NamedVar("Audio")))
-    s.set("Transcript", transcript)
+    transcript = s.add(TranscribeAudio(audio_file=audio_var))
+    transcript_var = s.set("Transcript", transcript)
+    return audio_var, transcript_var
 
 
-def _add_metadata_gate(s: Shortcut) -> None:
+def _add_metadata_gate(s: Shortcut) -> NamedVar:
     """Prompt for optional metadata via a two-case ChooseFromMenu.
 
     Both cases assign the Metadata variable so downstream template code
     can reference it unconditionally. "Add metadata" prompts the user for
     tags or context; "Done" writes an empty string.
+
+    The branch bodies are constructed as plain action lists outside the
+    builder's ``s.set()`` path, so Metadata is referenced by name string
+    downstream — this is intentional for cross-scope control-flow bodies.
+
+    Returns:
+        Typed handle for the Metadata variable.
     """
     ask = AskForInput.text(
         prompt="Tags / extra context (optional)",
@@ -114,9 +131,20 @@ def _add_metadata_gate(s: Shortcut) -> None:
             ],
         )
     )
+    # NamedVar string retained: Metadata is set inside ChooseFromMenu branch
+    # bodies constructed outside s.set(), so a typed handle is not available
+    # from this call site.
+    return NamedVar("Metadata")
 
 
-def _add_push(s: Shortcut) -> None:
+def _add_push(
+    s: Shortcut,
+    audio_var: NamedVar,
+    transcript_var: NamedVar,
+    metadata_var: NamedVar,
+    token: NamedVar,
+    repo: NamedVar,
+) -> None:
     """Stamp a filename then PUT markdown + audio to the GitHub Files API."""
     # Millisecond precision avoids collisions when two recordings land in the
     # same second (GitHub returns 422 if the path already exists with no sha).
@@ -127,17 +155,17 @@ def _add_push(s: Shortcut) -> None:
             custom_format="yyyy-MM-dd_HH-mm-ss-SSS",
         )
     )
-    s.set("Stamp", stamp)
+    stamp_var = s.set("Stamp", stamp)
 
     base_text = s.add(
         GetText(
             text=Text(
                 "voice_{stamp}",
-                substitutions={"stamp": NamedVar("Stamp")},
+                substitutions={"stamp": stamp_var},
             )
         )
     )
-    s.set("Base", base_text)
+    base_var = s.set("Base", base_text)
 
     # --- markdown ---
     md_text = s.add(
@@ -157,29 +185,29 @@ def _add_push(s: Shortcut) -> None:
                 "\n"
                 "![[{base}.m4a]]",
                 substitutions={
-                    "stamp": NamedVar("Stamp"),
-                    "transcript": NamedVar("Transcript"),
-                    "metadata": NamedVar("Metadata"),
-                    "base": NamedVar("Base"),
+                    "stamp": stamp_var,
+                    "transcript": transcript_var,
+                    "metadata": metadata_var,
+                    "base": base_var,
                 },
             )
         )
     )
-    s.set("Markdown", md_text)
+    markdown_var = s.set("Markdown", md_text)
 
-    md_encoded = s.add(Base64Encode(input=NamedVar("Markdown")))
+    md_encoded = s.add(Base64Encode(input=markdown_var))
     md_stripped = s.add(
         TextReplace(input=md_encoded, find=r"\s+", replace="", regex=True)
     )
-    s.set("MdB64", md_stripped)
+    md_b64 = s.set("MdB64", md_stripped)
 
-    audio_encoded = s.add(Base64Encode(input=NamedVar("Audio")))
+    audio_encoded = s.add(Base64Encode(input=audio_var))
     audio_stripped = s.add(
         TextReplace(input=audio_encoded, find=r"\s+", replace="", regex=True)
     )
-    s.set("AudioB64", audio_stripped)
+    audio_b64 = s.set("AudioB64", audio_stripped)
 
-    auth_header = Text("Bearer {tok}", substitutions={"tok": NamedVar("Token")})
+    auth_header = Text("Bearer {tok}", substitutions={"tok": token})
     github_headers = {
         "Authorization": auth_header,
         "Accept": "application/vnd.github+json",
@@ -192,8 +220,8 @@ def _add_push(s: Shortcut) -> None:
             text=Text(
                 "https://api.github.com/repos/{repo}/contents/jots/voice/{base}.md",
                 substitutions={
-                    "repo": NamedVar("Repo"),
-                    "base": NamedVar("Base"),
+                    "repo": repo,
+                    "base": base_var,
                 },
             )
         )
@@ -206,9 +234,9 @@ def _add_push(s: Shortcut) -> None:
             body={
                 "message": Text(
                     "voice: {base}",
-                    substitutions={"base": NamedVar("Base")},
+                    substitutions={"base": base_var},
                 ),
-                "content": NamedVar("MdB64"),
+                "content": md_b64,
             },
             body_type="JSON",
         )
@@ -220,8 +248,8 @@ def _add_push(s: Shortcut) -> None:
             text=Text(
                 "https://api.github.com/repos/{repo}/contents/jots/voice/raw_audio/{base}.m4a",
                 substitutions={
-                    "repo": NamedVar("Repo"),
-                    "base": NamedVar("Base"),
+                    "repo": repo,
+                    "base": base_var,
                 },
             )
         )
@@ -234,9 +262,9 @@ def _add_push(s: Shortcut) -> None:
             body={
                 "message": Text(
                     "voice-audio: {base}",
-                    substitutions={"base": NamedVar("Base")},
+                    substitutions={"base": base_var},
                 ),
-                "content": NamedVar("AudioB64"),
+                "content": audio_b64,
             },
             body_type="JSON",
         )
@@ -247,7 +275,7 @@ def _add_push(s: Shortcut) -> None:
             title="Voice Note To Git",
             body=Text(
                 "Voice note pushed: {base}",
-                substitutions={"base": NamedVar("Base")},
+                substitutions={"base": base_var},
             ),
         )
     )
@@ -256,10 +284,10 @@ def _add_push(s: Shortcut) -> None:
 def build() -> Shortcut:
     """Compose the Voice Note To Git shortcut."""
     s = Shortcut(name="Voice Note To Git", surfaces=["quick-action"])
-    _add_config(s)
-    _add_record_and_transcribe(s)
-    _add_metadata_gate(s)
-    _add_push(s)
+    token, repo = _add_config(s)
+    audio_var, transcript_var = _add_record_and_transcribe(s)
+    metadata_var = _add_metadata_gate(s)
+    _add_push(s, audio_var, transcript_var, metadata_var, token, repo)
     return s
 
 

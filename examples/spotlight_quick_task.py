@@ -53,29 +53,43 @@ from shortcut_lib.schema.values import CurrentDate
 _SPOTLIGHT_SURFACE = "WFWorkflowTypeShowInSearch"
 
 
-def _add_config(s: Shortcut) -> None:
-    """Collect Token and Repo via Setup prompts shown at import time."""
+def _add_config(s: Shortcut) -> tuple[NamedVar, NamedVar]:
+    """Collect Token and Repo via Setup prompts shown at import time.
+
+    Returns:
+        Tuple of (token, repo) typed handles for use downstream.
+    """
     token_text = s.ask_text_on_import(
         question="Your GitHub personal access token (fine-grained, contents: read+write)",
         default="REPLACE_WITH_GITHUB_PAT",
     )
-    s.set("Token", token_text)
+    token = s.set("Token", token_text)
 
     repo_text = s.ask_text_on_import(
         question="The repo to commit to (owner/name)",
         default="owner/repo-name",
     )
-    s.set("Repo", repo_text)
+    repo = s.set("Repo", repo_text)
+    return token, repo
 
 
-def _add_input(s: Shortcut) -> None:
-    """Prompt the user for the task text and store as ``TaskText``."""
+def _add_input(s: Shortcut) -> NamedVar:
+    """Prompt the user for the task text and store as ``TaskText``.
+
+    Returns:
+        Typed handle for the TaskText variable.
+    """
     task = s.add(AskForInput.text(prompt="Task text"))
-    s.set("TaskText", task)
+    task_text = s.set("TaskText", task)
+    return task_text
 
 
-def _add_datestamp(s: Shortcut) -> None:
-    """Compute date directory and ms-precision stamp; store as named vars."""
+def _add_datestamp(s: Shortcut) -> tuple[NamedVar, NamedVar]:
+    """Compute date directory and ms-precision stamp; store as named vars.
+
+    Returns:
+        Tuple of (day, stamp) typed handles for use downstream.
+    """
     # Day: directory component — "2026-05-09"
     day = s.add(
         FormatDate(
@@ -84,7 +98,7 @@ def _add_datestamp(s: Shortcut) -> None:
             custom_format="yyyy-MM-dd",
         )
     )
-    s.set("Day", day)
+    day_var = s.set("Day", day)
 
     # Stamp: filename component with ms precision — "14-37-22-843"
     # Millisecond precision eliminates filename collisions for rapid-fire runs.
@@ -95,11 +109,20 @@ def _add_datestamp(s: Shortcut) -> None:
             custom_format="HH-mm-ss-SSS",
         )
     )
-    s.set("Stamp", stamp)
+    stamp_var = s.set("Stamp", stamp)
+    return day_var, stamp_var
 
 
-def _add_content(s: Shortcut) -> None:
-    """Build the markdown task file content and store as ``ContentB64``."""
+def _add_content(
+    s: Shortcut,
+    task_text: NamedVar,
+    stamp_var: NamedVar,
+) -> NamedVar:
+    """Build the markdown task file content and store as ``ContentB64``.
+
+    Returns:
+        Typed handle for the ContentB64 variable.
+    """
     # Tiny frontmatter + a single checkbox task line.  Keeping the schema
     # minimal so vault tooling (dataview, tasks plugin) can query it.
     content_text = s.add(
@@ -107,17 +130,17 @@ def _add_content(s: Shortcut) -> None:
             text=Text(
                 "---\ndate: {stamp}\nsource: spotlight\nstatus: open\ntags: [task]\n---\n\n- [ ] {task}",
                 substitutions={
-                    "stamp": NamedVar("Stamp"),
-                    "task": NamedVar("TaskText"),
+                    "stamp": stamp_var,
+                    "task": task_text,
                 },
             )
         )
     )
-    s.set("Content", content_text)
+    content_var = s.set("Content", content_text)
 
     # Base64-encode then strip whitespace — GitHub Files API requires raw
     # base64 with no line-breaks or trailing newlines.
-    encoded = s.add(Base64Encode(input=NamedVar("Content")))
+    encoded = s.add(Base64Encode(input=content_var))
     stripped = s.add(
         TextReplace(
             input=encoded,
@@ -126,10 +149,19 @@ def _add_content(s: Shortcut) -> None:
             regex=True,
         )
     )
-    s.set("ContentB64", stripped)
+    content_b64 = s.set("ContentB64", stripped)
+    return content_b64
 
 
-def _add_push(s: Shortcut) -> None:
+def _add_push(
+    s: Shortcut,
+    task_text: NamedVar,
+    day_var: NamedVar,
+    stamp_var: NamedVar,
+    content_b64: NamedVar,
+    token: NamedVar,
+    repo: NamedVar,
+) -> None:
     """PUT the task file to GitHub and notify the user."""
     # Path: daily/<Day>/task_<Stamp>.md
     # Each combination is unique — ms-precision stamp means concurrent runs
@@ -139,15 +171,15 @@ def _add_push(s: Shortcut) -> None:
             text=Text(
                 "https://api.github.com/repos/{repo}/contents/daily/{day}/task_{stamp}.md",
                 substitutions={
-                    "repo": NamedVar("Repo"),
-                    "day": NamedVar("Day"),
-                    "stamp": NamedVar("Stamp"),
+                    "repo": repo,
+                    "day": day_var,
+                    "stamp": stamp_var,
                 },
             )
         )
     )
 
-    auth_header = Text("Bearer {tok}", substitutions={"tok": NamedVar("Token")})
+    auth_header = Text("Bearer {tok}", substitutions={"tok": token})
     s.add(
         DownloadURL(
             url=url_text,
@@ -160,9 +192,9 @@ def _add_push(s: Shortcut) -> None:
             body={
                 "message": Text(
                     "Add task {stamp}",
-                    substitutions={"stamp": NamedVar("Stamp")},
+                    substitutions={"stamp": stamp_var},
                 ),
-                "content": NamedVar("ContentB64"),
+                "content": content_b64,
             },
             body_type="JSON",
         )
@@ -173,7 +205,7 @@ def _add_push(s: Shortcut) -> None:
             title="Task added",
             body=Text(
                 "{task}",
-                substitutions={"task": NamedVar("TaskText")},
+                substitutions={"task": task_text},
             ),
         )
     )
@@ -185,11 +217,11 @@ def build() -> Shortcut:
         name="Quick Task",
         surfaces=[_SPOTLIGHT_SURFACE],
     )
-    _add_config(s)
-    _add_input(s)
-    _add_datestamp(s)
-    _add_content(s)
-    _add_push(s)
+    token, repo = _add_config(s)
+    task_text = _add_input(s)
+    day_var, stamp_var = _add_datestamp(s)
+    content_b64 = _add_content(s, task_text, stamp_var)
+    _add_push(s, task_text, day_var, stamp_var, content_b64, token, repo)
     return s
 
 
