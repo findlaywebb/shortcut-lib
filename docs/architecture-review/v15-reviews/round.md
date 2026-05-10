@@ -108,3 +108,29 @@ corpus. Default-omission logic matches observed wire format. Literal-speculation
 risk is clearly documented at both the module and docstring level. The single minor
 issue (spot-check omitting 3 of 11 place values) is cosmetic and does not affect
 correctness.
+
+## 2026-05-10 merge-readiness pass
+
+**Verdict:** Pass
+
+**Branch HEAD:** `b5fa038` (matches _SUMMARY.md record `b5fa038`)
+
+**Merge against main:**
+- Result: clean
+- Conflict files: none
+- Resolution: Automatic merge succeeded with no conflicts. The branch only adds `src/shortcut_lib/schema/actions/round.py` and `tests/test_action_round.py`; main's 19-commit advance touched neither file.
+
+**Pytest on merged state:** 347 passing, 0 failing, 6 skipped, 3 xfailed
+
+**prek:** green (all 8 hooks pass: trailing whitespace, end-of-files, YAML, large-files, ruff lint, ruff format, uv-lock, ty)
+
+**Drift / observations:**
+- No schema, wire-key, or envelope conventions on main contradict this branch's choices. `coerce_value` for `WFTextTokenAttachment` and default-omission via `_params()` match the established pattern across merged siblings.
+- The review file (`docs/architecture-review/v15-reviews/round.md`) was committed to main as part of batch 14 registration and was absent from the worktree — added here to bring the branch into sync before merge.
+- 1/3 mode values corpus-confirmed (one appearance of a non-default mode in `start_pomodoro.xml`); 0/11 place values corpus-confirmed. Both honestly disclaimed in the source. Speculation level is within the accepted band for this project.
+
+**Minor corrections applied:**
+- `docs/architecture-review/v15-reviews/round.md` — review file created in worktree (was missing; existed on main only, added by batch-14 registration commit). No schema or test changes. (commit recorded below)
+
+**Concerns for higher-tier review:**
+- none
