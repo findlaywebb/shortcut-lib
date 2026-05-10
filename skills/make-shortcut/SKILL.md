@@ -68,23 +68,47 @@ and offer one of:
 - B — pick a workable alternative.
 - C — defer until that action lands.
 
-### Step 3 — Write Python
+### Step 3 — Credentials: use `ask_text_on_import`
+
+If the shortcut needs a credential (GitHub PAT, API key, repo path, or
+any other user-specific secret), collect it via a Setup prompt shown at
+import time. **Never bake a real secret into the signed `.shortcut` file.**
+
+```python
+token_text = s.ask_text_on_import(
+    question="Your GitHub personal access token (fine-grained, contents: read+write)",
+    default="REPLACE_WITH_GITHUB_PAT",
+)
+token = s.set("Token", token_text)
+```
+
+`ask_text_on_import` adds a `GetText` action wired as a
+`WFWorkflowImportQuestions` entry. When the user imports the shortcut,
+Shortcuts.app shows a form with your `question` pre-filled with
+`default`. The answer flows into the `GetText` slot and from there into
+`token` — a typed `NamedVar` handle that downstream code references
+directly.
+
+The import flow is: **drag-in → fill prompts → tap Import → run**. No
+manual editing of actions required.
+
+### Step 4 — Write Python
 
 Write a script under `~/personal/shortcut-lib/examples/<name>.py` (or wherever fits).
 
-Pattern:
+Pattern (short pipeline, no logical phases — inline everything in `build()`):
 
 ```python
 from pathlib import Path
 from shortcut_lib.builder import Shortcut
-from shortcut_lib.schema import Text, NamedVar, CurrentDate, If
+from shortcut_lib.schema import Text
 from shortcut_lib.schema.actions.ask import AskForInput
 from shortcut_lib.schema.actions.show_notification import ShowNotification
 
 def build() -> Shortcut:
     s = Shortcut(name="My Shortcut", surfaces=["share"])
-    answer = s.add(AskForInput(prompt="What's up?"))
-    s.add(ShowNotification(title="Hi", body=Text("You said: {x}", substitutions={"x": answer})))
+    count = s.add(AskForInput.number(prompt="How many?", allows_decimal=False))
+    s.add(ShowNotification(title="Count", body=Text("You said {n}", substitutions={"n": count})))
     return s
 
 if __name__ == "__main__":
@@ -93,7 +117,11 @@ if __name__ == "__main__":
     print(f"wrote {out}")
 ```
 
-### Step 4 — Run and verify
+When the workflow has more than 3 logical phases, decompose into
+`_add_<phase>` helpers rather than inlining everything. See the
+Composition pattern section below.
+
+### Step 5 — Run and verify
 
 ```sh
 cd ~/personal/shortcut-lib
@@ -102,9 +130,20 @@ uv run python examples/<name>.py
 
 Then run `uv run shortcut-decode ~/Desktop/<Name>.shortcut --format buzz`
 to read back what was written. Sanity-check the variable wiring,
-control-flow grouping, and parameter shapes.
+control-flow grouping, and parameter shapes. If the buzz output shows
+unexpected empty values or wrong variable names, the error is a signal
+to look at your `NamedVar` references — a typed handle returned by
+`s.set(...)` is the correct fix, not a string you type by hand.
 
-### Step 5 — Hand off
+Then run `uv run pytest` to confirm the existing test suite is still
+clean:
+
+```sh
+cd ~/personal/shortcut-lib
+uv run pytest
+```
+
+### Step 6 — Hand off
 
 Tell the user the file path. Quickest import on macOS:
 
@@ -115,6 +154,62 @@ open ~/Desktop/<Name>.shortcut
 This prompts Shortcuts.app to import. Alternatively drag it. For macOS
 testing once imported: `shortcuts run "<Name>"`.
 
+## Typed handles — the recommended variable pattern
+
+`Shortcut.set(name, value)` stores a variable **and returns a typed
+handle** (`NamedVar`) that downstream code uses directly:
+
+```python
+# Preferred: capture the return value
+note = s.set("Note", clipboard)
+polished = s.set(
+    "Polished",
+    s.add(UseModel(prompt=Text("Polish:\n\n{n}", substitutions={"n": note}))),
+)
+```
+
+The returned handle replaces the older two-step pattern:
+
+```python
+# Discouraged: discard the return, re-fetch by string key
+s.add(SetVariable(name="Note", input=clipboard))
+s.add(UseModel(prompt=Text("Polish:\n\n{n}", substitutions={"n": NamedVar("Note")})))
+```
+
+Both forms produce identical wire format. The difference is that a typo
+in `NamedVar("Noet")` is a runtime empty-value bug on iOS; a typo in
+the Python identifier `noet` is a `NameError` at static-check time.
+This library's primary user is an LLM (you). Typed handles exist to make
+your typos loud, not silent.
+
+**Annotate explicitly if you want the type to read at the call site:**
+
+```python
+token: NamedVar[str] = s.set("Token", token_text)
+```
+
+## Factory methods on `AskForInput`
+
+Prefer the type-specific factories over the direct constructor. They
+expose only the parameters valid for that input type, so an invalid
+combination is a `TypeError` at the call site, not a `SchemaError` after
+construction:
+
+```python
+from shortcut_lib.schema.actions.ask import AskForInput
+
+name   = s.add(AskForInput.text(prompt="Your name"))
+count  = s.add(AskForInput.number(prompt="How many?", allows_decimal=True))
+when   = s.add(AskForInput.datetime(prompt="When should this run?"))
+site   = s.add(AskForInput.url(prompt="Target URL"))
+```
+
+`allows_decimal` and `allows_negative` are keyword arguments on
+`.number()` only — passing them to `.text()` or any other factory is a
+`TypeError` at the call site (Python's normal kwarg check), not a
+deferred error. The direct constructor `AskForInput(input_type=..., ...)`
+still works for runtime-determined input types.
+
 ## Composition pattern
 
 Larger shortcuts decompose into Python helper functions that each accept
@@ -122,48 +217,79 @@ the builder and append actions to it. The result is one `Shortcut` object
 and one emitted `.shortcut` file. **See
 `~/personal/shortcut-lib/examples/vault_note_to_git.py` for the
 canonical example** — `_add_config`, `_add_polish`, and `_add_push` each
-take `s: Shortcut`, call `s.add(...)`, and leave no return value when the
-caller doesn't need to chain; the top-level `build()` calls them in
-sequence.
+take `s: Shortcut`; `build()` calls all three in sequence.
 
-Sketch:
+**Rule of thumb:** If the workflow has more than 3 logical phases,
+decompose into `_add_<phase>(s: Shortcut)` helpers; otherwise inline
+everything in `build()`. When a helper produces a value the next phase
+needs, return it as a typed handle rather than relying on a string key.
+
+Sketch using typed handles throughout:
 
 ```python
 from shortcut_lib.builder import Shortcut
-from shortcut_lib.schema import NamedVar, Text
+from shortcut_lib.schema import Text
 from shortcut_lib.schema.actions.get_clipboard import GetClipboard
-from shortcut_lib.schema.actions.set_variable import SetVariable
 from shortcut_lib.schema.actions.use_model import UseModel
 from shortcut_lib.schema.actions.show_notification import ShowNotification
+from shortcut_lib.schema.values import NamedVar
 
 
-def _add_polish(s: Shortcut) -> None:
-    """Read clipboard, polish via Apple Intelligence, store as ``Polished``."""
-    note = s.add(GetClipboard())
-    s.add(SetVariable(name="Note", input=note))
-    polished = s.add(
-        UseModel(
-            prompt=Text(
-                "Polish this note:\n\n{n}",
-                substitutions={"n": NamedVar("Note")},
-            ),
-            model="Apple Intelligence",
-        )
+def _add_config(s: Shortcut) -> tuple[NamedVar, NamedVar]:
+    """Collect Token and Repo via Setup prompts shown at import time."""
+    token_text = s.ask_text_on_import(
+        question="Your GitHub personal access token",
+        default="REPLACE_WITH_GITHUB_PAT",
     )
-    s.add(SetVariable(name="Polished", input=polished))
+    token = s.set("Token", token_text)
+    repo_text = s.ask_text_on_import(
+        question="Target repo (owner/name)",
+        default="owner/repo",
+    )
+    repo = s.set("Repo", repo_text)
+    return token, repo
 
 
-def _add_notify(s: Shortcut) -> None:
+def _add_polish(s: Shortcut) -> NamedVar:
+    """Read the clipboard, polish via Apple Intelligence, return typed handle."""
+    clipboard = s.add(GetClipboard())
+    note = s.set("Note", clipboard)
+    polished = s.set(
+        "Polished",
+        s.add(
+            UseModel(
+                prompt=Text(
+                    "Polish this note:\n\n{n}",
+                    substitutions={"n": note},
+                ),
+                model="Apple Intelligence",
+            )
+        ),
+    )
+    return polished
+
+
+def _add_notify(s: Shortcut, polished: NamedVar) -> None:
     """Show a success notification."""
-    s.add(ShowNotification(title="Done", body=NamedVar("Polished")))
+    s.add(ShowNotification(title="Done", body=polished))
 
 
 def build() -> Shortcut:
-    s = Shortcut(name="Polish Note")
-    _add_polish(s)
-    _add_notify(s)
+    s = Shortcut(name="Polish Note", surfaces=["share", "quick-action"])
+    token, repo = _add_config(s)  # noqa: F841 — used in a real push step
+    polished = _add_polish(s)
+    _add_notify(s, polished)
     return s
 ```
+
+Key points:
+- `_add_config` returns typed handles so downstream phases reference `token`
+  and `repo` as Python identifiers, not string keys.
+- `_add_polish` returns a `NamedVar` so the next phase receives it as a
+  typed argument, not a `NamedVar("Polished")` string it has to remember.
+- `_add_notify` is void-returning — it doesn't produce a value the caller
+  needs.
+- `build()` sequences the phases; tests and `__main__` call only `build()`.
 
 Helper functions are plain Python — no new concepts, no cross-file
 linking, no extra import steps for the user. The entire workflow ships in

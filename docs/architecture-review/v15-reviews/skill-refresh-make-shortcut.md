@@ -183,3 +183,30 @@ clean. No structural or prose regressions.
 The SKILL is a net improvement: an LLM following it will write `s.set(...)`
 returns, `ask_text_on_import` for secrets, and `.number()` / `.text()`
 factories. That is the right outcome.
+
+## 2026-05-10 merge-readiness pass
+
+**Verdict:** Pass
+
+**Branch HEAD:** `571bd66` (diverges from _SUMMARY.md record — this branch is not listed in `_SUMMARY.md`; it was created after the V1.5 autonomous batch that produced that document)
+
+**Merge against main:**
+- Result: clean
+- Conflict files: none
+- Resolution: no conflicts; all incoming changes from main were new files (new review docs, CLAUDE.md, .gitignore update, roadmap); no overlap with the single file this branch touches (`skills/make-shortcut/SKILL.md`).
+
+**Pytest on merged state:** 330 passed, 6 skipped, 3 xfailed (8 warnings) — all green
+
+**prek:** skipped (docs-only branch; SKILL.md is markdown; no Python to lint)
+
+**Drift / observations:**
+- Main has advanced 17 commits since the branch point (per the brief: 1 ahead / 17 behind). None of the incoming commits touch `skills/make-shortcut/SKILL.md`.
+- The merge brings in new review files for batch 6+ branches (`skill-refresh-edit-shortcut.md`, `skill-refresh-make-shortcut.md`, etc.) — these are additive and do not conflict.
+- The cross-reference concern flagged in the original review (Issue 1: SKILL points to `vault_note_to_git.py` which still uses old pattern on main) remains live. `v15/v1-examples-typed-handles` is not yet merged to main. Merge-order constraint still holds: this branch must merge after `v15/v1-examples-typed-handles`.
+- No sibling actions on main contradict the SKILL's claims; the SKILL is behaviorally correct for the current library API (`s.set(...)` returning `NamedVar`, `ask_text_on_import`, factory methods on `AskForInput`).
+
+**Minor corrections applied:**
+- none
+
+**Concerns for higher-tier review:**
+- none — docs-only change; all library API references verified against the current codebase
