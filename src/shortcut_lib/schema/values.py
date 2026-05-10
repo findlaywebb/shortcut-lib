@@ -105,6 +105,14 @@ ShortcutInput = MagicVar("ExtensionInput")
 RepeatItem = MagicVar("RepeatItem")
 RepeatIndex = MagicVar("RepeatIndex")
 
+#: Canonical set of ``Type`` strings for magic variables — always in scope
+#: without a preceding SetVariable / AppendVariable.  Derived from the
+#: module-level singletons so additions here propagate automatically.
+MAGIC_VAR_TYPE_NAMES: frozenset[str] = frozenset(
+    mv.type_name
+    for mv in (CurrentDate, Clipboard, Ask, ShortcutInput, RepeatItem, RepeatIndex)
+)
+
 
 _PLACEHOLDER = "￼"  # Object Replacement Character — Apple's convention
 _TEMPLATE_RE = re.compile(r"\{([A-Za-z_][A-Za-z0-9_]*)\}")
