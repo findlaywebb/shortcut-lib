@@ -58,8 +58,8 @@ class CalculateExpression(Action):
 
     **Source notes**:
 
-    - Corpus evidence: ``samples/decoded/dictionary.xml`` lines 396-424 and
-      4464-4492 (two appearances, both with a variable-interpolated expression).
+    - Corpus evidence: ``samples/decoded/dictionary.xml`` lines 394-424 and
+      4462-4492 (two appearances, both with a variable-interpolated expression).
     - ``data/jellycore_facts.json``: jellycore lists
       ``parameter_keys: ["Input"]`` for this identifier (verify with
       ``jq '.actions[] | select(.identifier == "is.workflow.actions.calculateexpression")' data/jellycore_facts.json``).
