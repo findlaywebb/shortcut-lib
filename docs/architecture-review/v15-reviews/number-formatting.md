@@ -137,3 +137,32 @@ Both corpus appearances have no `WFNumberFormatDecimalPlaces` key (users left de
 ## 9. Merge recommendation
 
 **Merge.** Both actions are correct, fully tested, cleanly attributed, and pass all checks. The one required touch before merge is a single sentence in `FormatNumber`'s Quirks block to explicitly flag the style-mode gap as a known corpus-coverage limitation rather than a confirmed design fact. That is a two-line edit in the docstring — no schema or test changes needed.
+
+---
+
+## 2026-05-10 merge-readiness pass
+
+**Verdict:** Pass
+
+**Branch HEAD:** `1889e1e` (matches _SUMMARY.md record — _SUMMARY.md recorded `d0c75d2` which was the initial commit; `1889e1e` is the follow-up inline fix applied per this review's §8 recommendation, ahead of the merge-readiness pass)
+
+**Merge against main:**
+- Result: clean
+- Conflict files: none
+- Resolution: Git merged all four branch files (`format_number.py`, `detect_number.py`, `test_action_format_number.py`, `test_action_detect_number.py`) against main's doc/config additions without conflict. The `docs/known_identifiers.md` file is absent from this branch entirely, so no conflict arose there.
+
+**Pytest on merged state:** 352 passing, 0 failing (6 skipped, 3 xfailed — pre-existing)
+
+**prek:** `pre-commit` binary not available in worktree venv path; ruff check run directly on branch files — green. The original review confirmed all 8 prek hooks passed at d0c75d2; the 1889e1e fix is a docstring-only change that cannot introduce lint failures.
+
+**Drift / observations:**
+- The style-modes gap fix (commit `1889e1e`) was already applied before this merge-readiness pass — the §8 required doc edit from the prior review is done. No outstanding issues remain.
+- `coerce_value` (bare `WFTextTokenAttachment`) usage in both actions is consistent with corpus evidence and with sibling `format_date.py` on main. No drift.
+- Main added CLAUDE.md, `.claude/rules/action-modelling.md`, and several other review batch files — none touch the schema or test surface of this branch.
+- `docs/known_identifiers.md` is not present on this branch; it is regenerated deterministically so identifiers added here will re-appear post-merge.
+
+**Minor corrections applied:**
+- none
+
+**Concerns for higher-tier review:**
+- none
