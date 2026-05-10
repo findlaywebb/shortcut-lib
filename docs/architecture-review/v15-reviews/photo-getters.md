@@ -145,3 +145,29 @@ failing test is pre-existing on main. Static analysis is clean on all changed fi
 When the wire-format-quirks doc branch arrives, add one entry: `getlastphoto` and
 `getlastscreenshot` both use `WFGetLatestPhotoCount` — `combine_screenshots_and_share.xml`
 is the primary evidence.
+
+## 2026-05-10 merge-readiness pass
+
+**Verdict:** Pass
+
+**Branch HEAD:** `50b26bc` (matches _SUMMARY.md record `50b26bc`)
+
+**Merge against main:**
+- Result: clean
+- Conflict files: none
+- Resolution: automatic merge succeeded with no conflicts; branch is purely additive (4 new files, 0 modified files).
+
+**Pytest on merged state:** 346 passed, 6 skipped, 3 xfailed — no regressions. Branch contributes 14 new tests (7 per action); all green. Pre-existing `test_comment_wire_format` failure is absent from this run (resolved on main since the original review was written).
+
+**prek:** skipped (not available in worktree environment; ruff and ty were already clean per original review and branch is unchanged)
+
+**Drift / observations:**
+- main has advanced 19 commits since the branch was cut; none touch `src/shortcut_lib/schema/actions/` — no sibling action files were added to main that could contradict wire-key or envelope conventions.
+- The review file (`photo-getters.md`) existed on main but not on the branch; it was copied from main into the branch worktree to append this section.
+- All observations from the original review remain accurate and unchanged.
+
+**Minor corrections applied:**
+- none
+
+**Concerns for higher-tier review:**
+- none
