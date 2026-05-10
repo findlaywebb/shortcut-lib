@@ -174,8 +174,10 @@ def test_wire_format_equivalence_markup_and_send() -> None:
     - No WFSendMessageService (not present in any corpus sample)
 
     Note: IntentAppDefinition (BundleIdentifier, Name, TeamIdentifier) appears
-    in the decoded sample but is a system-injected field Apple adds at runtime;
-    the schema does not emit it. The Shortcuts runtime populates it on import.
+    in the decoded sample but is a field Apple writes at shortcut-authoring time
+    via the Shortcuts UI. Its presence varies across samples — it is absent in
+    running_late.xml, confirming the action works without it. The schema
+    intentionally does not emit it.
     """
     ref_uuid = "03D99811-2952-439C-8A29-91668C611407"
     markup_output = Output(uuid=ref_uuid, name="Markup Result")
