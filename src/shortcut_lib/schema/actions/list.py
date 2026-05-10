@@ -44,12 +44,11 @@ Quirks
   of downstream ``choosefromlist`` and ``repeat.each`` references in both
   corpus samples).
 
-Parameters
-----------
-items : list[str]
-    Ordered list of string values. Each becomes one ``<string>`` element
-    in the ``WFItems`` array. Pass ``[]`` (the default) to create an empty
-    list action — Shortcuts will show the action with no items added.
+Args:
+    items (list[str]): Ordered list of string values. Each becomes one
+        ``<string>`` element in the ``WFItems`` array. Pass ``[]`` (the
+        default) to create an empty list action — Shortcuts will show the
+        action with no items added.
 
 Usage example
 -------------
@@ -83,9 +82,9 @@ class BuildList(Action):
     cannot appear as individual list elements in Apple's wire format.
 
     Args:
-        items: Ordered string values. Empty list creates an empty List
-            action; ``WFItems`` is omitted from the wire envelope in that
-            case to match Apple GUI output.
+        items (list[str]): Ordered string values. Empty list creates an
+            empty List action; ``WFItems`` is omitted from the wire
+            envelope in that case to match Apple GUI output.
 
     Example::
 
