@@ -1,7 +1,7 @@
 # V1.5 autonomous batches — summary for return
 
 **Session:** 2026-05-09 → 2026-05-10 autonomous runs.
-**Branches under `v15/`:** 45 unmerged (31 initial + 4 batch 9 + 3 batch 10 + 2 batch 11 + 2 batch 12 + 2 batch 13 + 1 doc-quality-audit).
+**Branches under `v15/`:** 46 unmerged (31 initial + 4 batch 9 + 3 batch 10 + 2 batch 11 + 2 batch 12 + 2 batch 13 + 1 batch 14 + 1 doc-quality-audit).
 **Reviews under `docs/architecture-review/v15-reviews/`:** 30+ per-branch sonnet reviews + 3 opus deep reviews under `docs/architecture-review/v15-deep-review/`.
 
 **Tag applied 2026-05-09:** `v0.1.0` on `main` at `d1ad7d4` — the prior "V1 done" milestone. Per the user's versioning convention (pre-1.0 minor numbers are an alpha/beta sequence; 0.99 → 0.100 valid before 1.0), the road from v0.1.0 to v1.0.0 is the comprehensive corpus action coverage + per-action docs work. Many 0.X minor versions to come.
@@ -117,6 +117,12 @@ Continued action-coverage push under the redefined v1.0.0 criterion. All three b
 |---|---|---|---|
 | `v15/model-system-controls` | `f924eff` | `system-controls.md` | GREEN. Bundles `SetDoNotDisturb` (`is.workflow.actions.dnd.set`) + `SetVolume` (`is.workflow.actions.setvolume`). **Surfaced a clean wire-format-quirks finding**: same UUID in `start_pomodoro.xml` appears in `Time` slot (`WFTextTokenString` envelope) AND `Event` slot (bare `WFTextTokenAttachment`) — proof that envelope shape is determined by slot semantics, not value type. Reviewer recommends adding to `wire-format-quirks.md` after merge. 30 tests across both classes. |
 | `v15/model-output-action` | `69246d1` | `output-action.md` | GREEN. `StopAndOutput` (avoids `Output` Value class collision). `WFOutput` and `WFResponse` both `WFTextTokenString` slots. `WFNoOutputSurfaceBehavior` corpus-confirmed (jellycore's `noResultBehavior` aliases the WF-prefixed wire key, same pattern as `voice → WFSpeakTextVoice`). Build agent stopped prematurely on a false-positive infra blocker (worktree pytest claimed it couldn't import the new module — verified main thread that it works fine); files committed manually at `69246d1`. Review described the docstring as "strongest module docstring in the codebase". 10 tests. |
+
+### Batch 14 — map family
+
+| Branch | Latest head | Review | Verdict |
+|---|---|---|---|
+| `v15/model-maps` | `df7d9d7` | `maps.md` | GREEN. Bundles `SearchMaps` + `GetDirections`. **Surfaces the strongest concrete case yet for the "corpus-only key discipline"**: the four map-family actions use 3 different wire keys for conceptually the same input slot — `gettraveltime: WFDestination`, `getdistance: WFGetDistanceDestination`, `searchmaps: WFInput`, `getdirections: WFDestination`. Both jellycore-absent (verified array-select); both `WFTextTokenAttachment` envelopes. 30 tests. Reviewer recommends promoting the inconsistency table to `docs/wire-format-quirks.md`. |
 
 ### Batch 8 — SKILL companions + test discipline + tier-2 actions + a bug fix
 
