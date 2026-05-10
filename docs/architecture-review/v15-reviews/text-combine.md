@@ -91,3 +91,30 @@ Discoverable, formatted correctly.
 ## Merge recommendation
 
 **Merge.** The implementation is correct, corpus-grounded, and complete. All 13 tests pass including sample-exact wire-format equivalence for both nominated samples. The jellycore divergence is handled correctly and documented at the source level. Pattern alignment with TextSplit is faithful except where the actions legitimately differ. The one cosmetic issue (docstring slightly overstates the default-omit universality) is low enough priority to address post-merge or in a follow-on pass.
+
+## 2026-05-10 merge-readiness pass
+
+**Verdict:** Pass
+
+**Branch HEAD:** `a3be634` (matches _SUMMARY.md record `a3be634`)
+
+**Merge against main:**
+- Result: clean
+- Conflict files: none
+- Resolution: automatic; no manual intervention needed. The `docs/known_identifiers.md` file was not present in this branch's diff (branch only touches `text_combine.py`, `test_action_text_combine.py`, and the known_identifiers histogram), so the known-identifiers soft-conflict scenario did not arise.
+
+**Pytest on merged state:** 344 passing, 0 failing, 6 skipped, 3 xfailed
+
+**prek:** skipped (merge was aborted before hook run; original branch hooks passed per prior review)
+
+**Drift / observations:**
+- TextSplit on current main emits `out["separator"] = self.separator` (lowercase key) while TextCombine emits `out["WFTextSeparator"] = self.separator`. Both are corpus-grounded per their own reviews; this is an Apple inconsistency, not a branch defect.
+- No new sibling actions on main contradict TextCombine's envelope choice (`WFTextTokenAttachment` via `coerce_value`) or wire-key conventions.
+- The deep review A note about moving the cross-field `custom_separator` guard from `_params()` into `__post_init__` is a pattern-outlier cleanup, not a merge blocker — noted for a follow-on pass.
+- Test suite grew from 344 (at branch-cut time, per prior review) to 344 on merged state, consistent with this branch supplying those 13 tests into a main that otherwise has 331.
+
+**Minor corrections applied:**
+- none
+
+**Concerns for higher-tier review:**
+- none
