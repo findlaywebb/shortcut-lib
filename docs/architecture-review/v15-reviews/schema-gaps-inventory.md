@@ -124,3 +124,30 @@ After merging, add a short postscript to `docs/schema-gaps.md`:
 
 This keeps the inventory useful for the next reading without requiring a
 full regeneration pass.
+
+## 2026-05-10 merge-readiness pass
+
+**Verdict:** Pass
+
+**Branch HEAD:** `25915ba` (matches _SUMMARY.md record `25915ba`)
+
+**Merge against main:**
+- Result: clean
+- Conflict files: none
+- Resolution: No conflicts. `docs/known_identifiers.md` diverged between branch and main (branch omits `voice_note_to_github` corpus entries; main has the newer regenerated version), but git auto-merged without conflict — main's version will take precedence at actual merge, which is correct per the brief's soft-conflict guidance.
+
+**Pytest on merged state:** 330 passed, 6 skipped, 3 xfailed, 8 warnings
+
+**prek:** skipped — `pre-commit` not installed in worktree venv
+
+**Drift / observations:**
+- `docs/schema-gaps.md` does not exist on main; this branch is the sole source. No drift concern.
+- Main has advanced significantly (27 commits ahead): parallel action branches for `file.rename`, `text.combine`, `addnewreminder`, `previewdocument`, and many others have now merged. Section 5 of `schema-gaps.md` (24 leaf actions / 5 control-flow) will be stale post-merge, but the existing review already noted this and recommended a postscript fix. No action needed before merge.
+- `list_actions()` on branch HEAD returns 24 leaf identifiers — consistent with what `schema-gaps.md` Section 5 claims (built from pre-V1.5-merge main). Expected drift, not a correctness error.
+- The doc header already carries a freshness anchor (`main @ 422c520...`) added in commit `25915ba`, addressing the issue flagged in the original review Section 5.
+
+**Minor corrections applied:**
+- none
+
+**Concerns for higher-tier review:**
+- none
