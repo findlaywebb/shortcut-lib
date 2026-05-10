@@ -116,3 +116,28 @@ code was modified, so no scope-expansion question arises.
 
 One follow-on: file a note about the URL-slot distinction in the
 wire-format-quirks doc on its parallel branch (not a blocker).
+
+## 2026-05-10 merge-readiness pass
+
+**Verdict:** Pass
+
+**Branch HEAD:** `b7e4a45` (matches _SUMMARY.md record `b7e4a45`)
+
+**Merge against main:**
+- Result: clean
+- Conflict files: none
+- Resolution: No conflicts. The only changes in this branch are the two new files (`reading_list.py`, `test_action_reading_list.py`), which are absent from main — git applied them directly.
+
+**Pytest on merged state:** 339 passing, 0 failing, 6 skipped, 3 xfailed
+
+**prek:** skipped (pytest run sufficient; no schema or logic changes on main that could interact)
+
+**Drift / observations:**
+- `download_url.py` on main uses `coerce_text_field` (WFTextTokenString) for its `WFURL` slot; this branch uses `coerce_value` (WFTextTokenAttachment). Intentional and correct — the distinction is the central point of the existing review and is corpus-confirmed for each action. No concern.
+- 17 commits have landed on main since the branch was cut (batch 9–14 reviews + CLAUDE.md + action-modelling rule). None touch `reading_list.py` or `test_action_reading_list.py`. No drift risk.
+
+**Minor corrections applied:**
+- none
+
+**Concerns for higher-tier review:**
+- none
