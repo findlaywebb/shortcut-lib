@@ -1,7 +1,7 @@
 # V1.5 autonomous batches — summary for return
 
 **Session:** 2026-05-09 → 2026-05-10 autonomous runs.
-**Branches under `v15/`:** 38 unmerged (31 from initial autonomous run + 4 batch 9 + 3 batch 10).
+**Branches under `v15/`:** 43 unmerged (31 initial + 4 batch 9 + 3 batch 10 + 2 batch 11 + 2 batch 12 + 1 doc-quality-audit).
 **Reviews under `docs/architecture-review/v15-reviews/`:** 30+ per-branch sonnet reviews + 3 opus deep reviews under `docs/architecture-review/v15-deep-review/`.
 
 **Tag applied 2026-05-09:** `v0.1.0` on `main` at `d1ad7d4` — the prior "V1 done" milestone. Per the user's versioning convention (pre-1.0 minor numbers are an alpha/beta sequence; 0.99 → 0.100 valid before 1.0), the road from v0.1.0 to v1.0.0 is the comprehensive corpus action coverage + per-action docs work. Many 0.X minor versions to come.
@@ -96,6 +96,20 @@ Continued action-coverage push under the redefined v1.0.0 criterion. All three b
 | `v15/model-calculateexpression` | `97f730d` | `calculateexpression.md` | GREEN. Wire key is bare `Input` (capitalised AppIntent style — distinct from `WFInput` used by sibling `Math`). Uses `coerce_text_field` for `WFTextTokenString` envelope (variable interpolation in expression text). Required field — both corpus appearances populate it. 12 tests. Doc 5/5. Cosmetic line-citation off-by-2 (396 vs 394) flagged for follow-up. |
 | `v15/model-statistics` | `1ec27bd` | `statistics.md` | GREEN. Same `Input` AppIntent convention as `calculateexpression` — independently observed by two agents on the same `dictionary.xml`, mutually corroborating. Uses `coerce_value` for `WFTextTokenAttachment` envelope (no interpolation). 9 operations Literal, "Average" default with omit-if-default. 22 tests. Doc 4/5 (operation enum honestly disclaimed as UI-derived). |
 | `v15/model-getdistance` | `5a26095` | `getdistance.md` | GREEN. Wire key `WFGetDistanceDestination` (NOT `WFDestination` like sibling `gettraveltime` — guarded by explicit negative-key test). Single-field minimalist model; reviewer's position: do NOT speculatively add `WFDistanceUnit` / `WFGetDistanceMode` because Apple's key naming is inconsistent enough that wrong-key guesses silently produce malformed shortcuts. 15 tests. Doc 5/5. |
+
+### Batch 11 — list-helper + number primitives
+
+| Branch | Latest head | Review | Verdict |
+|---|---|---|---|
+| `v15/model-getitemfromlist` | `6d7953a` | `getitemfromlist.md` | GREEN. **Closed open `_SUMMARY.md` follow-up**: `WFItemIndex` co-exists with `WFItemSpecifier="Last Item"` in `tile_last_2_windows.xml` — Apple preserves the last-typed index regardless of active specifier. Schema emits `WFItemIndex` whenever set, unconditionally on specifier (round-trip-faithful). 5 specifiers, 20 tests. Stale "no jellycore entry" claim corrected at `6d7953a`. |
+| `v15/model-number-actions` | `935dbbe` | `number-actions.md` | GREEN. Bundles `Number` + `RandomNumber`. **Discovered the jellycore-query infra bug** (`{actions: [...]}`, not a top-level map). Both actions corpus-only-default; jellycore confirms wire keys (`WFNumberActionNumber`, `WFRandomNumberMinimum/Maximum`). `Number.default_output_name` flagged as inferred (no downstream corpus reference). 19 tests. |
+
+### Batch 12 — number formatting + TTS
+
+| Branch | Latest head | Review | Verdict |
+|---|---|---|---|
+| `v15/model-number-formatting` | `1889e1e` | `number-formatting.md` | GREEN. Bundles `FormatNumber` + `DetectNumber`. `FormatNumber.WFNumber` (NOT `WFInput`) corpus + jellycore confirmed. `DetectNumber.WFInput`. **Style-modes gap finding**: corpus + jellycore both show only `decimal_places`, but Shortcuts.app's UI has currency/percent/scientific/spell-out — gap flagged as corpus-coverage limitation, not architectural truth (refined inline at `1889e1e`). 20 tests. |
+| `v15/model-makespokenaudio` | `535b4ae` | `makespokenaudio.md` | GREEN. **Surfaced jellycore-aliasing pattern**: jellycore's `voice` (lowercase) corresponds to corpus `WFSpeakTextVoice` (wire). By analogy, `language` (lowercase in jellycore) should emit as `WFSpeakTextLanguage` (wire). Initial head `56f4001` emitted lowercase `language`; corrected to `WFSpeakTextLanguage` inline at `535b4ae` with explicit "inferred from voice precedent" disclaimer. 19 tests, iOS 15+ minimum. |
 
 ### Batch 8 — SKILL companions + test discipline + tier-2 actions + a bug fix
 
