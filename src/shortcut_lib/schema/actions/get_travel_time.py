@@ -43,7 +43,8 @@ class GetTravelTime(Action):
             explicitly.
         origin: Optional origin address or location. When omitted, Shortcuts
             uses the device's current location. Corresponds to Apple's
-            ``WFFromAddress`` parameter.
+            ``WFFromAddress`` parameter. Wire key inferred from Apple action
+            surface — not observed in corpus samples; no jellycore entry.
     """
 
     identifier: ClassVar[str] = "is.workflow.actions.gettraveltime"
@@ -67,6 +68,8 @@ class GetTravelTime(Action):
             # bare WFTextTokenAttachment envelope, not WFTextTokenString.
             out["WFDestination"] = coerce_value(self.destination)
         if self.origin is not None:
+            # WFFromAddress — modelled from Apple action surface; not observed
+            # in corpus samples and absent from jellycore_facts.json.
             out["WFFromAddress"] = coerce_value(self.origin)
         # "Driving" is the default; Shortcuts.app omits the key entirely when
         # selected — confirmed by all 3 corpus samples which use the default
