@@ -191,3 +191,31 @@ suspecting `WFSpeakTextLanguage`. Neither change requires re-review; the
 agent or the author can add them on merge. The action is safe in its current
 state because `language` is omitted by default and the two corpus-confirmed
 parameters are implemented correctly.
+
+---
+
+## 2026-05-10 merge-readiness pass
+
+**Verdict:** Pass
+
+**Branch HEAD:** `535b4ae` (matches _SUMMARY.md record `535b4ae`)
+
+**Merge against main:**
+- Result: clean
+- Conflict files: none
+- Resolution: Automatic merge completed with no conflicts. Branch adds two new files (`src/shortcut_lib/schema/actions/make_spoken_audio.py`, `tests/test_action_make_spoken_audio.py`); main has advanced with unrelated review files and CLAUDE.md additions — no overlap.
+
+**Pytest on merged state:** 350 passing, 0 failing (6 skipped, 3 xfailed)
+
+**prek:** green (trim whitespace, end-of-file, yaml, large-file, ruff lint, ruff format, uv-lock, ty — all passed)
+
+**Drift / observations:**
+- I1 from original review (`language` emit key) was already resolved inline at `535b4ae` — the schema now emits `WFSpeakTextLanguage` with the `voice`→`WFSpeakTextVoice` analogy documented in both the docstring and `_params()`. The original review's sections 3, 4, 7, 8, 9 describe the pre-fix state; the code on branch is correct.
+- Sibling actions on main (`text_replace.py`, `comment.py`, `get_text.py`, `show_notification.py`) all use `coerce_text_field` for `WFTextTokenString` slots consistently with this branch. No convention drift.
+- Note: the original review file (now absorbed into main at an earlier batch) pre-dates `535b4ae`. Sections 3 and 8 of this document reference `"language"` lowercase as the emit key — that is stale; the branch corrected it. No further edits needed; this pass note is the canonical record.
+
+**Minor corrections applied:**
+- none
+
+**Concerns for higher-tier review:**
+- none — I1 and I2 from original review are resolved or accepted. `WFSpeakTextLanguage` inference is properly disclaimed. `default_output_name = "Spoken Audio"` remains a reasonable inference (I2); no corpus sample contradicts it.
