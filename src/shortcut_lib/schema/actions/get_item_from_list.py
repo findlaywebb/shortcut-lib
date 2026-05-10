@@ -49,10 +49,16 @@ and ``to_actions`` produces a byte-identical plist.
 
 Jellycore note
 --------------
-``jq '.["is.workflow.actions.getitemfromlist"]' data/jellycore_facts.json``
-returns ``null`` — jellycore has no entry for this action. All type
-evidence is derived from the three corpus appearances and
-``data/observed_envelope_types.json``.
+Jellycore lists ``parameter_keys: ["WFInput", "type", "WFItemIndex",
+"WFItemRangeStart", "WFItemRangeEnd"]`` for this identifier (verify
+with the array-select form: ``jq '.actions[] | select(.identifier ==
+"is.workflow.actions.getitemfromlist")' data/jellycore_facts.json``).
+
+Note that jellycore's ``type`` is the AppIntent-layer name; the
+wire-format key in the corpus is ``WFItemSpecifier``. Both refer to
+the same parameter. The schema follows the corpus (wire) name. The
+remaining four jellycore keys (``WFInput``, ``WFItemIndex``,
+``WFItemRangeStart``, ``WFItemRangeEnd``) match the corpus exactly.
 
 Args
 ----
