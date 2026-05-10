@@ -54,7 +54,9 @@ class ResizeWindow(Action):
             the ``WFConfiguration`` key is omitted entirely — matching the
             bare-window-only form seen in ``samples/decoded/dictionary.xml``.
         bring_to_front: When ``True`` emits ``WFBringToFront = True``.
-            Defaults to ``None`` (key omitted).
+            Defaults to ``None`` (key omitted).  **No corpus sample confirms
+            this key exists in production plist; sourced from Jellycore spec
+            only.**
     """
 
     identifier: ClassVar[str] = "is.workflow.actions.resizewindow"
