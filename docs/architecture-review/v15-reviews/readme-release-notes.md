@@ -221,3 +221,33 @@ the validation file. Out of scope for this branch.
 in what shipped. The quickstart runs, linked files exist, status callout is in the
 right place, FU placement is correct, validation date is sourced accurately, and
 the licence section is untouched. prek is clean.
+
+---
+
+## 2026-05-10 merge-readiness pass
+
+**Verdict:** Pass
+
+**Branch HEAD:** `0e3c3e9` (matches _SUMMARY.md record `0e3c3e9`)
+
+**Merge against main:**
+- Result: trivial-conflicts-resolved
+- Conflict files: `.gitignore`
+- Resolution: Branch adds `.claude/` (bare ignore); main has the more precise `.claude/*` + `!.claude/rules/` form (introduced in `589e500` + `c06f6ff`). Took main's version — the branch's intent (hide the worktree dir) is satisfied by main's form, which additionally allows `.claude/rules/` to be tracked.
+
+**Pytest on merged state:** 330 passed, 6 skipped, 3 xfailed (green)
+
+**prek:** green (all 8 hooks pass on branch state)
+
+**Drift / observations:**
+- Main's README is still the old pre-branch format — no conflict on that file; the branch's full README rewrite applies cleanly.
+- `docs/release-notes/v1.0.md` is a pure addition (not present on main) — merges cleanly.
+- `examples/note_to_github.py` confirmed present on main; the README entry added by commit `0e3c3e9` is accurate.
+- Issue 1 (365 → 369) verified fixed: both occurrences in `docs/release-notes/v1.0.md` now read "369".
+- Test count on merged state (330 passing) differs from branch-only due to test suite growth on main pulling in additional files; suite is fully green.
+
+**Minor corrections applied:**
+- none
+
+**Concerns for higher-tier review:**
+- none
