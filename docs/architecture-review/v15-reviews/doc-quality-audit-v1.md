@@ -271,3 +271,31 @@ a reference when future action branches write their own docstrings.
 
 Suggested position in the merge sequence: after `v15/wire-format-quirks-doc`
 (foundational tier, no deps) and before any batch-2+ action coverage branch.
+
+---
+
+## 2026-05-10 merge-readiness pass
+
+**Verdict:** Pass
+
+**Branch HEAD:** `d7fbd4a` (matches _SUMMARY.md record `d7fbd4a`)
+
+**Merge against main:**
+- Result: clean
+- Conflict files: none
+- Resolution: Auto-merge succeeded with no conflicts. The only file that exists on main but not on the branch is this review file (`doc-quality-audit-v1.md`); it was imported cleanly.
+
+**Pytest on merged state:** 330 passed, 6 skipped, 3 xfailed (worktree-environment skip artefact — private samples dir absent; same delta as original review noted)
+
+**prek:** green (all 8 hooks passed)
+
+**Drift / observations:**
+- Main advanced 8 commits since branch diverged; all changes are review/doc files only (`v15-reviews/`, `_SUMMARY.md`, `roadmap.md`, `CLAUDE.md` + agent rules). No action schema, test, or wire-format changes on main that could contradict this branch's claims.
+- The inline fixes at `d7fbd4a` (Issues 1 and 5 from the original review) are confirmed present: `DownloadURL` sample citations corrected and `body_type="Form"` guard moved to `__post_init__`.
+- Issues 2–4 from the original review (RecordAudio citation wording, TextSplit dictionary.xml description, DictateText stop_listening qualification) remain as documented nice-to-haves; they are not blocking.
+
+**Minor corrections applied:**
+- none
+
+**Concerns for higher-tier review:**
+- none

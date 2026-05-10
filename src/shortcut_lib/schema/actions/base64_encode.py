@@ -14,15 +14,27 @@ _DEFAULT_MODE = "Encode"
 @register
 @dataclass
 class Base64Encode(Action):
-    """Encode or decode the input using base64.
+    """Encode/Decode with Base64 — encode or decode data as base64.
+
+    Wraps ``is.workflow.actions.base64encode``. Encodes arbitrary binary
+    or text data as a base64 ASCII string, or reverses the operation.
 
     Args:
-        input: Value to process. Pass another Action to chain off its output,
-            a literal string, or any Value.
-        mode: "Encode" (default) or "Decode". When "Encode" the key is
-            omitted from the wire format, matching Apple's convention.
+        input: Value to process (``WFInput``). Pass another
+            :class:`~shortcut_lib.schema.base.Action` to chain off its
+            output, a literal string, or any
+            :class:`~shortcut_lib.schema.base.Value`. Omitted when ``None``.
+        mode: ``"Encode"`` (default) or ``"Decode"`` (``WFEncodeMode``).
+            When ``"Encode"``, the key is omitted from the plist entirely —
+            Apple's convention for the default value. Pass ``"Decode"``
+            explicitly to reverse the operation.
 
-    Output name: "Base64 Encoded"
+    Returns:
+        The encoded or decoded string (output name: "Base64 Encoded").
+
+    Sample citation:
+        samples/decoded/dictionary.xml:1259 — default Encode mode (no
+        ``WFEncodeMode`` key emitted).
     """
 
     input: ParamValue = None

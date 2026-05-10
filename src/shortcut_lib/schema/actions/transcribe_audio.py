@@ -23,24 +23,31 @@ _APP_INTENT_DESCRIPTOR: dict[str, Any] = {
 @register
 @dataclass
 class TranscribeAudio(Action):
-    """Transcribe an audio file to text using on-device speech recognition.
+    """Transcribe Audio — convert an audio file to text on-device.
 
-    This is a first-party AppIntent action under the
-    ``com.apple.ShortcutsActions`` bundle, verified against
-    ``samples/decoded/private/voice_note_to_github.xml``.
+    Wraps the AppIntent
+    ``com.apple.ShortcutsActions.TranscribeAudioAction`` — a first-party
+    action in Apple's ``com.apple.ShortcutsActions`` bundle. Uses on-device
+    speech recognition (no network required).
 
-    The ``AppIntentDescriptor`` dict is emitted verbatim — it contains
-    Apple-owned bundle metadata that Shortcuts.app requires in order to
-    resolve the AppIntent at runtime.
+    Unlike standard ``is.workflow.actions.*`` entries, this action emits
+    an ``AppIntentDescriptor`` dict containing Apple-owned bundle metadata
+    that Shortcuts.app uses to resolve the AppIntent at runtime. The dict
+    is treated as an opaque constant; do not modify it.
 
     Args:
-        audio_file: The audio recording to transcribe. Pass a
-            :class:`~shortcut_lib.schema.values.NamedVar`, an
-            :class:`~shortcut_lib.schema.base.Action` (typically
-            :class:`RecordAudio`), or any coercible Value whose output is
-            an audio file.
+        audio_file: The audio recording to transcribe (``audioFile``).
+            Pass a :class:`~shortcut_lib.schema.values.NamedVar`, a
+            :class:`RecordAudio` action output, or any coercible
+            :class:`~shortcut_lib.schema.base.Value` whose output is an
+            audio file. Omitted when ``None``.
 
-    Output: the transcribed text string.
+    Returns:
+        The transcribed text string (output name: "Transcribe Audio").
+
+    Sample citation:
+        samples/decoded/private/voice_note_to_github.xml — full
+        ``AppIntentDescriptor`` + ``audioFile`` parameter shape.
     """
 
     identifier: ClassVar[str] = "com.apple.ShortcutsActions.TranscribeAudioAction"

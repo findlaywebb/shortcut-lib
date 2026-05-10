@@ -12,17 +12,30 @@ from shortcut_lib.schema.registry import register
 @register
 @dataclass
 class GetText(Action):
-    """Produce a text value from a literal string or templated expression.
+    """Text — produce a text value from a literal or template expression.
 
-    The Apple parameter ``WFTextActionText`` accepts a plain string, a
-    ``WFTextTokenString`` (templated text with variable substitutions), or a
-    ``WFTextTokenAttachment`` (single output reference). Pass a :class:`str`
-    for literals, a :class:`~shortcut_lib.schema.values.Text` for templates,
-    or any :class:`~shortcut_lib.schema.base.Action` /
-    :class:`~shortcut_lib.schema.base.Value` for single references.
+    Wraps ``is.workflow.actions.gettext`` (displayed as "Text" in the
+    Shortcuts editor). Constructs a text string and passes it downstream.
+
+    The ``WFTextActionText`` parameter accepts a plain ``str``, a
+    ``WFTextTokenString`` (templated text with variable substitutions),
+    or a ``WFTextTokenAttachment`` (single output reference). Pass a
+    :class:`str` for literals, a :class:`~shortcut_lib.schema.values.Text`
+    for templates, or any :class:`~shortcut_lib.schema.base.Action` /
+    :class:`~shortcut_lib.schema.base.Value` for single-variable injection.
 
     Args:
-        text: The text to produce. Defaults to an empty string.
+        text: The text to produce (``WFTextActionText``). Defaults to an
+            empty string. Variable references are wrapped as a
+            single-attachment ``WFTextTokenString`` via
+            :func:`~shortcut_lib.schema.base.coerce_text_field`.
+
+    Returns:
+        The constructed text string (output name: "Text").
+
+    Sample citation:
+        samples/decoded/daily_standup.xml:72 — WFTextTokenString with
+        embedded variable substitutions.
     """
 
     identifier: ClassVar[str] = "is.workflow.actions.gettext"

@@ -30,7 +30,11 @@ _DEFAULT_ANSWER_KEY: dict[str, str] = {
 @register
 @dataclass
 class AskForInput(Action):
-    """Prompt the user to enter a value.
+    """Ask for Input — prompt the user to type or speak a value.
+
+    Emits ``is.workflow.actions.ask``. Shows a system dialog with a text
+    field, number pad, URL field, or date/time picker depending on
+    ``input_type``. The user's response is returned as a text string.
 
     Prefer the type-specific factory methods — they expose only the
     parameters valid for that input type, so an invalid combination is a
@@ -46,23 +50,47 @@ class AskForInput(Action):
     factory is a ``TypeError`` at the call site (Python's normal kwarg
     check), not a deferred ``SchemaError``.
 
-    The direct constructor ``AskForInput(input_type=..., ...)`` still
-    works and is preserved for backward compatibility and for cases where
-    ``input_type`` is determined at runtime:
+    Args:
+        prompt: The question shown above the input field (``WFAskActionPrompt``).
+            Accepts a plain string, a :class:`~shortcut_lib.schema.values.Text`
+            template, or any Action/Value. Omitted from the plist when empty.
+        input_type: The keyboard/picker mode (``WFInputType``). One of
+            ``"Text"``, ``"URL"``, ``"Number"``, ``"Date"``, ``"Time"``,
+            ``"Date and Time"``. Defaults to ``"Text"``.
+        default_answer: Pre-filled answer. The plist key depends on
+            ``input_type``:
 
-    - ``Text`` / ``URL`` → ``WFAskActionDefaultAnswer``
-    - ``Number`` → ``WFAskActionDefaultAnswerNumber``
-    - ``Date`` / ``Time`` → ``WFAskActionDefaultAnswerDate`` (inferred)
-    - ``Date and Time`` → ``WFAskActionDefaultAnswerDateAndTime`` (verified)
+            - ``"Text"`` / ``"URL"`` → ``WFAskActionDefaultAnswer``
+            - ``"Number"`` → ``WFAskActionDefaultAnswerNumber``
+            - ``"Date"`` / ``"Time"`` → ``WFAskActionDefaultAnswerDate`` (inferred)
+            - ``"Date and Time"`` → ``WFAskActionDefaultAnswerDateAndTime`` (verified)
 
-    Decimal/negative flags only emit for ``input_type="Number"``.
+            Omitted when ``None``.
+        allows_decimal: If ``True``, the number pad allows a decimal point
+            (``WFAskActionAllowsDecimalNumbers``). Only valid for
+            ``input_type="Number"``; raises :class:`~shortcut_lib.schema.base.SchemaError`
+            otherwise. Omitted when ``None``.
+        allows_negative: If ``True``, negative numbers are accepted
+            (``WFAskActionAllowsNegativeNumbers``). Only valid for
+            ``input_type="Number"``. Omitted when ``None``.
 
-    Note: ``Ask`` is taken as a magic-variable singleton in
-    ``shortcut_lib.schema.values``; this class is ``AskForInput``.
+    Returns:
+        The user's response as a text string (output name: "Provided Input").
 
-    Divergence from Jellycore: Jellycore's ``AskForInputParameter.swift``
-    declares ``type`` as the field name; the real Apple plist key is
-    ``WFInputType``.
+    Quirks:
+        ``WFAskActionImmediateDictation`` (bool) appears in some corpus samples
+        (e.g. ``samples/decoded/add_expiry_reminder.xml:11``) but is not
+        exposed here — it enables dictation-first mode and is not configurable
+        via this class. Use a :class:`~shortcut_lib.schema.base.RawAction` if
+        you need it.
+
+        Jellycore names the field ``type``; the real plist key is
+        ``WFInputType``.
+
+    Sample citations:
+        samples/decoded/add_expiry_reminder.xml:11 — Text type with prompt.
+        samples/decoded/add_expiry_reminder.xml:47 — Date and Time type with
+        ``WFAskActionDefaultAnswerDateAndTime``.
     """
 
     identifier: ClassVar[str] = "is.workflow.actions.ask"

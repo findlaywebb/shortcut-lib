@@ -13,11 +13,28 @@ from shortcut_lib.schema.values import NamedVar
 @register
 @dataclass
 class GetVariable(Action):
-    """Read a named variable into the next action's input slot.
+    """Get Variable — read a named variable into the action pipeline.
 
-    Most parameters accept a :class:`NamedVar` directly, so an explicit
+    Wraps ``is.workflow.actions.getvariable``. Emits the named variable
+    as a ``WFTextTokenAttachment`` envelope under the ``WFVariable`` key.
+
+    Most action parameter slots accept a
+    :class:`~shortcut_lib.schema.values.NamedVar` directly, so an explicit
     GetVariable is only needed when the next action's input is a positional
-    Magic Variable slot rather than a named parameter.
+    magic-variable slot (i.e. the action reads its input from the
+    pipeline rather than from a named parameter field).
+
+    Args:
+        name: The Shortcuts variable name to retrieve (``WFVariable``).
+            Raises :class:`~shortcut_lib.schema.base.SchemaError` if empty.
+            Emitted as a ``WFTextTokenAttachment`` via
+            :class:`~shortcut_lib.schema.values.NamedVar`.
+
+    Returns:
+        The variable's value (output name: "Variable").
+
+    Sample citation:
+        samples/decoded/dictionary.xml:141 — GetVariable following SetVariable.
     """
 
     name: str = ""

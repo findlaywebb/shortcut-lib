@@ -149,15 +149,28 @@ def _encode_entry(key: str, value: object) -> dict[str, Any]:
 @register
 @dataclass
 class Dictionary(Action):
-    """Create a dictionary (key/value map) literal.
+    """Dictionary — build a structured key/value dictionary literal.
 
-    Auto-detects value types: str→Text, int/float→Number, bool→Boolean,
-    dict→Dictionary, list→Array. Pass an Action or Value for a variable
-    reference (encoded as Text).
+    Wraps ``is.workflow.actions.dictionary``. Each entry is encoded as a
+    ``WFDictionaryFieldValueItem`` with ``WFItemType``, ``WFKey``, and
+    ``WFValue``. The full type-encoding rules are documented in this
+    module's module-level docstring.
+
+    Auto-detects value types: str→Text (0), int/float→Number (2),
+    bool→Boolean (5), dict→Dictionary (3), list→Array (4). Pass an
+    :class:`~shortcut_lib.schema.base.Action` or
+    :class:`~shortcut_lib.schema.base.Value` for a variable reference
+    (encoded as Text/0).
 
     Args:
-        entries: List of (key, value) tuples. Keys are always strings.
-            Values may be Python primitives or Action/Value references.
+        entries: List of ``(key, value)`` tuples. Keys are always plain
+            strings (encoded as ``WFTextTokenString``). Values may be
+            Python primitives or Action/Value references. An empty list
+            emits no ``WFItems`` key — matching Apple's behaviour for a
+            freshly-added empty Dictionary action.
+
+    Returns:
+        The constructed dictionary object (output name: "Dictionary").
 
     Example::
 
@@ -166,6 +179,9 @@ class Dictionary(Action):
             ("age", 30),
             ("active", True),
         ])
+
+    Sample citation:
+        samples/decoded/dictionary.xml:208 — empty dictionary (no WFItems).
     """
 
     identifier: ClassVar[str] = "is.workflow.actions.dictionary"

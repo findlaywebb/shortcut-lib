@@ -16,23 +16,39 @@ from shortcut_lib.schema.registry import register
 @register
 @dataclass
 class TextReplace(Action):
-    """Find and replace text within an input string.
+    """Replace Text — find-and-replace within a text value.
 
-    Wraps ``is.workflow.actions.text.replace``. The ``find`` and
-    ``replace`` fields accept plain strings, :class:`~shortcut_lib.schema.values.Text`
-    templates, or any :class:`~shortcut_lib.schema.base.Action` /
-    :class:`~shortcut_lib.schema.base.Value` that resolves to a string.
-
-    ``case_sensitive`` and ``regex`` are only emitted when explicitly set;
-    leave them ``None`` to rely on Apple's defaults (case-sensitive on,
-    regex off).
+    Wraps ``is.workflow.actions.text.replace``. Scans ``input`` for all
+    occurrences of ``find`` and replaces them with ``replace``, returning
+    the modified string.
 
     Args:
-        input: The source text to search within.
-        find: The string (or pattern) to find. Defaults to empty string.
-        replace: The replacement string. Defaults to empty string.
-        case_sensitive: Override Apple's default (True) only when needed.
-        regex: When True, ``find`` is interpreted as a regex pattern.
+        input: The source text to search within (``WFInput``). Accepts a
+            plain string, a :class:`~shortcut_lib.schema.values.Text`
+            template, or any :class:`~shortcut_lib.schema.base.Action` /
+            :class:`~shortcut_lib.schema.base.Value`. This slot is a
+            ``WFTextTokenString`` in the corpus — bare
+            ``WFTextTokenAttachment`` is not used. Omitted when ``None``.
+        find: The search string or regex pattern
+            (``WFReplaceTextFind``). Defaults to ``""``; omitted from the
+            plist when empty (Apple's convention for an unconfigured action).
+        replace: The replacement string (``WFReplaceTextReplace``).
+            Defaults to ``""``; omitted when empty.
+        case_sensitive: If explicitly set, emits
+            ``WFReplaceTextCaseSensitive``. ``None`` omits the key —
+            Apple's default is case-sensitive (``True``).
+        regex: If ``True``, ``find`` is interpreted as a regex pattern
+            (``WFReplaceTextRegularExpression``). ``None`` omits the key
+            — Apple's default is plain-text matching.
+
+    Returns:
+        The text with all replacements applied (output name: "Updated Text").
+
+    Sample citations:
+        samples/decoded/rename_files.xml:17 — WFInput as single-attachment
+        WFTextTokenString.
+        samples/decoded/dictionary.xml:42 — unconfigured form (no find/replace
+        keys emitted).
     """
 
     identifier: ClassVar[str] = "is.workflow.actions.text.replace"

@@ -12,19 +12,30 @@ from shortcut_lib.schema.registry import register
 @register
 @dataclass
 class ShowNotification(Action):
-    """Display a system notification with an optional title and body.
+    """Show Notification — display a system notification banner.
 
-    Neither title nor body produces a meaningful action output, so no
-    ``default_output_name`` is set.
+    Wraps ``is.workflow.actions.notification``. Posts a local notification
+    to the Notification Center with an optional title and body. Produces
+    no output (no ``default_output_name``).
 
     Args:
-        title: The notification title. Accept a plain string, a
-            :class:`~shortcut_lib.schema.values.Text` template, or an
-            :class:`~shortcut_lib.schema.values.Output` reference.
-        body: The notification body (same rules as ``title``).
-        play_sound: If ``True`` or ``False``, the WFNotificationActionSound
-            key is emitted explicitly. ``None`` means omit the key
-            (Apple defaults to playing a sound).
+        title: The notification title (``WFNotificationActionTitle``).
+            Accepts a plain string, a
+            :class:`~shortcut_lib.schema.values.Text` template, or any
+            :class:`~shortcut_lib.schema.base.Action` /
+            :class:`~shortcut_lib.schema.base.Value` reference. Omitted
+            from the plist when empty.
+        body: The notification body text
+            (``WFNotificationActionBody``). Same rules as ``title``.
+            Omitted from the plist when empty.
+        play_sound: Controls the alert sound
+            (``WFNotificationActionSound``). ``True`` plays a sound,
+            ``False`` silences it. ``None`` omits the key — Apple
+            defaults to playing a sound.
+
+    Sample citations:
+        samples/decoded/dictionary.xml:1657 — title + body, no sound key.
+        samples/decoded/intelly.xml:32 — title-only notification.
     """
 
     title: ParamValue = field(default="")

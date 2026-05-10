@@ -32,23 +32,40 @@ _VALID_MODELS: frozenset[str] = frozenset(get_args(WFLLMModel))
 @register
 @dataclass
 class UseModel(Action):
-    """Send a prompt to Apple Intelligence or ChatGPT and return the response.
+    """Use Model — send a prompt to Apple Intelligence and return the response.
 
-    Apple identifier: ``is.workflow.actions.askllm``. Requires Apple
-    Intelligence to be enabled in System Settings (iOS 18.1+/macOS 26+).
+    Wraps ``is.workflow.actions.askllm`` (displayed as "Use Model" in the
+    Shortcuts editor). Requires Apple Intelligence to be enabled in System
+    Settings (iOS 18.1+ / macOS 26+). The ``WFLLMPrompt`` slot is a
+    ``WFTextTokenString`` — variable refs must be wrapped as a
+    single-attachment templated string.
 
     Args:
-        prompt: The prompt to send. String, Text template, or Output ref.
-        model: Which model to use. One of :data:`WFLLMModel`:
-            - ``"Apple Intelligence"`` (the on-device default)
-            - ``"Private Cloud Compute"`` (Apple's cloud-relay model)
-            - ``"On-Device"``
-            - ``"Extension"`` — routes to ChatGPT (or another configured
-              extension)
-            - ``"Ask Each Time"`` — prompts the user at run time
-            The wire-format strings shown in Shortcuts.app's GUI dropdown
-            match what's emitted into the plist; pass any of them
-            verbatim.
+        prompt: The prompt to send (``WFLLMPrompt``). Required; raises
+            :class:`~shortcut_lib.schema.base.SchemaError` if ``None``.
+            Accepts a plain string, a
+            :class:`~shortcut_lib.schema.values.Text` template, or any
+            :class:`~shortcut_lib.schema.base.Action` /
+            :class:`~shortcut_lib.schema.base.Value` reference.
+        model: Which model to invoke (``WFLLMModel``). Defaults to
+            ``"Apple Intelligence"``. One of:
+
+            - ``"Apple Intelligence"`` — on-device default
+            - ``"Private Cloud Compute"`` — Apple's privacy-preserving cloud
+            - ``"On-Device"`` — explicitly on-device (no cloud fallback)
+            - ``"Extension"`` — routes to ChatGPT or another configured extension
+            - ``"Ask Each Time"`` — user selects the model at run time
+
+            The wire-format strings match the Shortcuts.app GUI dropdown
+            verbatim. Raises
+            :class:`~shortcut_lib.schema.base.SchemaError` for unknown values.
+
+    Returns:
+        The model's text response (output name: "Model Response").
+
+    Sample citation:
+        samples/decoded/intelly.xml:63 — WFLLMModel + WFLLMPrompt with a
+        variable-reference prompt.
     """
 
     prompt: ParamValue = None
