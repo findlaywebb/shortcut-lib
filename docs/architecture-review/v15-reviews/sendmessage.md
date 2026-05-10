@@ -106,3 +106,31 @@ This is purely a clarity issue for future LLM authors reading the test.
 ## 7. Merge recommendation
 
 **Merge as-is.** The imprecise comment on `IntentAppDefinition` does not affect correctness and can be tightened in a follow-up pass. All 9 tests pass; ruff is clean; corpus grounding is verified.
+
+---
+
+## 2026-05-10 merge-readiness pass
+
+**Verdict:** Fail-Sonnet → Pass (fixed inline at `b8f5eb1`)
+
+**Branch HEAD:** `b8f5eb1` (diverges from _SUMMARY.md record `2453ab2` — one inline correction commit added)
+
+**Merge against main:**
+- Result: clean
+- Conflict files: none
+- Resolution: Automatic merge succeeded with no conflicts; `docs/known_identifiers.md` did not conflict (main version already incorporates the sendmessage identifier and the regen delta).
+
+**Pytest on merged state:** 339 passing, 0 failing, 7 skipped, 3 xfailed
+
+**prek:** skipped (pre-commit binary not installed in worktree; ruff lint and ruff format verified clean via hooks at commit time — both passed on the inline-fix commit)
+
+**Drift / observations:**
+- Main has advanced 27 commits since this branch was cut; no new actions were added that contradict sendmessage's wire-key conventions or envelope choices.
+- `WFSendMessageContent` (WFTextTokenString) and `WFSendMessageActionRecipients` (raw pass-through) remain consistent with sibling action patterns on main.
+- The `v15-reviews/` directory did not exist in the worktree (branch predates its introduction on main); the review file was restored from `main` before appending this section.
+
+**Minor corrections applied:**
+- `tests/test_action_send_message.py:176-179` — tightened `IntentAppDefinition` test comment from "Apple adds at runtime / Shortcuts runtime populates it on import" to the accurate framing: Apple writes at shortcut-authoring time; presence varies across samples (absent in running_late.xml). (commit `b8f5eb1`)
+
+**Concerns for higher-tier review:**
+- none
