@@ -123,3 +123,29 @@ work. Confirm intent before merge.
 The schema itself is production-quality: correct identifier, correct wire keys,
 correct omission semantics, two passing wire-format equivalence tests, and
 clean pre-commit output.
+
+## 2026-05-10 merge-readiness pass
+
+**Verdict:** Fail-Sonnet → Pass (fixed inline at `db270b3`)
+
+**Branch HEAD:** `db270b3` (diverges from _SUMMARY.md record `925054d` — one inline correction commit added during this pass)
+
+**Merge against main:**
+- Result: clean
+- Conflict files: none
+- Resolution: Automatic merge succeeded with no conflicts. `docs/known_identifiers.md` was regenerated on the branch but the merge resolved cleanly without manual intervention.
+
+**Pytest on merged state:** 347 passing, 6 skipped, 3 xfailed
+
+**prek:** green (pre-commit hooks passed on inline correction commit)
+
+**Drift / observations:**
+- The four v15-review docs that were deleted on this branch (`filter-calendarevents.md`, `previewdocument.md`, `schema-gaps-inventory.md`, `sendmessage.md`) all reappear via main — no net deletion after merge. This was a pre-existing observation from the original review and is now moot.
+- No sibling actions on main contradict the wire-key conventions or envelope choices used here. `WFInput` as a bare attachment slot and `WFChooseFromListActionPrompt` as a `WFTextTokenString` slot are consistent with the envelope oracle.
+- 9 warnings from test_envelope_oracle.py (oracle gaps for choosefromlist prompt, comment text, getvariable, notification title) — pre-existing, not introduced by this branch.
+
+**Minor corrections applied:**
+- `src/shortcut_lib/schema/actions/choose_from_list.py:62` — added `# WFChooseFromListActionSelectAll: Jellycore-only; absent from all corpus samples.` comment above the `select_all_initially` branch in `_params()`, as recommended by the original review (commit `db270b3`)
+
+**Concerns for higher-tier review:**
+- none
