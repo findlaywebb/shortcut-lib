@@ -106,3 +106,30 @@ One sample observation, `WFQuantityFieldValue` shape (`{Value: {Magnitude, Unit}
 ## Merge recommendation
 
 **Merge.** All tests pass, full suite is clean, pre-commit hooks pass. The Literal type choices are correct and consistent with the project pattern. Sample grounding is thorough across all five corpus appearances. The `"When I Leave"` speculation note is a minor documentation gap — add a one-line comment if easy, but do not block merge on it. The design opportunities (bool wrapper, `notes`/`url` variable support, Quantity type for location radius) are V1.5 items and are appropriately deferred.
+
+---
+
+## 2026-05-10 merge-readiness pass
+
+**Verdict:** Fail-Sonnet → Pass (fixed inline at `7e1bc0c`)
+
+**Branch HEAD:** `7e1bc0c` (diverges from _SUMMARY.md record `7a55c54` — one additional inline-correction commit added during this pass)
+
+**Merge against main:**
+- Result: clean
+- Conflict files: none
+- Resolution: Git auto-merged without conflict. Main has advanced 27 commits since branch cut, but all are docs/review commits with no schema or test changes. `docs/known_identifiers.md` required no manual resolution.
+
+**Pytest on merged state:** 346 passing, 0 failing, 7 skipped, 3 xfailed
+
+**prek:** green (all pre-commit hooks passed on inline-correction commit: ruff lint, ruff format, ty, uv-lock)
+
+**Drift / observations:**
+- Main's 27-commit advance is entirely docs/review material — no new action schemas landed on main itself (those remain on v15/* branches). No wire-key or envelope drift detected.
+- `"When I Leave"` in `WFAlertCondition` was the only flagged speculative claim from the original review. Fixed inline.
+
+**Minor corrections applied:**
+- `src/shortcut_lib/schema/actions/add_new_reminder.py:49` — added `# "When I Leave" — symmetric with "When I Arrive"; not observed in corpus (inferred by symmetry)` to the `WFAlertCondition` alias comment block (commit `7e1bc0c`)
+
+**Concerns for higher-tier review:**
+- none
