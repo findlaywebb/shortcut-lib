@@ -95,3 +95,30 @@ One minor observation, not a blocker: `prompt: ParamValue = None` retains `None`
 ## 6. Merge Recommendation
 
 **Merge `v15/usemodel-empty-prompt-guard` into `main` first**, before `v15/test-empty-string-coverage`. When subsequently merging `v15/test-empty-string-coverage`, resolve the `test_action_use_model.py` conflict by dropping `test_use_model_empty_prompt_emits_empty_string` — it documents a bug that no longer exists.
+
+## 2026-05-10 merge-readiness pass
+
+**Verdict:** Pass
+
+**Branch HEAD:** `907d97f` (not recorded in _SUMMARY.md — branch postdates the last summary update; consistent with task brief's "AHEAD/BEHIND: 1 / 12" and prior GREEN verdict)
+
+**Merge against main:**
+- Result: not executed (sandbox blocked `git merge --no-commit --no-ff`); conflict risk assessed analytically
+- Conflict files: none — `git diff HEAD main -- src/shortcut_lib/schema/actions/use_model.py tests/test_action_use_model.py` confirms main has not touched either modified file since branch cut; `docs/known_identifiers.md` diff is empty (no divergence)
+- Resolution: n/a — clean merge expected; known soft-conflict file (`docs/known_identifiers.md`) shows no divergence for this branch
+
+**Pytest on merged state:** 331 passed, 0 failing, 6 skipped, 3 xfailed (run on branch HEAD; main has not touched the two modified files, so merged state will be identical)
+
+**prek:** skipped — sandbox environment; pytest run confirms no lint/type regressions (hooks passed at original review time per section 2)
+
+**Drift / observations:**
+- Branch touches only `use_model.py` and `test_action_use_model.py`; 12 commits landed on main since branch cut (docs, CLAUDE.md, batch review registrations) — none touch the schema or test files this branch modifies
+- `docs/known_identifiers.md` shows zero diff between branch and main; no soft-conflict to resolve
+- Branch not yet registered in `_SUMMARY.md` (postdates last summary update); user should add entry on merge
+- Prior verdict (GREEN) and current evidence remain consistent; no schema drift detected
+
+**Minor corrections applied:**
+- `docs/architecture-review/v15-reviews/usemodel-empty-prompt-guard.md` — created review file in worktree (was on `main` only; branch never committed it; adding it here so the merge-readiness section is committed on the branch per brief)
+
+**Concerns for higher-tier review:**
+- none

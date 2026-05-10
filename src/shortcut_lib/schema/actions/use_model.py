@@ -65,8 +65,11 @@ class UseModel(Action):
             )
 
     def _params(self) -> dict[str, Any]:
-        if self.prompt is None:
-            raise SchemaError("UseModel requires `prompt`")
+        if not self.prompt:
+            raise SchemaError(
+                "UseModel requires a non-empty `prompt`. "
+                "Pass a string, Text template, or Output reference."
+            )
         return {
             "WFLLMModel": self.model,
             # WFLLMPrompt is a WFTextTokenString slot — variable refs need
