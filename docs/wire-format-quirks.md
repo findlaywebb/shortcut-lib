@@ -115,6 +115,23 @@ the action). They are often different.
 Source files: `src/shortcut_lib/schema/actions/` for all actions above.
 V1.5-only rows are on their respective branches pending merge.
 
+### Map family — same conceptual slot, four different wire keys
+
+Apple uses different wire-key names for the destination/input slot
+across the four map-family actions. Cross-action consistency cannot be
+assumed; per-action corpus confirmation is mandatory.
+
+| Action | Identifier | Destination wire key | Envelope |
+|---|---|---|---|
+| `GetTravelTime` | `is.workflow.actions.gettraveltime` | `WFDestination` | `WFTextTokenAttachment` |
+| `GetDistance` | `is.workflow.actions.getdistance` | `WFGetDistanceDestination` | `WFTextTokenAttachment` |
+| `SearchMaps` | `is.workflow.actions.searchmaps` | `WFInput` | `WFTextTokenAttachment` |
+| `GetDirections` | `is.workflow.actions.getdirections` | `WFDestination` | `WFTextTokenAttachment` |
+
+Cited from the per-branch reviews of `model-gettraveltime`, `model-getdistance`,
+and `model-maps`. The same value type (a single variable reference) uses
+the same envelope across all four — but the *wire key* differs by action.
+
 ---
 
 ## 4. Slot-envelope conventions
@@ -222,6 +239,31 @@ This is different from a plain `WFTextTokenAttachment`. `RepeatEach` uses
 a plain `WFTextTokenAttachment` for its `WFInput`. The distinction is
 confirmed against corpus samples (see `_wrap_variable_input` in
 `src/shortcut_lib/schema/control.py`).
+
+### Envelope is determined by slot semantics, not by value type
+
+`is.workflow.actions.dnd.set` (`SetDoNotDisturb`) is the cleanest known
+demonstration: the *same UUID* — i.e. a reference to the same upstream
+variable — is wrapped in *different envelopes* depending on which slot
+it lands in within the same action.
+
+In `samples/decoded/start_pomodoro.xml`, the same `Date` variable UUID
+appears in two adjacent dnd.set invocations:
+
+- `Time` slot → `WFTextTokenString` envelope (the slot is a templated
+  string that may interpolate the variable).
+- `Event` slot → bare `WFTextTokenAttachment` (the slot is a single
+  variable reference, no template).
+
+The library therefore selects the helper based on the slot, not the
+value type:
+
+| Slot semantics | Helper | Envelope produced |
+|---|---|---|
+| Text-with-interpolation (`WFTextTokenString`) | `coerce_text_field(x)` | one-attachment `WFTextTokenString` |
+| Single-variable ref (`WFTextTokenAttachment`) | `coerce_value(x)` | bare `WFTextTokenAttachment` |
+
+Cited from the per-branch review of `model-system-controls`.
 
 ---
 
