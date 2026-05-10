@@ -215,3 +215,32 @@ implementation is the library's most rigorous handling of the
 `WFTextTokenAttachment`-rewrap-to-`WFTextTokenString` pattern to date, and the
 tests lock it in precisely. The minor docstring and quirks-doc follow-ons are
 post-merge.
+
+---
+
+## 2026-05-10 merge-readiness pass
+
+**Verdict:** Pass
+
+**Branch HEAD:** `f924eff` (matches _SUMMARY.md record `f924eff`)
+
+**Merge against main:**
+- Result: clean
+- Conflict files: none
+- Resolution: No conflicts. All incoming changes from main were additions (new review files, CLAUDE.md, .gitignore update, action-modelling rules). The branch's four action files merged cleanly.
+
+**Pytest on merged state:** 362 passing, 0 failing (6 skipped, 3 xfailed)
+
+**prek:** green — all 8 hooks passed (trim trailing whitespace, fix end of files, check yaml, check for added large files, ruff lint, ruff format, uv-lock, ty)
+
+**Drift / observations:**
+- Main has advanced 3 commits since the branch diverged: `f8dc04d` (batch 13 review files + system-controls.md added to main), `d2af812` (batch 14 reviews), `c06f6ff` (CLAUDE.md + rules). None of these touch action schema or test logic — no drift risk.
+- The `until` field in `set_focus.py` manually inlines the `WFTextTokenAttachment`→`WFTextTokenString` rewrap logic rather than calling `coerce_text_field`. The logic is functionally identical. This is a cosmetic simplification opportunity (could call `coerce_text_field(self.until)` directly), but it is not a bug and is out of scope for inline correction.
+- The `system-controls.md` review file existed only on `main` at review time; it was not present on the branch. This is normal: the original review agent committed the review file directly to main (batch 13 dispatch pattern). The file was introduced to the worktree for this merge-readiness write-up.
+- No sibling actions on main contradict the wire-key or envelope claims in this branch.
+
+**Minor corrections applied:**
+- none
+
+**Concerns for higher-tier review:**
+- none
