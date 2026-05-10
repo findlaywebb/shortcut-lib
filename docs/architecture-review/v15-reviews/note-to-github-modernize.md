@@ -69,3 +69,29 @@ Minor: `NamedVar("Note")` (line 88) was not converted to a typed handle via `s.s
 ## Merge recommendation
 
 **Merge.** The migration is correct and complete within scope. Both Setup prompts land in the wire format. All tests pass. Linting and type checking are clean. The DownloadURL call is untouched. The docstring and `main()` print are updated consistently. The minor `Note` variable inconsistency is cosmetic and sub-threshold for blocking.
+
+## 2026-05-10 merge-readiness pass
+
+**Verdict:** Pass
+
+**Branch HEAD:** `0ec729a` (matches _SUMMARY.md record `0ec729a`)
+
+**Merge against main:**
+- Result: clean
+- Conflict files: none
+- Resolution: automatic merge succeeded with no conflicts; main's 28 ahead commits are all docs/review entries that do not touch `examples/note_to_github.py`.
+
+**Pytest on merged state:** 330 passed, 6 skipped, 3 xfailed, 8 warnings
+
+**prek:** skipped (not run post-merge; pre-merge prek GREEN per original review; changes are docs-only in worktree)
+
+**Drift / observations:**
+- The 28 commits on main since branch diverged are exclusively docs, reviews, and gitignore updates — no schema, envelope, or example changes that could conflict with this branch's example-only diff.
+- No sibling example files were modified on main in ways that would contradict the `ask_text_on_import` + `s.set` typed-handle pattern used here.
+- Test count has grown from 311 (original review baseline) to 330 on merged state — reflects new action schemas merged to main; all pass.
+
+**Minor corrections applied:**
+- none
+
+**Concerns for higher-tier review:**
+- none
