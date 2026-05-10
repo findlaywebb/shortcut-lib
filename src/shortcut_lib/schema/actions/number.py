@@ -34,8 +34,11 @@ class Number(Action):
             (0). Pass ``0`` explicitly to write the key with value ``0``.
 
     Returns:
-        A magic variable whose output name is ``"Number"``. Reference it
-        with ``action.output()`` to chain into subsequent actions.
+        A magic variable whose output name is ``"Number"``. The output
+        name is **inferred from Apple's display name** ("Number" per
+        jellycore); the corpus does not confirm it because both `Number`
+        action UUIDs in the samples are dead branches — never referenced
+        downstream as an `OutputUUID`.
 
     Corpus notes:
         Both corpus appearances (``dictionary.xml`` lines 286 and 4564)
