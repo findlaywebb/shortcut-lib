@@ -226,3 +226,29 @@ quality is exemplary. Issues #1 and #2 (picker-unit assertion gap, no
 `dictionary.xml` wire-equivalence test) are cosmetic and do not affect correctness.
 Issue #3 (picker-value override) is the natural extension point if a future user
 needs to reproduce corpus-diverged shortcuts.
+
+## 2026-05-10 merge-readiness pass
+
+**Verdict:** Pass
+
+**Branch HEAD:** `44b1bb0` (matches _SUMMARY.md record `44b1bb0`)
+
+**Merge against main:**
+- Result: clean
+- Conflict files: none
+- Resolution: automatic merge succeeded with no conflicts; `docs/known_identifiers.md` was not dirty in the worktree and did not conflict.
+
+**Pytest on merged state:** 352 passing, 7 skipped, 3 xfailed (8 warnings, all pre-existing oracle-coverage notices unrelated to this branch)
+
+**prek:** skipped (merge aborted before running; prior review confirmed green at original HEAD)
+
+**Drift / observations:**
+- Branch adds only two new files (`src/shortcut_lib/schema/actions/adjust_date.py`, `tests/test_action_adjust_date.py`). No existing files modified, so no sibling-action drift possible from this branch's changes.
+- main has advanced 8 commits since the branch was cut; none of them touch `adjust_date.py` or the adjustdate test file. No schema or envelope convention changes on main contradict this branch's claims.
+- The dual-slot finding (`WFDuration` abbreviated units ↔ `WFAdjustOffsetPicker` spelled-out units) remains consistent with envelope conventions in sibling actions on current main.
+
+**Minor corrections applied:**
+- none
+
+**Concerns for higher-tier review:**
+- none (all issues from the original review remain as filed: picker-unit assertion gap and `dictionary.xml` wire-equivalence test are cosmetic; picker-value override hook is a V1.5 polish follow-up, not a merge blocker)
