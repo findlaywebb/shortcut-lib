@@ -149,3 +149,31 @@ under the wrong choice. The `origin` field is speculative but safe, gated on
 documentation gap (no explicit corpus-unverified annotation on `WFFromAddress`)
 can be addressed in a follow-up pass or squashed into the commit before merge
 — it does not block correctness.
+
+## 2026-05-10 merge-readiness pass
+
+**Verdict:** Fail-Sonnet → Pass (fixed inline at `0d9718f`)
+
+**Branch HEAD:** `0d9718f` (diverges from _SUMMARY.md record `aae1eeb` — one review: commit added)
+
+**Merge against main:**
+- Result: clean
+- Conflict files: none
+- Resolution: Automatic merge succeeded with no conflicts. Main has advanced 17 commits (new review files, docs, CLAUDE.md, .gitignore) but none touch the branch's two new files.
+
+**Pytest on merged state:** 345 passed, 6 skipped, 3 xfailed — all green
+
+**prek:** green (all hooks pass on the correction commit: ruff lint, ruff format, ty)
+
+**Drift / observations:**
+- Main has gained many new action models and review files since the branch was cut; none overlap with `get_travel_time.py` or its tests.
+- `WFFromAddress` wire key remains unobserved in corpus across all newly merged actions — no drift contradiction found.
+- `WFDestination` envelope choice (`coerce_value` / `WFTextTokenAttachment`) is consistent with the pattern used by sibling map-family actions on main (`getdistance`, `maps`).
+- Transport mode Literal values (`Driving`, `Walking`, `Transit`, `Cycling`) are consistent with Apple surface; no corpus sample on main contradicts them.
+
+**Minor corrections applied:**
+- `src/shortcut_lib/schema/actions/get_travel_time.py:44-47` — added "Wire key inferred from Apple action surface — not observed in corpus samples; no jellycore entry." to `origin` arg docstring (commit `0d9718f`)
+- `src/shortcut_lib/schema/actions/get_travel_time.py:71-73` — added inline comment `# WFFromAddress — modelled from Apple action surface; not observed in corpus samples and absent from jellycore_facts.json.` in `_params()` (commit `0d9718f`)
+
+**Concerns for higher-tier review:**
+- none
