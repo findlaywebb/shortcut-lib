@@ -1,7 +1,7 @@
 # V1.5 autonomous batches — summary for return
 
-**Session:** 2026-05-09 autonomous run while user was out + return-pass.
-**Branches under `v15/`:** 35 unmerged (31 from autonomous run + 4 from batch 9 post-v1.0.0-redefinition).
+**Session:** 2026-05-09 → 2026-05-10 autonomous runs.
+**Branches under `v15/`:** 38 unmerged (31 from initial autonomous run + 4 batch 9 + 3 batch 10).
 **Reviews under `docs/architecture-review/v15-reviews/`:** 30+ per-branch sonnet reviews + 3 opus deep reviews under `docs/architecture-review/v15-deep-review/`.
 
 **Tag applied 2026-05-09:** `v0.1.0` on `main` at `d1ad7d4` — the prior "V1 done" milestone. Per the user's versioning convention (pre-1.0 minor numbers are an alpha/beta sequence; 0.99 → 0.100 valid before 1.0), the road from v0.1.0 to v1.0.0 is the comprehensive corpus action coverage + per-action docs work. Many 0.X minor versions to come.
@@ -85,7 +85,17 @@ User redefined v1.0.0 on 2026-05-09 (later in the day): *"v1.0.0 will be when we
 | `v15/model-list` | `ab64eb0` | `list.md` | GREEN. `BuildList` class name (avoids `list` builtin shadow). Plain `<array>` of `<string>` for `WFItems`; empty list omits the key entirely; items must be strings (no per-item variable refs). 13 tests. Doc 4/5. |
 | `v15/model-math` | `5231002` | `math.md` | GREEN-with-fix-applied-inline. Initial head `2cdc16e` made false jellycore-source claims for scientific mode (jellycore has NO `is.workflow.actions.math` entry); `5231002` corrects to honest "UI-inferred, unconfirmed" framing. Arithmetic mode corpus-grounded; scientific mode speculative pending fresh sample. 25 tests. |
 | `v15/model-adjustdate` | `44b1bb0` | `adjustdate.md` | GREEN. Notable wire-format finding: dual-slot pattern (`WFDuration` abbreviated units `"min"` ↔ `WFAdjustOffsetPicker` spelled-out `"Minute"`) for Add/Subtract operations. Single-magnitude API mirrors into both slots; follow-up filed for optional `picker_value` override field. 22 tests. Doc 5/5 (best in batch). |
-| `v15/doc-quality-audit-v1` | `31239d8` | review **PENDING** (sub-agent budget hit; resets ~23:40 Europe/London) | Doc-only refresh of all 24 V1 leaf actions on main. Average docstring score moved from ~2.8 to 5.0. Surfaced 5 undocumented quirks (AskForInput.WFAskActionImmediateDictation key, TextSplit input→text wire-key mismatch, DownloadURL.body_type="Form" raises unconditionally, RecordAudio jellycore params unverified, DictateText.stop_listening UI-only). Behaviour-only; tests should remain green. Should land EARLY in merge order to set the doc-quality bar that batch-9-onwards branches inherit. |
+| `v15/doc-quality-audit-v1` | `d7fbd4a` | `doc-quality-audit-v1.md` | YELLOW→GREEN. Initial head `31239d8` had two issues: (a) DownloadURL's 4 sample citations were factually wrong (line 11 ≠ "plain GET" — it has WFHTTPHeaders; line 59 = PUT not "GET with headers"; line 92 = PATCH not "POST with JSON"; line 125 = bare POST not "POST with JSON+headers"), and (b) `body_type="Form"` guard fired late (in `_params`) instead of at construction. Both fixed inline (commit `d7fbd4a`): citations now match XML, Form guard moved to `__post_init__`, test updated to assert construction-time SchemaError. Also includes the 24 V1 leaf docstring refreshes (avg 2.8 → 5.0) and surfaces 5 undocumented quirks. Should land EARLY in merge order to set the doc-quality bar. |
+
+### Batch 10 — number-family + location actions, post-v1.0.0-redefinition
+
+Continued action-coverage push under the redefined v1.0.0 criterion. All three branches are corpus-grounded with explicit jellycore-null disclaimers (jellycore has no entries for any of these three identifiers) — agents now reliably avoid the math-branch confabulation pattern when explicitly briefed.
+
+| Branch | Latest head | Review | Verdict |
+|---|---|---|---|
+| `v15/model-calculateexpression` | `97f730d` | `calculateexpression.md` | GREEN. Wire key is bare `Input` (capitalised AppIntent style — distinct from `WFInput` used by sibling `Math`). Uses `coerce_text_field` for `WFTextTokenString` envelope (variable interpolation in expression text). Required field — both corpus appearances populate it. 12 tests. Doc 5/5. Cosmetic line-citation off-by-2 (396 vs 394) flagged for follow-up. |
+| `v15/model-statistics` | `1ec27bd` | `statistics.md` | GREEN. Same `Input` AppIntent convention as `calculateexpression` — independently observed by two agents on the same `dictionary.xml`, mutually corroborating. Uses `coerce_value` for `WFTextTokenAttachment` envelope (no interpolation). 9 operations Literal, "Average" default with omit-if-default. 22 tests. Doc 4/5 (operation enum honestly disclaimed as UI-derived). |
+| `v15/model-getdistance` | `5a26095` | `getdistance.md` | GREEN. Wire key `WFGetDistanceDestination` (NOT `WFDestination` like sibling `gettraveltime` — guarded by explicit negative-key test). Single-field minimalist model; reviewer's position: do NOT speculatively add `WFDistanceUnit` / `WFGetDistanceMode` because Apple's key naming is inconsistent enough that wrong-key guesses silently produce malformed shortcuts. 15 tests. Doc 5/5. |
 
 ### Batch 8 — SKILL companions + test discipline + tier-2 actions + a bug fix
 
