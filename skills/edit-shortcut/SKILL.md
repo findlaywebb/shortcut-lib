@@ -290,4 +290,4 @@ inspect.
   `WFWorkflowImportQuestions`. If the shortcut used import prompts,
   they'll be in `s.setup_questions` and re-serialised on emit. Editing
   them is supported; don't also add a `WFWorkflowImportQuestions` key
-  to `_extra` or you'll get a duplicate on re-emit.
+  to `_extra` or you'll silently overwrite the `setup_questions`-derived list on re-emit.
