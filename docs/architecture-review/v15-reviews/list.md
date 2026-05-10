@@ -92,3 +92,28 @@ None blocking. Minor items for awareness:
 ## 8. Merge Recommendation
 
 **Merge.** The implementation is correct, well-tested, and well-documented. The `BuildList` name is the right call. The items-as-strings restriction is accurate and appropriately enforced. Doc quality is the highest in the actions package — a strong template for subsequent actions under the v1.0.0 criterion. The two style-consistency nits can be addressed in a follow-up or inline before merge, but they do not block.
+
+## 2026-05-10 merge-readiness pass
+
+**Verdict:** Fail-Sonnet → Pass (fixed inline at `9d41c5b`)
+
+**Branch HEAD:** `9d41c5b` (diverges from _SUMMARY.md record `ab64eb0` — one inline-correction commit added during this pass)
+
+**Merge against main:**
+- Result: clean
+- Conflict files: none
+- Resolution: Automatic merge succeeded with no conflicts. All 8 commits ahead on main are pure docs commits (no schema, test, or wire-format changes).
+
+**Pytest on merged state:** 344 passing, 6 skipped, 3 xfailed
+
+**prek:** green (all hooks passed on the inline-correction commit)
+
+**Drift / observations:**
+- All 8 commits ahead of this branch on main are docs-only (CLAUDE.md, agent rules, review registrations, roadmap). No sibling action schemas, wire-key conventions, or envelope logic changed on main since this branch forked. No drift risk.
+- `docs/known_identifiers.md` was absent from the merge conflict list entirely — already resolved cleanly on main.
+
+**Minor corrections applied:**
+- `src/shortcut_lib/schema/actions/list.py:47-52` — converted module-level `Parameters` section from NumPy style to Google style (`Args:` with inline type); added type annotation `(list[str])` to `items` arg in class docstring (commit `9d41c5b`)
+
+**Concerns for higher-tier review:**
+- none
