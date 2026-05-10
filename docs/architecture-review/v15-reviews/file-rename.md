@@ -131,3 +131,29 @@ documentation of the wire shape — no action required.
 **Merge.** The schema is correct, sample-grounded, and fully tested. All
 tooling passes. The agent's parameter claims have been independently verified
 against the corpus and oracle. No issues found.
+
+## 2026-05-10 merge-readiness pass
+
+**Verdict:** Pass
+
+**Branch HEAD:** `65412bc` (matches _SUMMARY.md record `65412bc`)
+
+**Merge against main:**
+- Result: clean
+- Conflict files: none
+- Resolution: `git merge main --no-commit --no-ff` completed with only an automatic merge of `tests/test_wire_format_equivalence.py` (other branches added entries to this file; no logic conflicts). No manual resolution required.
+
+**Pytest on merged state:** 341 passed, 6 skipped, 3 xfailed — identical to the original review baseline.
+
+**prek:** skipped (merge aborted before pre-commit hook ran; original review confirms all 8 hooks green)
+
+**Drift / observations:**
+- main is 27 commits ahead; the additional commits are other v15/* batch additions (other action schemas, test additions to `test_wire_format_equivalence.py`). None contradict `FileRename`'s wire-key choices (`WFFile`, `WFNewFilename`) or envelope choices (`coerce_value` / `coerce_text_field`).
+- The `v15-reviews/` directory was added to main after this branch was cut; the review file was committed directly on main. Appending this section required placing the file in the worktree for the first time — no schema or test files were touched.
+- No sibling actions on main share the `file.rename` action family; no cross-action consistency issue to flag.
+
+**Minor corrections applied:**
+- none
+
+**Concerns for higher-tier review:**
+- none
