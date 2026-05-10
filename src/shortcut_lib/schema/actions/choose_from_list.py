@@ -59,6 +59,7 @@ class ChooseFromList(Action):
             out["WFChooseFromListActionPrompt"] = coerce_text_field(self.prompt)
         if self.select_multiple is not None:
             out["WFChooseFromListActionSelectMultiple"] = self.select_multiple
+        # WFChooseFromListActionSelectAll: Jellycore-only; absent from all corpus samples.
         if self.select_all_initially is not None:
             out["WFChooseFromListActionSelectAll"] = self.select_all_initially
         return out
