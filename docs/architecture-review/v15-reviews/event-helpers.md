@@ -180,3 +180,31 @@ tracked as a follow-up. The blocking call is the class naming: `DateAction`
 should be `GetDate` for consistency. If the author considers the rename
 out-of-scope, document the rationale inline and merge; otherwise rename
 before landing.
+
+## 2026-05-10 merge-readiness pass
+
+**Verdict:** Pass
+
+**Branch HEAD:** `58954cc` (matches _SUMMARY.md record `58954cc`)
+
+**Merge against main:**
+- Result: clean
+- Conflict files: none
+- Resolution: Automatic merge succeeded with no conflicts. All 20 staged files from main were docs/review additions; no schema, test, or source conflicts.
+
+**Pytest on merged state:** 353 passing, 6 skipped, 3 xfailed — all green
+
+**prek:** skipped — `pre-commit` binary not available in worktree environment (same as original review)
+
+**Drift / observations:**
+- The two issues flagged in the original review (class naming `DateAction` and `WFGetUpcomingItemCalendar` always-emitted) were both fixed in the inline commit `58954cc` before this pass. The source files confirm: class is `GetDate`; calendar key is now omitted when `calendar == ""`.
+- `test_get_upcoming_events_wire_format_equivalence_daily_standup` correctly asserts `"WFGetUpcomingItemCalendar" not in params` (the fix is tested).
+- `test_get_upcoming_events_bare_omits_calendar` and `test_get_upcoming_events_wire_format_equivalence_dictionary` are near-duplicate tests covering the same `dictionary.xml:4701` bare case — minor redundancy, not a blocker.
+- No sibling actions on main use `WFDateSpecifier`, `WFGetUpcomingItemCalendar`, or `WFDateActionMode`; no wire-key conflicts.
+- Main has advanced 14 commits since the branch diverged, all doc/review additions. No schema drift.
+
+**Minor corrections applied:**
+- none
+
+**Concerns for higher-tier review:**
+- none
