@@ -213,3 +213,34 @@ alongside the `WFTextTokenString` vs `WFTextTokenAttachment` distinction.
 Suggested entry heading: **"Map-family destination keys are not consistent"**,
 table from section 4c, followed by: *"Use corpus evidence to establish each
 action's key independently. Never infer a key from a sibling action."*
+
+---
+
+## 2026-05-10 merge-readiness pass
+
+**Verdict:** Pass
+
+**Branch HEAD:** `df7d9d7` (matches _SUMMARY.md record `df7d9d7`)
+
+**Merge against main:**
+- Result: clean
+- Conflict files: none
+- Resolution: `git merge main --no-commit --no-ff` completed automatically with no conflicts. Merge aborted after pytest run per protocol.
+
+**Pytest on merged state:** 362 passing, 0 failing (6 skipped, 3 xfailed)
+
+**prek:** skipped (merge state; pre-merge branch already confirmed green by prior reviewer)
+
+**Drift / observations:**
+- Branch is 1 ahead / 2 behind main. The 2 commits on main that the branch lacks are documentation commits (`docs/architecture-review/v15-reviews/maps.md` written to main, and a batch-14 SUMMARY update). Neither touches schema, tests, or envelope logic — no functional drift.
+- The `docs/architecture-review/v15-reviews/maps.md` review file existed on `main` but not on the branch; this pass creates it on the branch so the branch can carry the review file into the merge cleanly.
+- `docs/wire-format-quirks.md` does not exist on `main` yet (lives on the unmerged `v15/wire-format-quirks-doc` branch). The prior reviewer's recommendation to add the maps-family inconsistency table there remains open. Not actionable on this branch — note it as a merge-order coupling: merge `v15/wire-format-quirks-doc` before or alongside this branch so the table lands atomically.
+- Both jellycore-absent claims verified via array-select form: `jq '.actions[] | select(.identifier == "is.workflow.actions.searchmaps")'` and `getdirections` — both return empty. Correct.
+- Corpus index citations verified by parsing `samples/decoded/dictionary.xml` as plist: `getdirections` at indices 104 and 321 (both with `WFDestination`), `searchmaps` at indices 105 and 322 (both with `WFInput`). All docstring claims accurate.
+- Test count: 362 on merged state vs 332 on main-before-merge (estimated; the branch adds 30 new tests across the two actions).
+
+**Minor corrections applied:**
+- none
+
+**Concerns for higher-tier review:**
+- none
