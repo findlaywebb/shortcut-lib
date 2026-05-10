@@ -112,3 +112,31 @@ brief already records.
 honest about what is and isn't sample-confirmed. The only issue is the missing
 Jellycore-only caveat on `bring_to_front` — low enough priority that it can be filed as
 a follow-up or folded into the merge commit message rather than blocking the branch.
+
+## 2026-05-10 merge-readiness pass
+
+**Verdict:** Fail-Sonnet → Pass (fixed inline at `69a33ce`)
+
+**Branch HEAD:** `69a33ce` (diverges from _SUMMARY.md record `5b375f7` — this branch was reviewed in batch 7 on main, not registered in the autonomous session _SUMMARY.md; HEAD advanced by the inline fix commit applied during this pass)
+
+**Merge against main:**
+- Result: clean
+- Conflict files: none
+- Resolution: No conflicts. The branch adds only `src/shortcut_lib/schema/actions/resize_window.py` and `tests/test_action_resize_window.py`; `docs/known_identifiers.md` was not touched on this branch (clean worktree). The review file `resizewindow.md` lives on main and arrives cleanly via merge.
+
+**Pytest on merged state:** 354 passing, 0 failing, 6 skipped, 3 xfailed
+
+**prek:** green (all 8 hooks passed on merged state)
+
+**Drift / observations:**
+- Branch is 1 commit ahead of main at the time of the original schema commit (`5b375f7`); now 2 commits ahead after the inline docstring fix (`69a33ce`).
+- The `docs/known_identifiers.md` file was not present in the branch diff — no conflict risk on that known trouble file.
+- `bring_to_front` provenance caveat was missing from the docstring (flagged as minor in the 2026-05-09 review, section 5). Fixed inline before this merge-readiness pass.
+- 8 of 10 Literal `WFWindowConfiguration` values remain UI-inferred; this is honestly documented and accepted per the original review. No sibling actions on main contradict the wire-key choices (`WFWindow`, `WFConfiguration`, `WFBringToFront`).
+- `coerce_value` (not `coerce_text_field`) used for the `WFWindow` slot — consistent with `WFTextTokenAttachment` single-variable-ref semantics confirmed by the envelope oracle.
+
+**Minor corrections applied:**
+- `src/shortcut_lib/schema/actions/resize_window.py:56-58` — added Jellycore-only caveat to `bring_to_front` arg docstring (commit `69a33ce`)
+
+**Concerns for higher-tier review:**
+- none
