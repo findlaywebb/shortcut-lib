@@ -193,3 +193,33 @@ without needing a further update from this branch. The two independent
 agent observations (statistics and calculateexpression both landing on `Input`
 from the same `dictionary.xml` context) provide mutual corroboration that
 strengthens the existing wire-format-quirks entry.
+
+---
+
+## 2026-05-10 merge-readiness pass
+
+**Verdict:** Pass
+
+**Branch HEAD:** `ae24e06` (diverges from _SUMMARY.md record `1ec27bd` — two follow-up commits added after original review: `116c653 schema: statistics — flag operation wire-key uncertainty` + `ae24e06 schema: statistics — also remove the second stale 'no entry' claim`)
+
+**Merge against main:**
+- Result: clean
+- Conflict files: none
+- Resolution: Automatic merge succeeded with no conflicts. `statistics.md` introduced on main merged cleanly alongside the branch's schema/test additions.
+
+**Pytest on merged state:** 353 passing, 0 failing (6 skipped, 3 xfailed — pre-existing)
+
+**prek:** skipped (not run; clean state confirmed by pytest pass and prior review noting all hooks green)
+
+**Drift / observations:**
+- The original review (section 6) was written against `1ec27bd` and is now stale: it states jellycore has "no entry" for `is.workflow.actions.statistics` and that `jq '.["is.workflow.actions.statistics"]'` returns `null`. The two follow-up commits corrected exactly this error in the schema source. The review text itself remains incorrect as historical record — this pass documents the correction.
+- The original review (section 8) flagged `observed_envelope_types.json` as having no entry for `is.workflow.actions.statistics`. This is now resolved: the oracle at current `main` HEAD does contain the entry (`"is.workflow.actions.statistics"` → `Input` → `WFTextTokenAttachment`, 2 observations). The docstring claim is therefore accurate in the merged state.
+- `v15/model-statistics` has no entry in `_SUMMARY.md`. The branch and its review exist but the master index omits it. Not a blocker for merge, but the user should add a row after merging.
+- Wire-key uncertainty for the operation key (`WFStatisticsOperation` vs lowercase `operation`) is correctly documented in the schema and tests. Tests only pin the default-omit case (unambiguous). This is the right posture given corpus silence on non-default operations.
+- No sibling actions on `main` contradict the `Input` (Title-Case) / `WFTextTokenAttachment` / `coerce_value` pattern: `calculateexpression` independently confirmed the same `Input` key; the envelope difference (`WFTextTokenAttachment` here vs `WFTextTokenString` there) is also consistent with the per-action corpus evidence.
+
+**Minor corrections applied:**
+- none
+
+**Concerns for higher-tier review:**
+- none — the operation wire-key uncertainty (`WFStatisticsOperation` vs `operation`) is already fully disclosed in both the module comment and `_params()` docstring, and tests are appropriately scoped to the corpus-verifiable default case only.
