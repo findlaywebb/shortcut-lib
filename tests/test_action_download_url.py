@@ -396,15 +396,18 @@ def test_put_matches_github_sample() -> None:
 
 
 def test_form_body_type_raises() -> None:
-    """body_type='Form' raises SchemaError with the exact unverified message."""
-    action = DownloadURL(
-        url="https://example.com/upload",
-        method="POST",
-        body={"field": "value"},
-        body_type="Form",
-    )
+    """body_type='Form' raises SchemaError at construction (not at emit time).
+
+    The guard moved into ``__post_init__`` so authors hit the error
+    immediately rather than at the eventual ``to_action_dict()`` call.
+    """
     with pytest.raises(
         SchemaError,
         match="body_type='Form' is not yet verified against samples",
     ):
-        action.to_action_dict()
+        DownloadURL(
+            url="https://example.com/upload",
+            method="POST",
+            body={"field": "value"},
+            body_type="Form",
+        )

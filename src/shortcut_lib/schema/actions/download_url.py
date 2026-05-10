@@ -146,12 +146,17 @@ class DownloadURL(Action):
         samples. Use a :class:`~shortcut_lib.schema.base.RawAction` if you
         need it now.
 
-    Sample citations:
-        samples/decoded/get_contents_of_url.xml:11 — plain GET.
-        samples/decoded/get_contents_of_url.xml:59 — GET with headers.
-        samples/decoded/get_contents_of_url.xml:92 — POST with JSON body.
-        samples/decoded/get_contents_of_url.xml:125 — POST with JSON body
-        and custom headers.
+    Sample citations (all from samples/decoded/get_contents_of_url.xml):
+        - line 11 — GET with custom ``WFHTTPHeaders`` (default method;
+          ``WFHTTPMethod`` key omitted).
+        - line 59 — PUT, URL chained from a prior action's output via
+          ``WFTextTokenString`` (no body, no headers).
+        - line 92 — PATCH, URL chained (no body, no headers).
+        - line 125 — POST, URL chained (no body, no headers).
+
+        None of the public corpus exercises a JSON / Form / Plain Text
+        body. The JSON body shape is grounded in the private
+        ``voice_note_to_github.xml`` sample only.
     """
 
     identifier: ClassVar[str] = "is.workflow.actions.downloadurl"
@@ -162,6 +167,13 @@ class DownloadURL(Action):
     headers: dict[str, Any] | None = field(default=None)
     body: ParamValue = None
     body_type: str | None = None
+
+    def __post_init__(self) -> None:
+        if self.body_type == "Form":
+            raise SchemaError(
+                "body_type='Form' is not yet verified against samples; "
+                "use 'JSON' or 'Plain Text' instead"
+            )
 
     def _params(self) -> dict[str, Any]:
         """Return the WF parameter dict for this HTTP request action."""
@@ -175,12 +187,6 @@ class DownloadURL(Action):
             raise SchemaError(
                 "DownloadURL: body_type is required when body is set. "
                 "Use 'JSON', 'Form', 'Plain Text', or 'File'."
-            )
-
-        if self.body_type == "Form":
-            raise SchemaError(
-                "body_type='Form' is not yet verified against samples; "
-                "use 'JSON' or 'Plain Text' instead"
             )
 
         out: dict[str, Any] = {}
