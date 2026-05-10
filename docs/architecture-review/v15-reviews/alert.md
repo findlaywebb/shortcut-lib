@@ -97,3 +97,37 @@ cancel button in the default state.
 maturity of the project. Both samples are covered, documentation is honest,
 and the implementation is structurally identical to the established
 `ShowNotification` pattern. No issues require resolution before merge.
+
+---
+
+## 2026-05-10 merge-readiness pass
+
+**Verdict:** Pass
+
+**Branch HEAD:** `a43e528` (matches _SUMMARY.md record `a43e528`)
+
+**Merge against main:**
+- Result: clean
+- Conflict files: none
+- Resolution: Automatic merge succeeded with no conflicts. The worktree had an
+  unstaged `docs/known_identifiers.md` regen drift (main has advanced 26
+  commits); restored via `git restore` before the merge attempt, consistent
+  with the brief's guidance to accept main's version of this auto-generated
+  file.
+
+**Pytest on merged state:** 342 passing, 0 failing (6 skipped, 3 xfailed)
+
+**prek:** green (all 8 hooks passed)
+
+**Drift / observations:**
+- `show_notification.py` on main is structurally identical to `alert.py` —
+  same field pattern (`title`, body/message, bool flag), same `coerce_text_field`
+  usage, same omit-when-empty guard. No drift in envelope conventions.
+- No new sibling actions introduced on main contradict the wire-key claims in
+  this branch (`WFAlertActionTitle`, `WFAlertActionMessage`,
+  `WFAlertActionCancelButtonShown`).
+- The 26-commit gap between branch and main added no alerts-related changes.
+
+**Minor corrections applied:** none
+
+**Concerns for higher-tier review:** none
