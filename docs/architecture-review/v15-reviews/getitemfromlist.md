@@ -126,3 +126,33 @@ Minor, non-blocking:
 The item *"WFItemIndex without WFItemSpecifier Apple quirk on GetItemFromList — needs a fresh sample to confirm"* is answered. `tile_last_2_windows.xml:89-92` provides direct corpus evidence: `WFItemIndex="2"` alongside `WFItemSpecifier="Last Item"`. The implementation handles it correctly by emitting `WFItemIndex` whenever set, irrespective of specifier. This follow-up can be struck from the open list on merge.
 
 Suggested placement in `_SUMMARY.md` merge order: Batch 10 tier (no dependencies, independent action coverage).
+
+---
+
+## 2026-05-10 merge-readiness pass
+
+**Verdict:** Pass
+
+**Branch HEAD:** `6d7953a` (diverges from _SUMMARY.md record `ab0e553` — `6d7953a` is a correction commit on top of `ab0e553` that fixes the stale jellycore-null claim; both are on this branch)
+
+**Merge against main:**
+- Result: clean
+- Conflict files: none
+- Resolution: automatic merge went well with no conflicts; `docs/known_identifiers.md` was not touched by this branch so the known-identifiers soft-conflict pattern did not apply.
+
+**Pytest on merged state:** 351 passing, 6 skipped, 3 xfailed
+
+**prek:** skipped (merge aborted before prek run; prek was confirmed green in the original review at `ab0e553` and the correction commit `6d7953a` touches only the module docstring — ruff/ty would not regress on a comment-only change)
+
+**Drift / observations:**
+- The existing review (section 7, source attribution audit) still contains `jq '.["is.workflow.actions.getitemfromlist"]'` as the cited query form. This is a historical record of the original agent's error, not a live claim, but it may mislead future readers. Low-priority review-doc nit; not touching it here.
+- The correction commit `6d7953a` (not covered by the original review) is verified: `jq '.actions[] | select(.identifier == "is.workflow.actions.getitemfromlist")' data/jellycore_facts.json` returns the full entry with 5 parameter keys including `type` (AppIntent-layer alias for wire key `WFItemSpecifier`). The module docstring now correctly records this and documents the AppIntent-vs-wire-key distinction. Source-confidence ladder adherence is sound.
+- The `_SUMMARY.md` does not yet have a batch entry for `v15/model-getitemfromlist`. The branch post-dates the SUMMARY's last update (batches 1–10 and batch 8 extras). The review file exists on main and the original verdict is GREEN; the absence from the SUMMARY table is a bookkeeping gap, not a correctness issue.
+- **Schema collision with `v15/model-list-helpers`:** that branch also introduces `src/shortcut_lib/schema/actions/get_item_from_list.py` with a `GetItemFromList` that differs in three ways: (1) uses field name `input` instead of `list_input`; (2) emits `WFItemIndex` only for `"Item At Index"` specifier (I1 round-trip fidelity gap, flagged in `list-helpers.md` section 7); (3) includes factory class methods (`.first()`, `.last()`, etc.) absent here. This branch's implementation is more corpus-faithful on the WFItemIndex co-emission quirk. The collision is a merge-ordering concern for the user: whichever of the two lands second will conflict and require manual resolution. Per the task brief, this branch's schema is canonical — the user should drop the `get_item_from_list.py` from `list-helpers` or resolve the conflict in its favour when merging.
+
+**Minor corrections applied:**
+- none
+
+**Concerns for higher-tier review:**
+- The three UI-inferred specifier values ("Random Item", "Item at Index", "Items in Range") remain undisclaimed in the class docstring args table (noted in original review section 8). Still non-blocking at current doc bar.
+- The `list-helpers` schema collision must be resolved by the user before or during merge. No autonomy here — Request-Human for that specific ordering decision.
