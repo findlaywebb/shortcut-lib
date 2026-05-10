@@ -21,8 +21,10 @@ class FormatNumber(Action):
     The action converts a number to a text string. The Shortcuts.app UI
     exposes a decimal-places spinner (``WFNumberFormatDecimalPlaces``);
     when omitted Apple defaults to 2 decimal places in the formatted
-    output. No named style enum (currency / percent / scientific) appears
-    in the wire format — the corpus shows only the decimal-places knob.
+    output. The 2-appearance corpus + jellycore both show only this
+    decimal-places knob; Shortcuts.app's UI does have additional style
+    modes (currency / percent / scientific / spell-out) that aren't
+    exercised by either source — see the Quirks section.
 
     Args:
         number: Number to format. Pass an :class:`~shortcut_lib.schema.base.Action`
@@ -46,8 +48,15 @@ class FormatNumber(Action):
     Quirks:
         - ``WFNumber`` uses a bare ``WFTextTokenAttachment`` envelope (not
           ``WFTextTokenString``). Both corpus appearances confirm this.
-        - No style enum (currency / percent / scientific) is present in the
-          wire format. Decimal-places is the only numeric control exposed.
+        - No style enum (currency / percent / scientific / spell-out) is
+          present in either corpus appearance or in jellycore's
+          ``parameter_keys`` list. Decimal-places is the only knob in scope
+          for this schema. Note: Shortcuts.app's UI clearly exposes those
+          style modes, so the gap likely reflects corpus-coverage
+          limitations rather than a wire-format truth — a sample
+          exercising a non-decimal style mode (or a sibling identifier
+          like ``is.workflow.actions.format.measurement``) would resolve
+          this. Pending such evidence, model only what's confirmed.
         - Jellycore parameter_keys: ``["WFNumber", "WFNumberFormatDecimalPlaces"]``.
     """
 
