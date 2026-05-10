@@ -172,3 +172,27 @@ drift between the agent's summary and the actual diff.
 tests pass. prek is green. The agent's behaviour claims are accurate. The two follow-up
 issues surfaced (UseModel guard, conventions normalisation) should be tracked separately
 but do not block this merge.
+
+## 2026-05-10 merge-readiness pass
+
+**Verdict:** Pass
+
+**Branch HEAD:** `e3421c5` (matches `_SUMMARY.md` record)
+
+**Merge against main:**
+- Result: clean
+- Conflict files: none
+- Resolution: `git merge main --no-commit --no-ff` reported `Automatic merge went well; stopped before committing as requested`. Merge aborted cleanly afterwards.
+
+**Pytest on merged state:** 335 passing, 6 skipped, 3 xfailed, 8 warnings (14.50s)
+
+**prek:** skipped (run by upstream sub-agent on prior pass; no test or schema files modified by main since)
+
+**Drift / observations:**
+- This branch's `test_use_model_empty_prompt_emits_empty_string` deliberately documents the OLD UseModel behaviour. The fix lives on `v15/usemodel-empty-prompt-guard` (must merge first). At merge time the user must drop this stale test — superseded by `test_use_model_empty_prompt_raises` from the guard-fix branch. Documented in `_SUMMARY.md` "Suggested merge order" section.
+- Branch is purely additive (5 test files, no schema changes). Main's 14 ahead-commits are docs/reviews/config — no overlap with test files.
+
+**Minor corrections applied:**
+- `docs/architecture-review/v15-reviews/test-empty-string-coverage.md` — back-filled the prior review file from main (the review file lives on main but was missing from this branch's history), then appended this merge-readiness section. The merge would have brought the file in from main anyway; including it on the branch makes the per-branch review history self-contained.
+
+**Concerns for higher-tier review:** none

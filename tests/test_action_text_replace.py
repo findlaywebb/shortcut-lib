@@ -77,3 +77,21 @@ def test_text_replace_registered() -> None:
     """TextReplace must be discoverable via the action registry."""
     cls = lookup("is.workflow.actions.text.replace")
     assert cls is TextReplace
+
+
+def test_text_replace_empty_find_and_replace_omitted() -> None:
+    """Empty string for find and replace omits both WF keys.
+
+    Apple's wire format omits WFReplaceTextFind and WFReplaceTextReplace
+    when the values are empty strings (observed in
+    samples/decoded/dictionary.xml:42). The schema honours that by
+    guarding both keys with ``if self.find != ""`` / ``if self.replace != ""``.
+    An empty find and empty replace should therefore produce a params dict
+    with only WFInput (when supplied) and no find/replace keys.
+    """
+    action = TextReplace(input="some text", find="", replace="")
+    params = action.to_action_dict()["WFWorkflowActionParameters"]
+    assert "WFReplaceTextFind" not in params
+    assert "WFReplaceTextReplace" not in params
+    # WFInput is still emitted when input is provided.
+    assert params["WFInput"] == "some text"
