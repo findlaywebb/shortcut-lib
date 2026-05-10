@@ -46,6 +46,8 @@ from shortcut_lib.schema.registry import register
 # "When I Arrive" observed in batch_add_reminders (actions 2, 12).
 # "At Time"       observed in set_weekend_chores (action 3) and
 #                 add_expiry_reminder (action 3).
+# "When I Leave"  — symmetric with "When I Arrive"; not observed in corpus
+#                   (inferred by symmetry).
 WFAlertCondition = Literal["At Time", "When I Arrive", "When I Leave"]
 
 # String-valued alert toggle observed in samples.
