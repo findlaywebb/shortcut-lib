@@ -146,9 +146,9 @@ class Math(Action):
     (mirroring the omit-if-default convention used by ``RoundNumber`` and
     ``FormatDate``).
 
-    **Minimum host**: not corpus-confirmed; the action is present in
-    iOS 13+ Shortcuts catalogues but the exact lowest compatible host
-    is not asserted here pending a confirmed source.
+    **Minimum host**: iOS 14 / macOS 11 (jellycore
+    ``lowest_compatible_host`` for ``is.workflow.actions.math``);
+    not corpus-confirmed independently.
 
     Args:
         input: First operand.  Pass an :class:`~shortcut_lib.schema.base.Action`
