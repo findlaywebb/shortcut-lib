@@ -31,14 +31,22 @@ import pytest
 pytest.importorskip("fastmcp", reason="evals require [mcp] extra")
 pytest.importorskip("anthropic", reason="evals require [evals] extra")
 
-from anthropic import AsyncAnthropic
+from anthropic import APIStatusError, AsyncAnthropic, RateLimitError
 from fastmcp import Client
 
 from shortcut_lib.decode import DecodeError, decode_file
 from shortcut_lib.mcp.server import build_server
 
 _DEFAULT_MODEL = "claude-sonnet-4-6"
-_DEFAULT_CONCURRENCY = 4
+# Concurrency calibrated for tier-1 rate limits (~50k input tokens/minute
+# on haiku); ~22k tokens per attempt means 2 in flight keeps headroom for
+# the SDK's automatic 429 retries to settle within one minute.
+_DEFAULT_CONCURRENCY = 2
+# Anthropic SDK default is 2 retries; for a bursty parallel harness that
+# isn't enough — the same rate-limit window persists across all retries.
+# 8 retries with the SDK's exponential backoff + retry-after honouring
+# gives ~5 minutes of grace, comfortably past the 1-minute reset.
+_SDK_MAX_RETRIES = 8
 _SYSTEM_PROMPT = (
     "You are an Apple Shortcuts author. Your only goal in this session is to "
     "produce one signed .shortcut file that satisfies the user's request, "
@@ -150,6 +158,19 @@ def _tool_result_text(content: list[Any]) -> str:
 
 
 # ── Agent loop ───────────────────────────────────────────────────────
+
+
+def _failed_attempt(reason: str) -> AttemptResult:
+    """Build an AttemptResult that fails fast with a human-readable reason."""
+    return AttemptResult(
+        passed=False,
+        reason=reason,
+        tool_calls=0,
+        input_tokens=0,
+        output_tokens=0,
+        built_path=None,
+        saw_recovery=False,
+    )
 
 
 async def _run_attempt(
@@ -358,7 +379,7 @@ async def _run_all(
     moment, which is also (approximately) the number of concurrent API
     requests, so it's the right knob for rate-limit headroom.
     """
-    anthropic_client = AsyncAnthropic()
+    anthropic_client = AsyncAnthropic(max_retries=_SDK_MAX_RETRIES)
     semaphore = asyncio.Semaphore(concurrency)
 
     async def one_attempt(task: Task, idx: int) -> tuple[Task, int, AttemptResult]:
@@ -366,7 +387,19 @@ async def _run_all(
             with tempfile.TemporaryDirectory(
                 prefix=f"{task.id}-{idx}-", dir=output_root
             ) as td:
-                attempt = await _run_attempt(anthropic_client, model, task, Path(td))
+                try:
+                    attempt = await _run_attempt(
+                        anthropic_client, model, task, Path(td)
+                    )
+                except RateLimitError as exc:
+                    attempt = _failed_attempt(
+                        f"rate limit (exhausted {_SDK_MAX_RETRIES} retries): "
+                        f"{exc.message}"
+                    )
+                except APIStatusError as exc:
+                    attempt = _failed_attempt(
+                        f"API error {exc.status_code}: {exc.message}"
+                    )
             verdict = "PASS" if attempt.passed else "FAIL"
             print(
                 f"[{task.id}] attempt {idx + 1}/{k}: {verdict} — "
