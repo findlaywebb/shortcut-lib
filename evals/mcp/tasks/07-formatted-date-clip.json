@@ -1,0 +1,14 @@
+{
+  "id": "07-formatted-date-clip",
+  "prompt": "Build a shortcut named 'Date Stamp' that formats the current date as 'yyyy-MM-dd_HH-mm-ss' and copies the formatted string to the clipboard.",
+  "graders": {
+    "name_contains": "Date",
+    "min_actions": 2,
+    "max_actions": 4,
+    "must_contain": [
+      "is.workflow.actions.format.date",
+      "is.workflow.actions.setclipboard"
+    ],
+    "decode_succeeds": true
+  }
+}

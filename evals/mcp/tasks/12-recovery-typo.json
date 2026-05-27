@@ -1,0 +1,12 @@
+{
+  "id": "12-recovery-typo",
+  "prompt": "Build a shortcut named 'Clip Greeting' that puts 'hi' onto the clipboard. If you guess a tool name and it doesn't exist, recover gracefully — use shortcut_list_actions to find what you need.",
+  "graders": {
+    "name_contains": "Clip",
+    "min_actions": 1,
+    "max_actions": 3,
+    "must_contain": ["is.workflow.actions.setclipboard"],
+    "decode_succeeds": true,
+    "recovery_expected": true
+  }
+}

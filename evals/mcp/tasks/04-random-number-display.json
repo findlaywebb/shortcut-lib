@@ -1,0 +1,14 @@
+{
+  "id": "04-random-number-display",
+  "prompt": "Build a shortcut named 'Dice Roll' that picks a random integer between 1 and 6 inclusive, then shows the result to the user.",
+  "graders": {
+    "name_contains": "Dice",
+    "min_actions": 2,
+    "max_actions": 4,
+    "must_contain": [
+      "is.workflow.actions.number.random",
+      "is.workflow.actions.showresult"
+    ],
+    "decode_succeeds": true
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "id": "01-clipboard-roundtrip",
+  "prompt": "Build a shortcut named 'Clip Hello' that puts the string 'Hello from the eval harness' onto the system clipboard, then shows a notification confirming the copy.",
+  "graders": {
+    "name_contains": "Clip",
+    "min_actions": 2,
+    "max_actions": 5,
+    "must_contain": [
+      "is.workflow.actions.setclipboard",
+      "is.workflow.actions.notification"
+    ],
+    "decode_succeeds": true
+  }
+}

@@ -15,6 +15,9 @@ mcp = [
     "fastmcp>=2.0",
     "pydantic>=2.7",
 ]
+evals = [
+    "anthropic>=0.40",
+]
 
 [project.scripts]
 shortcut-decode = "shortcut_lib.cli:decode_main"
@@ -77,6 +80,7 @@ ignore = [
 "src/shortcut_lib/cli.py" = ["T201"]  # CLI tooling, print to stdout/stderr is expected
 "scripts/**" = ["T201", "E402"]        # scripts use print; sys.path tweak before import is intentional
 "examples/**" = ["T201"]               # examples are runnable scripts; print is fine
+"evals/**" = ["T201"]                  # eval harness reports to stdout
 "tests/**" = ["S101"]                  # assert is fine in tests
 # Math action uses Apple's Unicode operator wire-format values (U+2212 MINUS,
 # U+00D7 MULTIPLICATION, etc.). RUF001/RUF002 would fire on every literal and

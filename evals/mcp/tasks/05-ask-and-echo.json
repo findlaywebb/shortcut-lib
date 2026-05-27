@@ -1,0 +1,14 @@
+{
+  "id": "05-ask-and-echo",
+  "prompt": "Build a shortcut named 'Ask And Echo' that asks the user 'What is your name?' and then shows a notification greeting them by name.",
+  "graders": {
+    "name_contains": "Ask",
+    "min_actions": 2,
+    "max_actions": 4,
+    "must_contain": [
+      "is.workflow.actions.ask",
+      "is.workflow.actions.notification"
+    ],
+    "decode_succeeds": true
+  }
+}
