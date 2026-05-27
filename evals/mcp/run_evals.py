@@ -31,13 +31,14 @@ import pytest
 pytest.importorskip("fastmcp", reason="evals require [mcp] extra")
 pytest.importorskip("anthropic", reason="evals require [evals] extra")
 
-from anthropic import Anthropic
+from anthropic import AsyncAnthropic
 from fastmcp import Client
 
 from shortcut_lib.decode import DecodeError, decode_file
 from shortcut_lib.mcp.server import build_server
 
 _DEFAULT_MODEL = "claude-sonnet-4-6"
+_DEFAULT_CONCURRENCY = 4
 _SYSTEM_PROMPT = (
     "You are an Apple Shortcuts author. Your only goal in this session is to "
     "produce one signed .shortcut file that satisfies the user's request, "
@@ -152,12 +153,15 @@ def _tool_result_text(content: list[Any]) -> str:
 
 
 async def _run_attempt(
-    anthropic_client: Anthropic,
+    anthropic_client: AsyncAnthropic,
     model: str,
     task: Task,
     output_dir: Path,
 ) -> AttemptResult:
-    os.environ["SHORTCUT_LIB_MCP_OUTPUT_DIR"] = str(output_dir)
+    # Each attempt gets its own server + Client so concurrent attempts don't
+    # share state. The output directory is injected into shortcut_build args
+    # at routing time (not env), so attempts running side-by-side land their
+    # files in disjoint directories.
     server = build_server()
     saw_recovery = False
     tool_calls = 0
@@ -174,7 +178,7 @@ async def _run_attempt(
             # plain dicts we build are structurally identical but ty rejects
             # them. The dicts are right at runtime — silence the false positive
             # rather than threading TypedDicts through every helper.
-            response = anthropic_client.messages.create(
+            response = await anthropic_client.messages.create(
                 model=model,
                 max_tokens=2048,
                 system=_SYSTEM_PROMPT,
@@ -192,8 +196,14 @@ async def _run_attempt(
             tool_results: list[dict[str, Any]] = []
             for use in tool_uses:
                 tool_calls += 1
+                args = dict(use.input or {})
+                # Inject the per-attempt output_dir for the build tool so the
+                # agent doesn't have to know it and concurrent attempts can't
+                # collide on a shared default location.
+                if use.name == "shortcut_build":
+                    args["output_dir"] = str(output_dir)
                 try:
-                    call_result = await mcp_client.call_tool(use.name, use.input or {})
+                    call_result = await mcp_client.call_tool(use.name, args)
                     text = _tool_result_text(call_result.content)
                     is_error = bool(call_result.is_error)
                     if use.name == "shortcut_build" and not is_error:
@@ -333,26 +343,48 @@ def _summarise(results: Iterable[TaskResult], k: int) -> dict[str, Any]:
 
 
 async def _run_all(
-    tasks: list[Task], *, k: int, model: str, output_root: Path
+    tasks: list[Task],
+    *,
+    k: int,
+    model: str,
+    output_root: Path,
+    concurrency: int,
 ) -> list[TaskResult]:
-    anthropic_client = Anthropic()
-    results: list[TaskResult] = []
-    for task in tasks:
-        attempts: list[AttemptResult] = []
-        for attempt_idx in range(k):
+    """Run every (task, attempt) pair under a shared concurrency bound.
+
+    Attempts are independent — each gets its own FastMCP server + Client +
+    output directory — so we fan them all out under one Semaphore. The
+    bound applies to the number of Anthropic agent loops in flight at any
+    moment, which is also (approximately) the number of concurrent API
+    requests, so it's the right knob for rate-limit headroom.
+    """
+    anthropic_client = AsyncAnthropic()
+    semaphore = asyncio.Semaphore(concurrency)
+
+    async def one_attempt(task: Task, idx: int) -> tuple[Task, int, AttemptResult]:
+        async with semaphore:
             with tempfile.TemporaryDirectory(
-                prefix=f"{task.id}-{attempt_idx}-", dir=output_root
+                prefix=f"{task.id}-{idx}-", dir=output_root
             ) as td:
                 attempt = await _run_attempt(anthropic_client, model, task, Path(td))
-            attempts.append(attempt)
             verdict = "PASS" if attempt.passed else "FAIL"
             print(
-                f"[{task.id}] attempt {attempt_idx + 1}/{k}: {verdict} — "
+                f"[{task.id}] attempt {idx + 1}/{k}: {verdict} — "
                 f"{attempt.reason} (tool_calls={attempt.tool_calls}, "
                 f"tokens={attempt.input_tokens}+{attempt.output_tokens})"
             )
-        results.append(TaskResult(id=task.id, attempts=attempts))
-    return results
+            return task, idx, attempt
+
+    coros = [one_attempt(task, idx) for task in tasks for idx in range(k)]
+    completed = await asyncio.gather(*coros)
+
+    grouped: dict[str, list[AttemptResult | None]] = {t.id: [None] * k for t in tasks}
+    for task, idx, attempt in completed:
+        grouped[task.id][idx] = attempt
+    return [
+        TaskResult(id=t.id, attempts=[a for a in grouped[t.id] if a is not None])
+        for t in tasks
+    ]
 
 
 def _dry_run(tasks: list[Task]) -> int:
@@ -373,6 +405,12 @@ def main() -> int:
     parser.add_argument("--task", type=str, default=None, help="substring filter")
     parser.add_argument("--model", type=str, default=_DEFAULT_MODEL)
     parser.add_argument(
+        "--concurrency",
+        type=int,
+        default=_DEFAULT_CONCURRENCY,
+        help="max attempts in flight at once",
+    )
+    parser.add_argument(
         "--dry-run", action="store_true", help="validate tasks only; no API calls"
     )
     args = parser.parse_args()
@@ -389,7 +427,13 @@ def main() -> int:
     _RESULTS_DIR.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix="mcp-evals-") as scratch_root:
         results = asyncio.run(
-            _run_all(tasks, k=args.k, model=args.model, output_root=Path(scratch_root))
+            _run_all(
+                tasks,
+                k=args.k,
+                model=args.model,
+                output_root=Path(scratch_root),
+                concurrency=args.concurrency,
+            )
         )
 
     summary = _summarise(results, k=args.k)
