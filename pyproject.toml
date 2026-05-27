@@ -10,8 +10,15 @@ dependencies = [
     "cryptography>=44",
 ]
 
+[project.optional-dependencies]
+mcp = [
+    "fastmcp>=2.0",
+    "pydantic>=2.7",
+]
+
 [project.scripts]
 shortcut-decode = "shortcut_lib.cli:decode_main"
+shortcut-mcp = "shortcut_lib.mcp.__main__:main"
 
 [build-system]
 requires = ["hatchling"]
@@ -27,6 +34,7 @@ exclude = ["data/"]
 [tool.uv]
 dev-dependencies = [
     "pytest>=8",
+    "pytest-asyncio>=0.23",
     "ruff>=0.12",
     "ty>=0.0.34",
 ]
@@ -89,3 +97,4 @@ python-version = "3.13"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+asyncio_mode = "auto"
