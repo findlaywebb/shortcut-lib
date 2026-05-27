@@ -14,13 +14,14 @@ workflow on 2026-05-09.
 
 | Layer | State |
 |-------|-------|
-| Decode (AEA → AA → bplist) | Done — 20 public + 1 private sample; 687 actions decoded |
-| Encode + round-trip | Done — bplist + `shortcuts sign`; 336 tests incl. equivalence sweep |
-| Schema: 24 leaf actions + 4 control-flow | Done — Tier 0/1/2 + Apple Intelligence; `RawAction` passthrough for the rest |
+| Decode (AEA → AA → bplist) | Done — 20 public + 1 private sample |
+| Encode + round-trip | Done — bplist + `shortcuts sign`; 917 tests incl. equivalence sweep |
+| Schema: 61 leaf actions + 5 control-flow + 7 value types | Done — `RawAction` passthrough for the rest |
 | Wire-format discipline | Done — `coerce_text_field` for every `WFTextTokenString` slot; envelope oracle at `data/observed_envelope_types.json` |
 | Setup-section authoring (FU-9) | Done — `ask_on_import` / `ask_text_on_import` for import-time credentials |
-| Real-target shortcuts | Done — 4 shipped; vault-note-to-git on-device validated |
+| Real-target shortcuts | Done — 8 in `examples/`; vault-note-to-git on-device validated |
 | Skills (make / edit / decode) | Done — in-repo at `skills/`, symlinked into `~/.claude/skills/` |
+| MCP server | Done — 5 tools, 12-task eval harness, stdio entrypoint (see `docs/mcp.md`) |
 | Licence + attribution | Done — GPL-3.0-or-later, `NOTICE`, `docs/sources.md` |
 
 ---
