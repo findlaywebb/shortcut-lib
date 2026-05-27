@@ -110,9 +110,33 @@ for action in decoded.workflow["WFWorkflowActions"]:
 
 ---
 
+## MCP server
+
+`shortcut-lib` ships an optional [Model Context Protocol](https://modelcontextprotocol.io)
+server so any MCP host (Claude Code, Claude Desktop, Cursor, ChatGPT) can
+author shortcuts directly. The server is local stdio; the agent calls five
+tools — discovery, schema inspection, dry-run validation, signed build,
+and decode of an existing file.
+
+```sh
+uv pip install -e '.[mcp]'
+claude mcp add shortcut-lib -- shortcut-mcp
+```
+
+Then in a Claude Code session: *"build me a shortcut that copies the
+clipboard contents to a notification."* The agent inspects the registry,
+constructs a `ShortcutSpec`, validates it, and lands a signed `.shortcut`
+in `~/Downloads` (configurable via `SHORTCUT_LIB_MCP_OUTPUT_DIR`).
+
+Full walkthrough in [`docs/mcp.md`](docs/mcp.md), including the agent-level
+eval harness under `evals/mcp/`.
+
+---
+
 ## See also
 
 - `docs/format.md` — what we know about the `.shortcut` file format
+- `docs/mcp.md` — MCP server, JSON spec, eval harness
 - `docs/sources.md` — attribution to prior reverse-engineering work
 - `docs/architecture-review/synthesis.md` — V1 design rationale (7-agent review)
 - `docs/release-notes/v1.0.md` — V1 release notes
