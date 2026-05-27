@@ -1,0 +1,11 @@
+{
+  "id": "03-pomodoro-notification",
+  "prompt": "Build a shortcut named 'Pomodoro Done' that shows a notification with the title 'Time' and the body 'Pomodoro complete'.",
+  "graders": {
+    "name_contains": "Pomodoro",
+    "min_actions": 1,
+    "max_actions": 3,
+    "must_contain": ["is.workflow.actions.notification"],
+    "decode_succeeds": true
+  }
+}

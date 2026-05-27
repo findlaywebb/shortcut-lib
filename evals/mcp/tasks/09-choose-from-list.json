@@ -1,0 +1,14 @@
+{
+  "id": "09-choose-from-list",
+  "prompt": "Build a shortcut named 'Pick A Mood' that asks the user to choose one of: Happy, Sad, Tired, Energised. Then show their choice in a notification.",
+  "graders": {
+    "name_contains": "Mood",
+    "min_actions": 2,
+    "max_actions": 5,
+    "must_contain": [
+      "is.workflow.actions.choosefromlist",
+      "is.workflow.actions.notification"
+    ],
+    "decode_succeeds": true
+  }
+}

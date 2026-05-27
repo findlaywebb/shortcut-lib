@@ -1,0 +1,15 @@
+{
+  "id": "06-base64-clipboard",
+  "prompt": "Build a shortcut named 'Base64 Clipboard' that takes whatever is on the clipboard, base64-encodes it, and writes the result back to the clipboard.",
+  "graders": {
+    "name_contains": "Base64",
+    "min_actions": 3,
+    "max_actions": 5,
+    "must_contain": [
+      "is.workflow.actions.getclipboard",
+      "is.workflow.actions.base64encode",
+      "is.workflow.actions.setclipboard"
+    ],
+    "decode_succeeds": true
+  }
+}

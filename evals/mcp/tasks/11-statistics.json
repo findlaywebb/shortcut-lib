@@ -1,0 +1,21 @@
+{
+  "id": "11-statistics",
+  "prompt": "Build a shortcut named 'Three Mean' that prompts the user three times for a number, computes the mean of those three numbers using the Statistics action, and shows the result.",
+  "graders": {
+    "name_contains": "Mean",
+    "min_actions": 4,
+    "max_actions": 12,
+    "must_contain": [
+      "is.workflow.actions.ask",
+      "is.workflow.actions.statistics"
+    ],
+    "must_contain_any": [
+      [
+        "is.workflow.actions.showresult",
+        "is.workflow.actions.notification",
+        "is.workflow.actions.alert"
+      ]
+    ],
+    "decode_succeeds": true
+  }
+}

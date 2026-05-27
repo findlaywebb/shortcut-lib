@@ -1,4 +1,4 @@
-"""AskForInput — prompt the user to type or speak a value."""
+"""AskForInput — prompt the user for a typed value via a system dialog."""
 
 from __future__ import annotations
 
@@ -30,11 +30,17 @@ _DEFAULT_ANSWER_KEY: dict[str, str] = {
 @register
 @dataclass
 class AskForInput(Action):
-    """Ask for Input — prompt the user to type or speak a value.
+    """Ask for Input — prompt the user for a typed value via a system dialog.
 
     Emits ``is.workflow.actions.ask``. Shows a system dialog with a text
     field, number pad, URL field, or date/time picker depending on
     ``input_type``. The user's response is returned as a text string.
+
+    For speech-to-text / dictation flows, use :class:`~shortcut_lib.schema.actions.dictate_text.DictateText`
+    instead — it opens the system speech-recognition interface and
+    returns transcribed text. Ask shows a text dialog (the on-screen
+    keyboard may offer a dictation button, but that's a keyboard
+    feature, not part of the action's contract).
 
     Prefer the type-specific factory methods — they expose only the
     parameters valid for that input type, so an invalid combination is a

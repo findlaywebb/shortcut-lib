@@ -23,3 +23,6 @@ docs/apple_raw/
 # Rule shape: ignore .claude/* directly so descendants can be re-included.
 .claude/*
 !.claude/rules/
+
+# MCP eval harness output
+evals/mcp/results/*.json
