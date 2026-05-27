@@ -4,11 +4,17 @@
   "graders": {
     "name_contains": "Mean",
     "min_actions": 4,
-    "max_actions": 8,
+    "max_actions": 12,
     "must_contain": [
       "is.workflow.actions.ask",
-      "is.workflow.actions.statistics",
-      "is.workflow.actions.showresult"
+      "is.workflow.actions.statistics"
+    ],
+    "must_contain_any": [
+      [
+        "is.workflow.actions.showresult",
+        "is.workflow.actions.notification",
+        "is.workflow.actions.alert"
+      ]
     ],
     "decode_succeeds": true
   }

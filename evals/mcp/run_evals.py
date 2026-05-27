@@ -70,6 +70,11 @@ class Graders:
     min_actions: int = 1
     max_actions: int = 50
     must_contain: list[str] = field(default_factory=list)
+    # Each inner list is an OR-group: the attempt passes the group if at
+    # least one identifier in it appears. Use when several actions are
+    # legitimate answers to the same prompt (e.g. "show the result" could
+    # be ShowResult OR ShowNotification OR Alert).
+    must_contain_any: list[list[str]] = field(default_factory=list)
     surfaces: list[str] = field(default_factory=list)
     decode_succeeds: bool = True
     recovery_expected: bool = False
@@ -322,6 +327,14 @@ def _grade(
     missing = [ident for ident in g.must_contain if ident not in identifiers]
     if missing:
         return False, f"missing required action identifiers: {missing}"
+
+    unsatisfied_groups = [
+        group
+        for group in g.must_contain_any
+        if not any(ident in identifiers for ident in group)
+    ]
+    if unsatisfied_groups:
+        return False, (f"none of any-of groups satisfied: {unsatisfied_groups}")
 
     surfaces = decoded.workflow.get("WFWorkflowTypes") or []
     missing_surfaces = [s for s in g.surfaces if s not in surfaces]
