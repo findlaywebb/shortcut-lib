@@ -1,6 +1,6 @@
 {
   "id": "12-recovery-typo",
-  "prompt": "Build a shortcut named 'Clip Greeting' that puts 'hi' onto the clipboard. If you guess a tool name and it doesn't exist, recover gracefully — use shortcut_list_actions to find what you need.",
+  "prompt": "Build a shortcut named 'Clip Greeting' that puts the string 'hi' onto the clipboard. Try the action class name 'CopyToPasteboard' first; if it doesn't exist, recover by calling shortcut_list_actions to find the correct class name and use that instead.",
   "graders": {
     "name_contains": "Clip",
     "min_actions": 1,

@@ -111,8 +111,10 @@ class AttemptResult:
     tool_calls: int
     input_tokens: int
     output_tokens: int
-    built_path: str | None
-    saw_recovery: bool
+    cache_read_tokens: int = 0
+    cache_write_tokens: int = 0
+    built_path: str | None = None
+    saw_recovery: bool = False
 
 
 @dataclass
@@ -137,7 +139,7 @@ class TaskResult:
 async def _list_anthropic_tools(client: Client) -> list[dict[str, Any]]:
     """Translate the FastMCP server's tools/list into Anthropic's tool schema."""
     tools = await client.list_tools()
-    return [
+    out: list[dict[str, Any]] = [
         {
             "name": t.name,
             "description": t.description or "",
@@ -145,6 +147,13 @@ async def _list_anthropic_tools(client: Client) -> list[dict[str, Any]]:
         }
         for t in tools
     ]
+    # Cache the tools array so the ~2k-token JSON Schema isn't re-billed
+    # every turn. The breakpoint goes on the LAST tool — it covers
+    # everything up to and including that block. Cache write costs 1.25x
+    # input on the first turn; hits on every subsequent turn cost 0.1x.
+    if out:
+        out[-1]["cache_control"] = {"type": "ephemeral"}
+    return out
 
 
 def _tool_result_text(content: list[Any]) -> str:
@@ -188,6 +197,8 @@ async def _run_attempt(
     tool_calls = 0
     total_in = 0
     total_out = 0
+    total_cache_read = 0
+    total_cache_write = 0
     built_path: str | None = None
 
     async with Client(server) as mcp_client:
@@ -202,12 +213,20 @@ async def _run_attempt(
             response = await anthropic_client.messages.create(
                 model=model,
                 max_tokens=2048,
-                system=_SYSTEM_PROMPT,
+                system=[
+                    {
+                        "type": "text",
+                        "text": _SYSTEM_PROMPT,
+                        "cache_control": {"type": "ephemeral"},
+                    }
+                ],
                 tools=tools,  # ty: ignore[invalid-argument-type]
                 messages=messages,  # ty: ignore[invalid-argument-type]
             )
             total_in += response.usage.input_tokens
             total_out += response.usage.output_tokens
+            total_cache_read += response.usage.cache_read_input_tokens or 0
+            total_cache_write += response.usage.cache_creation_input_tokens or 0
 
             messages.append({"role": "assistant", "content": response.content})
             if response.stop_reason != "tool_use":
@@ -254,6 +273,8 @@ async def _run_attempt(
         tool_calls=tool_calls,
         input_tokens=total_in,
         output_tokens=total_out,
+        cache_read_tokens=total_cache_read,
+        cache_write_tokens=total_cache_write,
         built_path=built_path,
         saw_recovery=saw_recovery,
     )
@@ -332,6 +353,8 @@ def _summarise(results: Iterable[TaskResult], k: int) -> dict[str, Any]:
     total_tool_calls = sum(a.tool_calls for r in rs for a in r.attempts)
     total_in = sum(a.input_tokens for r in rs for a in r.attempts)
     total_out = sum(a.output_tokens for r in rs for a in r.attempts)
+    total_cache_read = sum(a.cache_read_tokens for r in rs for a in r.attempts)
+    total_cache_write = sum(a.cache_write_tokens for r in rs for a in r.attempts)
     return {
         "task_count": len(rs),
         "k": k,
@@ -340,6 +363,8 @@ def _summarise(results: Iterable[TaskResult], k: int) -> dict[str, Any]:
         "tool_calls_total": total_tool_calls,
         "input_tokens_total": total_in,
         "output_tokens_total": total_out,
+        "cache_read_tokens_total": total_cache_read,
+        "cache_write_tokens_total": total_cache_write,
         "tasks": [
             {
                 "id": r.id,
@@ -352,6 +377,8 @@ def _summarise(results: Iterable[TaskResult], k: int) -> dict[str, Any]:
                         "tool_calls": a.tool_calls,
                         "input_tokens": a.input_tokens,
                         "output_tokens": a.output_tokens,
+                        "cache_read_tokens": a.cache_read_tokens,
+                        "cache_write_tokens": a.cache_write_tokens,
                         "built_path": a.built_path,
                         "saw_recovery": a.saw_recovery,
                     }
@@ -404,7 +431,9 @@ async def _run_all(
             print(
                 f"[{task.id}] attempt {idx + 1}/{k}: {verdict} — "
                 f"{attempt.reason} (tool_calls={attempt.tool_calls}, "
-                f"tokens={attempt.input_tokens}+{attempt.output_tokens})"
+                f"tokens={attempt.input_tokens}+{attempt.output_tokens}, "
+                f"cache r/w={attempt.cache_read_tokens}/"
+                f"{attempt.cache_write_tokens})"
             )
             return task, idx, attempt
 
@@ -479,7 +508,9 @@ def main() -> int:
         f"pass@1={summary['pass@1']:.2%}  "
         f"pass@{args.k}={summary[f'pass@{args.k}']:.2%}  "
         f"tool_calls={summary['tool_calls_total']}  "
-        f"tokens={summary['input_tokens_total']}+{summary['output_tokens_total']}"
+        f"tokens={summary['input_tokens_total']}+{summary['output_tokens_total']}  "
+        f"cache r/w={summary['cache_read_tokens_total']}/"
+        f"{summary['cache_write_tokens_total']}"
     )
     return 0
 
