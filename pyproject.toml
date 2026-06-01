@@ -1,6 +1,6 @@
 [project]
 name = "shortcut-lib"
-version = "0.0.1"
+version = "0.1.0"
 description = "Decode and (eventually) author Apple Shortcuts files."
 requires-python = ">=3.13"
 authors = [{ name = "Findlay Webb" }]
