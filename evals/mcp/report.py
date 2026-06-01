@@ -91,8 +91,14 @@ def _format_row(
     hi = run.get("pass@1_ci_high", 0.0)
     floor_pk = _floor_pass_at_k(run, floor_k)
     p_overall = run.get("pass_hat_k", 0.0)
-    tokens = run.get("tokens_per_task", 0.0)
-    calls = run.get("tool_calls_per_task", 0.0)
+    # Normalise cost by ATTEMPT, not task: tokens_per_task / tool_calls_per_task
+    # in the summary sum across all k attempts, so they are not comparable
+    # across runs with different k. attempts = task_count * k.
+    attempts = max(n_tasks * k, 1)
+    tokens = (
+        run.get("input_tokens_total", 0) + run.get("output_tokens_total", 0)
+    ) / attempts
+    calls = run.get("tool_calls_total", 0) / attempts
     commit = run.get("git_commit") or "?"
     dirty = "*" if run.get("git_dirty") else ""
     return (
@@ -108,8 +114,8 @@ def _print_table(
     """Print the markdown comparison table."""
     print(
         f"| model | provider | effort | k | n_tasks | pass@1 [95% CI] | "
-        f"pass@{floor_k} (est) | pass^{floor_k} | tokens/task | "
-        f"tool_calls/task | git_commit |"
+        f"pass@{floor_k} (est) | pass^{floor_k} | tokens/attempt | "
+        f"calls/attempt | git_commit |"
     )
     print("|---|---|---|---|---|---|---|---|---|---|---|")
     for (provider, model, effort), run in sorted(latest.items()):
