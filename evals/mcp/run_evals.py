@@ -261,6 +261,12 @@ async def _run_all(
                     )
                 except provider_api_error() as exc:
                     attempt = _failed_attempt(f"provider API error: {exc}")
+                except Exception as exc:
+                    # Isolate any other per-attempt failure (e.g. a corrupt
+                    # signed file that makes the decoder raise mid-grade under
+                    # signing contention). One bad attempt must fail only
+                    # itself, never abort the whole batch of attempts.
+                    attempt = _failed_attempt(f"unexpected {type(exc).__name__}: {exc}")
             verdict = "PASS" if attempt.passed else "FAIL"
             print(
                 f"[{task.id}] attempt {idx + 1}/{k}: {verdict}: "
