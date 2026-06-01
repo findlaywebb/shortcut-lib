@@ -15,7 +15,7 @@ workflow on 2026-05-09.
 | Layer | State |
 |-------|-------|
 | Decode (AEA → AA → bplist) | Done — 20 public + 1 private sample |
-| Encode + round-trip | Done — bplist + `shortcuts sign`; 917 tests incl. equivalence sweep |
+| Encode + round-trip | Done — bplist + `shortcuts sign`; 924 tests incl. equivalence sweep |
 | Schema: 61 leaf actions + 5 control-flow + 7 value types | Done — `RawAction` passthrough for the rest |
 | Wire-format discipline | Done — `coerce_text_field` for every `WFTextTokenString` slot; envelope oracle at `data/observed_envelope_types.json` |
 | Setup-section authoring (FU-9) | Done — `ask_on_import` / `ask_text_on_import` for import-time credentials |
