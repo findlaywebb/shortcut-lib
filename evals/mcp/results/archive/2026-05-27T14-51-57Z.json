@@ -1,0 +1,235 @@
+{
+  "task_count": 12,
+  "k": 1,
+  "pass@1": 0.6666666666666666,
+  "tool_calls_total": 96,
+  "input_tokens_total": 65088,
+  "output_tokens_total": 12095,
+  "cache_read_tokens_total": 288098,
+  "cache_write_tokens_total": 30795,
+  "tasks": [
+    {
+      "id": "01-clipboard-roundtrip",
+      "passed_any": true,
+      "pass_rate": 1.0,
+      "attempts": [
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 6,
+          "input_tokens": 6205,
+          "output_tokens": 679,
+          "cache_read_tokens": 15525,
+          "cache_write_tokens": 0,
+          "built_path": "/private/var/folders/sn/lkr_f2ms04v7_062fg4mv4_40000gn/T/mcp-evals-7xkwst1z/01-clipboard-roundtrip-0-5fnjwblr/Clip Hello.shortcut",
+          "saw_recovery": false
+        }
+      ]
+    },
+    {
+      "id": "02-dictate-to-clipboard",
+      "passed_any": false,
+      "pass_rate": 0.0,
+      "attempts": [
+        {
+          "passed": false,
+          "reason": "missing required action identifiers: ['is.workflow.actions.dictate.text']",
+          "tool_calls": 6,
+          "input_tokens": 3597,
+          "output_tokens": 725,
+          "cache_read_tokens": 16709,
+          "cache_write_tokens": 1443,
+          "built_path": "/private/var/folders/sn/lkr_f2ms04v7_062fg4mv4_40000gn/T/mcp-evals-7xkwst1z/02-dictate-to-clipboard-0-cqkgdq2j/Dictate To Clipboard.shortcut",
+          "saw_recovery": false
+        }
+      ]
+    },
+    {
+      "id": "03-pomodoro-notification",
+      "passed_any": true,
+      "pass_rate": 1.0,
+      "attempts": [
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 4,
+          "input_tokens": 1991,
+          "output_tokens": 591,
+          "cache_read_tokens": 16445,
+          "cache_write_tokens": 1357,
+          "built_path": "/private/var/folders/sn/lkr_f2ms04v7_062fg4mv4_40000gn/T/mcp-evals-7xkwst1z/03-pomodoro-notification-0-8rvouocd/Pomodoro Done.shortcut",
+          "saw_recovery": false
+        }
+      ]
+    },
+    {
+      "id": "04-random-number-display",
+      "passed_any": false,
+      "pass_rate": 0.0,
+      "attempts": [
+        {
+          "passed": false,
+          "reason": "missing required action identifiers: ['is.workflow.actions.showresult']",
+          "tool_calls": 8,
+          "input_tokens": 4357,
+          "output_tokens": 886,
+          "cache_read_tokens": 20639,
+          "cache_write_tokens": 2300,
+          "built_path": "/private/var/folders/sn/lkr_f2ms04v7_062fg4mv4_40000gn/T/mcp-evals-7xkwst1z/04-random-number-display-0-8y0r048n/Dice Roll.shortcut",
+          "saw_recovery": false
+        }
+      ]
+    },
+    {
+      "id": "05-ask-and-echo",
+      "passed_any": true,
+      "pass_rate": 1.0,
+      "attempts": [
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 7,
+          "input_tokens": 5036,
+          "output_tokens": 896,
+          "cache_read_tokens": 21051,
+          "cache_write_tokens": 2801,
+          "built_path": "/private/var/folders/sn/lkr_f2ms04v7_062fg4mv4_40000gn/T/mcp-evals-7xkwst1z/05-ask-and-echo-0-916chtm0/Ask And Echo.shortcut",
+          "saw_recovery": false
+        }
+      ]
+    },
+    {
+      "id": "06-base64-clipboard",
+      "passed_any": true,
+      "pass_rate": 1.0,
+      "attempts": [
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 7,
+          "input_tokens": 3817,
+          "output_tokens": 846,
+          "cache_read_tokens": 16719,
+          "cache_write_tokens": 2078,
+          "built_path": "/private/var/folders/sn/lkr_f2ms04v7_062fg4mv4_40000gn/T/mcp-evals-7xkwst1z/06-base64-clipboard-0-92qg_08v/Base64 Clipboard.shortcut",
+          "saw_recovery": false
+        }
+      ]
+    },
+    {
+      "id": "07-formatted-date-clip",
+      "passed_any": true,
+      "pass_rate": 1.0,
+      "attempts": [
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 7,
+          "input_tokens": 4951,
+          "output_tokens": 915,
+          "cache_read_tokens": 16798,
+          "cache_write_tokens": 2616,
+          "built_path": "/private/var/folders/sn/lkr_f2ms04v7_062fg4mv4_40000gn/T/mcp-evals-7xkwst1z/07-formatted-date-clip-0-_h7x9n8g/Date Stamp.shortcut",
+          "saw_recovery": false
+        }
+      ]
+    },
+    {
+      "id": "08-math-result",
+      "passed_any": false,
+      "pass_rate": 0.0,
+      "attempts": [
+        {
+          "passed": false,
+          "reason": "missing required action identifiers: ['is.workflow.actions.showresult']",
+          "tool_calls": 7,
+          "input_tokens": 6418,
+          "output_tokens": 913,
+          "cache_read_tokens": 22518,
+          "cache_write_tokens": 3326,
+          "built_path": "/private/var/folders/sn/lkr_f2ms04v7_062fg4mv4_40000gn/T/mcp-evals-7xkwst1z/08-math-result-0-1xi1dc47/Tip Calc.shortcut",
+          "saw_recovery": false
+        }
+      ]
+    },
+    {
+      "id": "09-choose-from-list",
+      "passed_any": true,
+      "pass_rate": 1.0,
+      "attempts": [
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 9,
+          "input_tokens": 5359,
+          "output_tokens": 1081,
+          "cache_read_tokens": 26511,
+          "cache_write_tokens": 2915,
+          "built_path": "/private/var/folders/sn/lkr_f2ms04v7_062fg4mv4_40000gn/T/mcp-evals-7xkwst1z/09-choose-from-list-0-fmj400_s/Pick A Mood.shortcut",
+          "saw_recovery": false
+        }
+      ]
+    },
+    {
+      "id": "10-share-sheet-text",
+      "passed_any": true,
+      "pass_rate": 1.0,
+      "attempts": [
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 12,
+          "input_tokens": 7158,
+          "output_tokens": 1546,
+          "cache_read_tokens": 47077,
+          "cache_write_tokens": 3715,
+          "built_path": "/private/var/folders/sn/lkr_f2ms04v7_062fg4mv4_40000gn/T/mcp-evals-7xkwst1z/10-share-sheet-text-0-8xpdzlm5/Quick Save.shortcut",
+          "saw_recovery": false
+        }
+      ]
+    },
+    {
+      "id": "11-statistics",
+      "passed_any": false,
+      "pass_rate": 0.0,
+      "attempts": [
+        {
+          "passed": false,
+          "reason": "action count 9 outside [4, 8]",
+          "tool_calls": 18,
+          "input_tokens": 13940,
+          "output_tokens": 2346,
+          "cache_read_tokens": 51266,
+          "cache_write_tokens": 6793,
+          "built_path": "/private/var/folders/sn/lkr_f2ms04v7_062fg4mv4_40000gn/T/mcp-evals-7xkwst1z/11-statistics-0-azqsji_e/Three Mean.shortcut",
+          "saw_recovery": false
+        }
+      ]
+    },
+    {
+      "id": "12-recovery-typo",
+      "passed_any": true,
+      "pass_rate": 1.0,
+      "attempts": [
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 5,
+          "input_tokens": 2259,
+          "output_tokens": 671,
+          "cache_read_tokens": 16840,
+          "cache_write_tokens": 1451,
+          "built_path": "/private/var/folders/sn/lkr_f2ms04v7_062fg4mv4_40000gn/T/mcp-evals-7xkwst1z/12-recovery-typo-0-_xyscsb4/Clip Greeting.shortcut",
+          "saw_recovery": true
+        }
+      ]
+    }
+  ],
+  "model": "claude-sonnet-4-6",
+  "timestamp": "2026-05-27T14-51-57Z",
+  "provider": "anthropic",
+  "reasoning_effort": "none",
+  "git_commit": "50468ec",
+  "git_commit_inferred": true,
+  "suite_note": "v1 baseline: 12-task suite, pre-refusal-prompt"
+}

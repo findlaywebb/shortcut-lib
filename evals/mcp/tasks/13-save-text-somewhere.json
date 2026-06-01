@@ -1,0 +1,16 @@
+{
+  "id": "13-save-text-somewhere",
+  "prompt": "Build me a shortcut that takes the note 'Pick up dry cleaning' and saves it somewhere I can get back to later.",
+  "graders": {
+    "min_actions": 1,
+    "max_actions": 5,
+    "must_contain_any": [
+      [
+        "is.workflow.actions.setclipboard",
+        "is.workflow.actions.addnewreminder",
+        "is.workflow.actions.gettext"
+      ]
+    ],
+    "decode_succeeds": true
+  }
+}

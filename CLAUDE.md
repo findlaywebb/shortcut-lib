@@ -74,7 +74,7 @@ The repo uses **autonomous batches** of action-coverage work:
 
 - Don't merge v15/* branches into main without user approval.
 - Don't tag a v1.0.0 / v0.X.0 release without user approval.
-- Don't push to a public remote (the repo is private until v1.0).
+- The repo is public; push and merge only when the user asks (the v1.0 tag and any release remain the user's call).
 - Don't add LLM clients as dependencies — the lib is what LLMs *call into*, not what calls LLMs.
 - Don't use `RawAction` as a substitute for typed modelling on Apple-known actions; it's a fallback only.
 - Don't replace `coerce_text_field` with hand-rolled `WFTextTokenString` envelope construction — the helper exists for a reason (FU-7 envelope sweep).

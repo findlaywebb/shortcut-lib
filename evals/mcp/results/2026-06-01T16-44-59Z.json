@@ -1,0 +1,825 @@
+{
+  "task_count": 20,
+  "k": 3,
+  "pass@1": 0.95,
+  "pass@1_ci_low": 0.85,
+  "pass@1_ci_high": 1.0,
+  "pass@3": 0.95,
+  "pass@k_unbiased": 0.95,
+  "pass_hat_k": 0.8573749999999999,
+  "tool_calls_total": 455,
+  "input_tokens_total": 266817,
+  "output_tokens_total": 54916,
+  "cache_read_tokens_total": 1453048,
+  "cache_write_tokens_total": 154197,
+  "tokens_per_task": 16086.65,
+  "tool_calls_per_task": 22.75,
+  "tasks": [
+    {
+      "id": "01-clipboard-roundtrip",
+      "passed_any": true,
+      "pass_rate": 1.0,
+      "attempts": [
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 6,
+          "input_tokens": 3297,
+          "output_tokens": 751,
+          "cache_read_tokens": 13718,
+          "cache_write_tokens": 4976,
+          "built_path": "/private/tmp/claude-501/mcp-evals-6oozgfwn/01-clipboard-roundtrip-0-bt0zo8a4/Clip Hello.shortcut",
+          "saw_recovery": false
+        },
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 6,
+          "input_tokens": 2937,
+          "output_tokens": 755,
+          "cache_read_tokens": 13718,
+          "cache_write_tokens": 5334,
+          "built_path": "/private/tmp/claude-501/mcp-evals-6oozgfwn/01-clipboard-roundtrip-1-mkmp0947/Clip Hello.shortcut",
+          "saw_recovery": false
+        },
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 6,
+          "input_tokens": 2612,
+          "output_tokens": 704,
+          "cache_read_tokens": 17270,
+          "cache_write_tokens": 1968,
+          "built_path": "/private/tmp/claude-501/mcp-evals-6oozgfwn/01-clipboard-roundtrip-2-gdzlo7jh/Clip Hello.shortcut",
+          "saw_recovery": false
+        }
+      ]
+    },
+    {
+      "id": "02-dictate-to-clipboard",
+      "passed_any": false,
+      "pass_rate": 0.0,
+      "attempts": [
+        {
+          "passed": false,
+          "reason": "missing required action identifiers: ['is.workflow.actions.dictate.text']",
+          "tool_calls": 6,
+          "input_tokens": 3199,
+          "output_tokens": 691,
+          "cache_read_tokens": 16855,
+          "cache_write_tokens": 1816,
+          "built_path": "/private/tmp/claude-501/mcp-evals-6oozgfwn/02-dictate-to-clipboard-0-v7l0ww2i/Dictate To Clipboard.shortcut",
+          "saw_recovery": false
+        },
+        {
+          "passed": false,
+          "reason": "missing required action identifiers: ['is.workflow.actions.dictate.text']",
+          "tool_calls": 6,
+          "input_tokens": 3197,
+          "output_tokens": 690,
+          "cache_read_tokens": 16853,
+          "cache_write_tokens": 1814,
+          "built_path": "/private/tmp/claude-501/mcp-evals-6oozgfwn/02-dictate-to-clipboard-1-nnljq6sf/Dictate To Clipboard.shortcut",
+          "saw_recovery": false
+        },
+        {
+          "passed": false,
+          "reason": "missing required action identifiers: ['is.workflow.actions.dictate.text']",
+          "tool_calls": 6,
+          "input_tokens": 2848,
+          "output_tokens": 693,
+          "cache_read_tokens": 17208,
+          "cache_write_tokens": 1820,
+          "built_path": "/private/tmp/claude-501/mcp-evals-6oozgfwn/02-dictate-to-clipboard-2-h5sl5qqp/Dictate To Clipboard.shortcut",
+          "saw_recovery": false
+        }
+      ]
+    },
+    {
+      "id": "03-pomodoro-notification",
+      "passed_any": true,
+      "pass_rate": 1.0,
+      "attempts": [
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 4,
+          "input_tokens": 1357,
+          "output_tokens": 527,
+          "cache_read_tokens": 17082,
+          "cache_write_tokens": 1478,
+          "built_path": "/private/tmp/claude-501/mcp-evals-6oozgfwn/03-pomodoro-notification-0-6_j0bu_n/Pomodoro Done.shortcut",
+          "saw_recovery": false
+        },
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 4,
+          "input_tokens": 1004,
+          "output_tokens": 551,
+          "cache_read_tokens": 17082,
+          "cache_write_tokens": 1829,
+          "built_path": "/private/tmp/claude-501/mcp-evals-6oozgfwn/03-pomodoro-notification-1-0cwhkgjt/Pomodoro Done.shortcut",
+          "saw_recovery": false
+        },
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 4,
+          "input_tokens": 473,
+          "output_tokens": 526,
+          "cache_read_tokens": 18465,
+          "cache_write_tokens": 980,
+          "built_path": "/private/tmp/claude-501/mcp-evals-6oozgfwn/03-pomodoro-notification-2-t645bv_r/Pomodoro Done.shortcut",
+          "saw_recovery": false
+        }
+      ]
+    },
+    {
+      "id": "04-random-number-display",
+      "passed_any": true,
+      "pass_rate": 1.0,
+      "attempts": [
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 8,
+          "input_tokens": 4332,
+          "output_tokens": 900,
+          "cache_read_tokens": 20811,
+          "cache_write_tokens": 2302,
+          "built_path": "/private/tmp/claude-501/mcp-evals-6oozgfwn/04-random-number-display-0-82f8b5dj/Dice Roll.shortcut",
+          "saw_recovery": false
+        },
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 8,
+          "input_tokens": 4328,
+          "output_tokens": 880,
+          "cache_read_tokens": 20798,
+          "cache_write_tokens": 2294,
+          "built_path": "/private/tmp/claude-501/mcp-evals-6oozgfwn/04-random-number-display-1-wrb73l46/Dice Roll.shortcut",
+          "saw_recovery": false
+        },
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 8,
+          "input_tokens": 3783,
+          "output_tokens": 894,
+          "cache_read_tokens": 21982,
+          "cache_write_tokens": 1687,
+          "built_path": "/private/tmp/claude-501/mcp-evals-6oozgfwn/04-random-number-display-2-ldz2d6xg/Dice Roll.shortcut",
+          "saw_recovery": false
+        }
+      ]
+    },
+    {
+      "id": "05-ask-and-echo",
+      "passed_any": true,
+      "pass_rate": 1.0,
+      "attempts": [
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 6,
+          "input_tokens": 5066,
+          "output_tokens": 803,
+          "cache_read_tokens": 16812,
+          "cache_write_tokens": 2700,
+          "built_path": "/private/tmp/claude-501/mcp-evals-6oozgfwn/05-ask-and-echo-0-t9q2x3mx/Ask And Echo.shortcut",
+          "saw_recovery": false
+        },
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 6,
+          "input_tokens": 5069,
+          "output_tokens": 791,
+          "cache_read_tokens": 16826,
+          "cache_write_tokens": 2714,
+          "built_path": "/private/tmp/claude-501/mcp-evals-6oozgfwn/05-ask-and-echo-1-1ws4myks/Ask And Echo.shortcut",
+          "saw_recovery": false
+        },
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 7,
+          "input_tokens": 4890,
+          "output_tokens": 886,
+          "cache_read_tokens": 22371,
+          "cache_write_tokens": 2124,
+          "built_path": "/private/tmp/claude-501/mcp-evals-6oozgfwn/05-ask-and-echo-2-url9ulm6/Ask And Echo.shortcut",
+          "saw_recovery": false
+        }
+      ]
+    },
+    {
+      "id": "06-base64-clipboard",
+      "passed_any": true,
+      "pass_rate": 1.0,
+      "attempts": [
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 7,
+          "input_tokens": 3789,
+          "output_tokens": 854,
+          "cache_read_tokens": 16863,
+          "cache_write_tokens": 2077,
+          "built_path": "/private/tmp/claude-501/mcp-evals-6oozgfwn/06-base64-clipboard-0-0vc2am6e/Base64 Clipboard.shortcut",
+          "saw_recovery": false
+        },
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 7,
+          "input_tokens": 3231,
+          "output_tokens": 845,
+          "cache_read_tokens": 17713,
+          "cache_write_tokens": 1794,
+          "built_path": "/private/tmp/claude-501/mcp-evals-6oozgfwn/06-base64-clipboard-1-rik2wj5c/Base64 Clipboard.shortcut",
+          "saw_recovery": false
+        },
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 7,
+          "input_tokens": 2770,
+          "output_tokens": 864,
+          "cache_read_tokens": 18343,
+          "cache_write_tokens": 1612,
+          "built_path": "/private/tmp/claude-501/mcp-evals-6oozgfwn/06-base64-clipboard-2-a89l04rx/Base64 Clipboard.shortcut",
+          "saw_recovery": false
+        }
+      ]
+    },
+    {
+      "id": "07-formatted-date-clip",
+      "passed_any": true,
+      "pass_rate": 1.0,
+      "attempts": [
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 7,
+          "input_tokens": 5011,
+          "output_tokens": 1042,
+          "cache_read_tokens": 16962,
+          "cache_write_tokens": 2716,
+          "built_path": "/private/tmp/claude-501/mcp-evals-6oozgfwn/07-formatted-date-clip-0-b1ud2vy6/Date Stamp.shortcut",
+          "saw_recovery": false
+        },
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 7,
+          "input_tokens": 4969,
+          "output_tokens": 996,
+          "cache_read_tokens": 16950,
+          "cache_write_tokens": 2661,
+          "built_path": "/private/tmp/claude-501/mcp-evals-6oozgfwn/07-formatted-date-clip-1-psro9gql/Date Stamp.shortcut",
+          "saw_recovery": false
+        },
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 7,
+          "input_tokens": 3872,
+          "output_tokens": 922,
+          "cache_read_tokens": 18145,
+          "cache_write_tokens": 2404,
+          "built_path": "/private/tmp/claude-501/mcp-evals-6oozgfwn/07-formatted-date-clip-2-aolscvw4/Date Stamp.shortcut",
+          "saw_recovery": false
+        }
+      ]
+    },
+    {
+      "id": "08-math-result",
+      "passed_any": true,
+      "pass_rate": 1.0,
+      "attempts": [
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 7,
+          "input_tokens": 6394,
+          "output_tokens": 885,
+          "cache_read_tokens": 22689,
+          "cache_write_tokens": 3324,
+          "built_path": "/private/tmp/claude-501/mcp-evals-6oozgfwn/08-math-result-0-c12bzgtc/Tip Calc.shortcut",
+          "saw_recovery": false
+        },
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 8,
+          "input_tokens": 5896,
+          "output_tokens": 895,
+          "cache_read_tokens": 29431,
+          "cache_write_tokens": 3234,
+          "built_path": "/private/tmp/claude-501/mcp-evals-6oozgfwn/08-math-result-1-uaq45tnj/Tip Calc.shortcut",
+          "saw_recovery": false
+        },
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 8,
+          "input_tokens": 5611,
+          "output_tokens": 938,
+          "cache_read_tokens": 29883,
+          "cache_write_tokens": 3048,
+          "built_path": "/private/tmp/claude-501/mcp-evals-6oozgfwn/08-math-result-2-lb_877ca/Tip Calc.shortcut",
+          "saw_recovery": false
+        }
+      ]
+    },
+    {
+      "id": "09-choose-from-list",
+      "passed_any": true,
+      "pass_rate": 1.0,
+      "attempts": [
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 9,
+          "input_tokens": 5248,
+          "output_tokens": 1088,
+          "cache_read_tokens": 31637,
+          "cache_write_tokens": 2922,
+          "built_path": "/private/tmp/claude-501/mcp-evals-6oozgfwn/09-choose-from-list-0-mkh4fpeo/Pick A Mood.shortcut",
+          "saw_recovery": false
+        },
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 9,
+          "input_tokens": 3472,
+          "output_tokens": 1102,
+          "cache_read_tokens": 34169,
+          "cache_write_tokens": 2223,
+          "built_path": "/private/tmp/claude-501/mcp-evals-6oozgfwn/09-choose-from-list-1-_m28l7ml/Pick A Mood.shortcut",
+          "saw_recovery": false
+        },
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 9,
+          "input_tokens": 2071,
+          "output_tokens": 1097,
+          "cache_read_tokens": 35817,
+          "cache_write_tokens": 1938,
+          "built_path": "/private/tmp/claude-501/mcp-evals-6oozgfwn/09-choose-from-list-2-vhck9io6/Pick A Mood.shortcut",
+          "saw_recovery": false
+        }
+      ]
+    },
+    {
+      "id": "10-share-sheet-text",
+      "passed_any": true,
+      "pass_rate": 1.0,
+      "attempts": [
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 14,
+          "input_tokens": 8550,
+          "output_tokens": 1692,
+          "cache_read_tokens": 55828,
+          "cache_write_tokens": 4798,
+          "built_path": "/private/tmp/claude-501/mcp-evals-6oozgfwn/10-share-sheet-text-0-irtmymig/Quick Save.shortcut",
+          "saw_recovery": false
+        },
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 14,
+          "input_tokens": 7980,
+          "output_tokens": 1588,
+          "cache_read_tokens": 54001,
+          "cache_write_tokens": 4275,
+          "built_path": "/private/tmp/claude-501/mcp-evals-6oozgfwn/10-share-sheet-text-1-yd4q07cd/Quick Save.shortcut",
+          "saw_recovery": false
+        },
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 14,
+          "input_tokens": 8483,
+          "output_tokens": 2042,
+          "cache_read_tokens": 49672,
+          "cache_write_tokens": 4288,
+          "built_path": "/private/tmp/claude-501/mcp-evals-6oozgfwn/10-share-sheet-text-2-epp_7jl5/Quick Save.shortcut",
+          "saw_recovery": false
+        }
+      ]
+    },
+    {
+      "id": "11-statistics",
+      "passed_any": true,
+      "pass_rate": 1.0,
+      "attempts": [
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 18,
+          "input_tokens": 13414,
+          "output_tokens": 2310,
+          "cache_read_tokens": 59831,
+          "cache_write_tokens": 6641,
+          "built_path": "/private/tmp/claude-501/mcp-evals-6oozgfwn/11-statistics-0-272vp0qv/Three Mean.shortcut",
+          "saw_recovery": true
+        },
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 23,
+          "input_tokens": 15316,
+          "output_tokens": 2627,
+          "cache_read_tokens": 72667,
+          "cache_write_tokens": 7583,
+          "built_path": "/private/tmp/claude-501/mcp-evals-6oozgfwn/11-statistics-1-nzmo1vdr/Three Mean.shortcut",
+          "saw_recovery": false
+        },
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 18,
+          "input_tokens": 12888,
+          "output_tokens": 2381,
+          "cache_read_tokens": 52767,
+          "cache_write_tokens": 5825,
+          "built_path": "/private/tmp/claude-501/mcp-evals-6oozgfwn/11-statistics-2-lp1h81aa/Three Mean.shortcut",
+          "saw_recovery": false
+        }
+      ]
+    },
+    {
+      "id": "12-recovery-typo",
+      "passed_any": true,
+      "pass_rate": 1.0,
+      "attempts": [
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 5,
+          "input_tokens": 2259,
+          "output_tokens": 672,
+          "cache_read_tokens": 16985,
+          "cache_write_tokens": 1465,
+          "built_path": "/private/tmp/claude-501/mcp-evals-6oozgfwn/12-recovery-typo-0-b20mgn2y/Clip Greeting.shortcut",
+          "saw_recovery": true
+        },
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 5,
+          "input_tokens": 2232,
+          "output_tokens": 704,
+          "cache_read_tokens": 16985,
+          "cache_write_tokens": 1453,
+          "built_path": "/private/tmp/claude-501/mcp-evals-6oozgfwn/12-recovery-typo-1-z681u8qd/Clip Greeting.shortcut",
+          "saw_recovery": true
+        },
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 5,
+          "input_tokens": 1848,
+          "output_tokens": 718,
+          "cache_read_tokens": 17370,
+          "cache_write_tokens": 1450,
+          "built_path": "/private/tmp/claude-501/mcp-evals-6oozgfwn/12-recovery-typo-2-62qtg2dw/Clip Greeting.shortcut",
+          "saw_recovery": true
+        }
+      ]
+    },
+    {
+      "id": "13-save-text-somewhere",
+      "passed_any": true,
+      "pass_rate": 1.0,
+      "attempts": [
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 7,
+          "input_tokens": 4192,
+          "output_tokens": 670,
+          "cache_read_tokens": 16788,
+          "cache_write_tokens": 2393,
+          "built_path": "/private/tmp/claude-501/mcp-evals-6oozgfwn/13-save-text-somewhere-0-ekt175g1/Save Dry Cleaning Reminder.shortcut",
+          "saw_recovery": false
+        },
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 6,
+          "input_tokens": 3859,
+          "output_tokens": 586,
+          "cache_read_tokens": 16816,
+          "cache_write_tokens": 2265,
+          "built_path": "/private/tmp/claude-501/mcp-evals-6oozgfwn/13-save-text-somewhere-1-9kp8fzyj/Pick Up Dry Cleaning Reminder.shortcut",
+          "saw_recovery": false
+        },
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 8,
+          "input_tokens": 4700,
+          "output_tokens": 701,
+          "cache_read_tokens": 23173,
+          "cache_write_tokens": 2470,
+          "built_path": "/private/tmp/claude-501/mcp-evals-6oozgfwn/13-save-text-somewhere-2-ktfjeb4h/Save Dry Cleaning Reminder.shortcut",
+          "saw_recovery": false
+        }
+      ]
+    },
+    {
+      "id": "14-show-me-this",
+      "passed_any": true,
+      "pass_rate": 1.0,
+      "attempts": [
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 9,
+          "input_tokens": 4144,
+          "output_tokens": 843,
+          "cache_read_tokens": 31189,
+          "cache_write_tokens": 2569,
+          "built_path": "/private/tmp/claude-501/mcp-evals-6oozgfwn/14-show-me-this-0-aja6mb66/The Answer is 42.shortcut",
+          "saw_recovery": false
+        },
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 7,
+          "input_tokens": 6635,
+          "output_tokens": 814,
+          "cache_read_tokens": 23076,
+          "cache_write_tokens": 3621,
+          "built_path": "/private/tmp/claude-501/mcp-evals-6oozgfwn/14-show-me-this-1-pjiw3ct8/The Answer is 42.shortcut",
+          "saw_recovery": false
+        },
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 9,
+          "input_tokens": 7353,
+          "output_tokens": 867,
+          "cache_read_tokens": 31134,
+          "cache_write_tokens": 3422,
+          "built_path": "/private/tmp/claude-501/mcp-evals-6oozgfwn/14-show-me-this-2-z0w1zkqx/The Answer is 42.shortcut",
+          "saw_recovery": false
+        }
+      ]
+    },
+    {
+      "id": "15-round-this-number",
+      "passed_any": true,
+      "pass_rate": 1.0,
+      "attempts": [
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 8,
+          "input_tokens": 3872,
+          "output_tokens": 884,
+          "cache_read_tokens": 20791,
+          "cache_write_tokens": 2042,
+          "built_path": "/private/tmp/claude-501/mcp-evals-6oozgfwn/15-round-this-number-0-k32fkllq/Round 37.shortcut",
+          "saw_recovery": false
+        },
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 8,
+          "input_tokens": 3502,
+          "output_tokens": 874,
+          "cache_read_tokens": 21601,
+          "cache_write_tokens": 1600,
+          "built_path": "/private/tmp/claude-501/mcp-evals-6oozgfwn/15-round-this-number-1-0v5qd1ue/Round 37.shortcut",
+          "saw_recovery": false
+        },
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 8,
+          "input_tokens": 3107,
+          "output_tokens": 890,
+          "cache_read_tokens": 22102,
+          "cache_write_tokens": 1497,
+          "built_path": "/private/tmp/claude-501/mcp-evals-6oozgfwn/15-round-this-number-2-ojtzhnf9/Round 37.shortcut",
+          "saw_recovery": false
+        }
+      ]
+    },
+    {
+      "id": "16-quick-reminder",
+      "passed_any": true,
+      "pass_rate": 1.0,
+      "attempts": [
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 4,
+          "input_tokens": 3360,
+          "output_tokens": 517,
+          "cache_read_tokens": 16556,
+          "cache_write_tokens": 2019,
+          "built_path": "/private/tmp/claude-501/mcp-evals-6oozgfwn/16-quick-reminder-0-8vkz8gjs/Call the Dentist Reminder.shortcut",
+          "saw_recovery": false
+        },
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 4,
+          "input_tokens": 3120,
+          "output_tokens": 491,
+          "cache_read_tokens": 16470,
+          "cache_write_tokens": 2259,
+          "built_path": "/private/tmp/claude-501/mcp-evals-6oozgfwn/16-quick-reminder-1-eq8q3ovd/Call the Dentist Reminder.shortcut",
+          "saw_recovery": false
+        },
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 4,
+          "input_tokens": 1649,
+          "output_tokens": 526,
+          "cache_read_tokens": 17847,
+          "cache_write_tokens": 2428,
+          "built_path": "/private/tmp/claude-501/mcp-evals-6oozgfwn/16-quick-reminder-2-8b_t_j41/Call the Dentist Reminder.shortcut",
+          "saw_recovery": false
+        }
+      ]
+    },
+    {
+      "id": "17-date-format-clip",
+      "passed_any": true,
+      "pass_rate": 1.0,
+      "attempts": [
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 8,
+          "input_tokens": 5129,
+          "output_tokens": 949,
+          "cache_read_tokens": 17027,
+          "cache_write_tokens": 2702,
+          "built_path": "/private/tmp/claude-501/mcp-evals-6oozgfwn/17-date-format-clip-0-f8bn7bwg/Copy Current Date to Clipboard.shortcut",
+          "saw_recovery": false
+        },
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 7,
+          "input_tokens": 4673,
+          "output_tokens": 929,
+          "cache_read_tokens": 17797,
+          "cache_write_tokens": 1871,
+          "built_path": "/private/tmp/claude-501/mcp-evals-6oozgfwn/17-date-format-clip-1-ue95_08r/Copy Current Date.shortcut",
+          "saw_recovery": false
+        },
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 7,
+          "input_tokens": 4541,
+          "output_tokens": 919,
+          "cache_read_tokens": 17249,
+          "cache_write_tokens": 2581,
+          "built_path": "/private/tmp/claude-501/mcp-evals-6oozgfwn/17-date-format-clip-2-vueuz__y/Copy Current Date to Clipboard.shortcut",
+          "saw_recovery": false
+        }
+      ]
+    },
+    {
+      "id": "18-clipboard-prefix-notify",
+      "passed_any": true,
+      "pass_rate": 1.0,
+      "attempts": [
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 6,
+          "input_tokens": 3087,
+          "output_tokens": 718,
+          "cache_read_tokens": 16849,
+          "cache_write_tokens": 1765,
+          "built_path": "/private/tmp/claude-501/mcp-evals-6oozgfwn/18-clipboard-prefix-notify-0-lnxrvn7y/Clipboard Prefix Notify.shortcut",
+          "saw_recovery": false
+        },
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 6,
+          "input_tokens": 2777,
+          "output_tokens": 777,
+          "cache_read_tokens": 17204,
+          "cache_write_tokens": 1802,
+          "built_path": "/private/tmp/claude-501/mcp-evals-6oozgfwn/18-clipboard-prefix-notify-1-l1l_y8si/Clipboard Notifier.shortcut",
+          "saw_recovery": false
+        },
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 6,
+          "input_tokens": 3096,
+          "output_tokens": 740,
+          "cache_read_tokens": 16842,
+          "cache_write_tokens": 1771,
+          "built_path": "/private/tmp/claude-501/mcp-evals-6oozgfwn/18-clipboard-prefix-notify-2-j6w1qome/Copied Prefix Notification.shortcut",
+          "saw_recovery": false
+        }
+      ]
+    },
+    {
+      "id": "19-text-not-speak",
+      "passed_any": true,
+      "pass_rate": 1.0,
+      "attempts": [
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 5,
+          "input_tokens": 1898,
+          "output_tokens": 655,
+          "cache_read_tokens": 20492,
+          "cache_write_tokens": 2282,
+          "built_path": "/private/tmp/claude-501/mcp-evals-6oozgfwn/19-text-not-speak-0-hskvcdcf/Text Partner Running Late.shortcut",
+          "saw_recovery": false
+        },
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 5,
+          "input_tokens": 1164,
+          "output_tokens": 667,
+          "cache_read_tokens": 21397,
+          "cache_write_tokens": 2136,
+          "built_path": "/private/tmp/claude-501/mcp-evals-6oozgfwn/19-text-not-speak-1-_e4nk5sp/Text Partner Running Late.shortcut",
+          "saw_recovery": false
+        },
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 5,
+          "input_tokens": 2204,
+          "output_tokens": 696,
+          "cache_read_tokens": 20704,
+          "cache_write_tokens": 1797,
+          "built_path": "/private/tmp/claude-501/mcp-evals-6oozgfwn/19-text-not-speak-2-0i3o5my3/Text Partner Running Late.shortcut",
+          "saw_recovery": false
+        }
+      ]
+    },
+    {
+      "id": "20-flashlight-refuse",
+      "passed_any": true,
+      "pass_rate": 1.0,
+      "attempts": [
+        {
+          "passed": true,
+          "reason": "refused as expected (no build)",
+          "tool_calls": 6,
+          "input_tokens": 5097,
+          "output_tokens": 605,
+          "cache_read_tokens": 23971,
+          "cache_write_tokens": 1230,
+          "built_path": null,
+          "saw_recovery": false
+        },
+        {
+          "passed": true,
+          "reason": "refused as expected (no build)",
+          "tool_calls": 6,
+          "input_tokens": 5097,
+          "output_tokens": 631,
+          "cache_read_tokens": 23987,
+          "cache_write_tokens": 1238,
+          "built_path": null,
+          "saw_recovery": false
+        },
+        {
+          "passed": true,
+          "reason": "refused as expected (no build)",
+          "tool_calls": 7,
+          "input_tokens": 4865,
+          "output_tokens": 663,
+          "cache_read_tokens": 29427,
+          "cache_write_tokens": 870,
+          "built_path": null,
+          "saw_recovery": false
+        }
+      ]
+    }
+  ],
+  "model": "claude-sonnet-4-6",
+  "provider": "anthropic",
+  "reasoning_effort": "none",
+  "git_commit": "098f0d4",
+  "git_dirty": false,
+  "timestamp": "2026-06-01T16-44-59Z"
+}

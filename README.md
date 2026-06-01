@@ -132,6 +132,27 @@ in `~/Downloads` (configurable via `SHORTCUT_LIB_MCP_OUTPUT_DIR`).
 Full walkthrough in [`docs/mcp.md`](docs/mcp.md), including the agent-level
 eval harness under `evals/mcp/`.
 
+### How well does it work?
+
+The harness drives a model through the tools on a 20-task suite and grades the
+emitted `.shortcut` deterministically (decode + structural assertions, no
+LLM-as-judge). Latest cross-model run (2026-06-01; Anthropic k=3, OpenAI k=10
+sweeping reasoning effort):
+
+| model | pass@1 [95% CI] | pass@3 (est) | pass^3 (reliability) | tokens/attempt |
+|---|---|---|---|---|
+| claude-sonnet-4-6 | 95% [85%, 100%] | 95% | **0.86** | **5.4k** |
+| claude-haiku-4-5 | 95% [80%, 100%] | 95% | 0.77 | 18k |
+| gpt-5.5 (low effort) | 95% [79%, 100%] | 94% | 0.43 | 20k |
+| gpt-5-mini (high effort) | 90% [80%, 99%] | 95% | 0.41 | 32k |
+
+Every model clears pass@3 ~95% (solvable with retries), but **reliability**
+(pass^3, succeeding on *every* attempt) separates them, and Sonnet is ~4x more
+token-efficient at equal tool-call counts. Full matrix, paired significance
+tests, methodology, and the result-to-commit trend in
+[`evals/mcp/results/TREND.md`](evals/mcp/results/TREND.md); regenerate with
+`uv run python evals/mcp/report.py`.
+
 ---
 
 ## See also
