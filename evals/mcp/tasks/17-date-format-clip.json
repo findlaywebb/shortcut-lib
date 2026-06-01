@@ -1,0 +1,14 @@
+{
+  "id": "17-date-format-clip",
+  "prompt": "Build a shortcut that gets the current date, formats it as a readable string, and copies that to the clipboard.",
+  "graders": {
+    "min_actions": 3,
+    "max_actions": 6,
+    "must_contain": [
+      "is.workflow.actions.date",
+      "is.workflow.actions.format.date",
+      "is.workflow.actions.setclipboard"
+    ],
+    "decode_succeeds": true
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "id": "14-show-me-this",
+  "prompt": "Make a shortcut that figures out the number 42 and just shows it to me on screen.",
+  "graders": {
+    "min_actions": 1,
+    "max_actions": 5,
+    "must_contain_any": [
+      [
+        "is.workflow.actions.showresult",
+        "is.workflow.actions.notification",
+        "is.workflow.actions.alert"
+      ]
+    ],
+    "decode_succeeds": true
+  }
+}

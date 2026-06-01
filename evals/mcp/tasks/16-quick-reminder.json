@@ -1,0 +1,12 @@
+{
+  "id": "16-quick-reminder",
+  "prompt": "Make me a shortcut that adds a reminder to call the dentist.",
+  "graders": {
+    "min_actions": 1,
+    "max_actions": 4,
+    "must_contain": [
+      "is.workflow.actions.addnewreminder"
+    ],
+    "decode_succeeds": true
+  }
+}
