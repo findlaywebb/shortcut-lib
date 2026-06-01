@@ -28,6 +28,10 @@ _SDK_MAX_RETRIES = 8
 # OpenAI's SDK defaults to 2 retries too; match the Anthropic path's grace
 # so a bursty parallel harness rides out rate-limit windows the same way.
 _OPENAI_MAX_RETRIES = 8
+# Reasoning-effort levels the OpenAI Responses API accepts under
+# ``reasoning.effort``. "none" (the harness default) sends no reasoning
+# parameter, leaving the model on its own default.
+_OPENAI_EFFORTS = frozenset({"minimal", "low", "medium", "high"})
 _SYSTEM_PROMPT = (
     "You are an Apple Shortcuts author. Your only goal in this session is to "
     "produce one signed .shortcut file that satisfies the user's request, "
@@ -255,23 +259,44 @@ class OpenAIDriver:
     ``cache_read_tokens`` reads ``input_tokens_details.cached_tokens``.
     """
 
-    def __init__(self, client: Any, model: str) -> None:
+    def __init__(self, client: Any, model: str, reasoning_effort: str = "none") -> None:
         self._client = client
         self._model = model
+        # "none" means do not send a reasoning parameter at all (the model
+        # uses its own default); a real effort level is passed through as
+        # ``reasoning.effort`` on every Responses call so the whole loop runs
+        # at one effort.
+        self._reasoning = (
+            {"effort": reasoning_effort}
+            if reasoning_effort in _OPENAI_EFFORTS
+            else None
+        )
 
     async def run(
         self, task: TaskLike, mcp_client: Client, output_dir: Path
     ) -> DriverState:
         state = DriverState()
         tools = await _list_openai_tools(mcp_client)
-        conversation: list[dict[str, Any]] = [{"role": "user", "content": task.prompt}]
+        extra: dict[str, Any] = (
+            {"reasoning": self._reasoning} if self._reasoning else {}
+        )
+        # The first turn sends the user prompt; every later turn sends only the
+        # new tool outputs and chains via ``previous_response_id``, so the
+        # server holds conversation state. Round-tripping the model's own output
+        # items by value does not work: the input schema rejects their
+        # output-only fields (e.g. ``status``), and reasoning items carry extra
+        # constraints. Chaining server-side sidesteps both.
+        pending_input: list[dict[str, Any]] = [{"role": "user", "content": task.prompt}]
+        previous_response_id: str | None = None
 
         for _ in range(_MAX_AGENT_TURNS):
             response = await self._client.responses.create(
                 model=self._model,
                 instructions=_SYSTEM_PROMPT,
-                input=conversation,
+                input=pending_input,
                 tools=tools,
+                previous_response_id=previous_response_id,
+                **extra,
             )
             usage = response.usage
             if usage is not None:
@@ -280,20 +305,18 @@ class OpenAIDriver:
                 details = getattr(usage, "input_tokens_details", None)
                 state.cache_read_tokens += getattr(details, "cached_tokens", 0) or 0
 
+            previous_response_id = response.id
             calls = [item for item in response.output if item.type == "function_call"]
-            # Carry the model's own output items forward, then append our
-            # tool outputs; this preserves the function_call/output pairing
-            # the Responses API expects without using previous_response_id.
-            conversation.extend(item.model_dump() for item in response.output)
             if not calls:
                 break
 
+            pending_input = []
             for call in calls:
                 raw_args = _parse_openai_args(call.arguments)
                 text, _is_error = await execute_tool_call(
                     mcp_client, call.name, raw_args, output_dir, state
                 )
-                conversation.append(
+                pending_input.append(
                     {
                         "type": "function_call_output",
                         "call_id": call.call_id,
@@ -341,11 +364,15 @@ def provider_api_error() -> type[BaseException]:
     return APIError
 
 
-def build_driver(provider: str, model: str) -> ModelDriver:
+def build_driver(
+    provider: str, model: str, reasoning_effort: str = "none"
+) -> ModelDriver:
     """Construct the driver for a provider, gating on the required API key.
 
     OpenAI is imported lazily so the harness still loads (and the Anthropic
     path and --dry-run still work) when the [evals] OpenAI extra is absent.
+    ``reasoning_effort`` only affects the OpenAI driver; Anthropic ignores it
+    (its equivalent, extended thinking, is not exercised by this harness).
     """
     if provider == "anthropic":
         if not os.environ.get("ANTHROPIC_API_KEY"):
@@ -365,5 +392,7 @@ def build_driver(provider: str, model: str) -> ModelDriver:
                 "openai not installed; add it to the [evals] extra to run "
                 "OpenAI models."
             ) from exc
-        return OpenAIDriver(AsyncOpenAI(max_retries=_OPENAI_MAX_RETRIES), model)
+        return OpenAIDriver(
+            AsyncOpenAI(max_retries=_OPENAI_MAX_RETRIES), model, reasoning_effort
+        )
     raise SystemExit(f"Unknown provider {provider!r}.")

@@ -1,0 +1,43 @@
+{
+  "task_count": 1,
+  "k": 2,
+  "pass@1": 1.0,
+  "pass@2": 1.0,
+  "tool_calls_total": 12,
+  "input_tokens_total": 43905,
+  "output_tokens_total": 1483,
+  "tasks": [
+    {
+      "id": "01-clipboard-roundtrip",
+      "passed_any": true,
+      "pass_rate": 1.0,
+      "attempts": [
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 6,
+          "input_tokens": 21961,
+          "output_tokens": 745,
+          "built_path": "/private/var/folders/sn/lkr_f2ms04v7_062fg4mv4_40000gn/T/mcp-evals-6pbvserl/01-clipboard-roundtrip-0-c6p1uie5/Clip Hello.shortcut",
+          "saw_recovery": false
+        },
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 6,
+          "input_tokens": 21944,
+          "output_tokens": 738,
+          "built_path": "/private/var/folders/sn/lkr_f2ms04v7_062fg4mv4_40000gn/T/mcp-evals-6pbvserl/01-clipboard-roundtrip-1-shr0jbk7/Clip Hello.shortcut",
+          "saw_recovery": false
+        }
+      ]
+    }
+  ],
+  "model": "claude-haiku-4-5-20251001",
+  "timestamp": "2026-05-27T14-15-39Z",
+  "provider": "anthropic",
+  "reasoning_effort": "none",
+  "git_commit": "147736f",
+  "git_commit_inferred": true,
+  "suite_note": "v1 baseline: 12-task suite, pre-refusal-prompt"
+}

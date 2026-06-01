@@ -32,18 +32,21 @@ _DEFAULT_BASELINE = "claude-sonnet-4-6"
 _DEFAULT_FLOOR_K = 3
 
 
-def _load_latest() -> dict[tuple[str, str], dict[str, Any]]:
-    """Return the latest result per (provider, model) keyed by that pair.
+def _load_latest() -> dict[tuple[str, str, str], dict[str, Any]]:
+    """Return the latest result per (provider, model, effort) keyed by triple.
 
+    Reasoning effort is part of the key so an OpenAI sweep (the same model at
+    low / medium / high) yields one row per effort rather than collapsing.
     The timestamp field orders runs; the lexicographic UTC stamp sorts the
     same as chronological order, so the max wins.
     """
-    latest: dict[tuple[str, str], dict[str, Any]] = {}
+    latest: dict[tuple[str, str, str], dict[str, Any]] = {}
     for path in sorted(_RESULTS_DIR.glob("*.json")):
         data = json.loads(path.read_text())
         model = data.get("model", "?")
         provider = data.get("provider", "anthropic")
-        key = (provider, model)
+        effort = data.get("reasoning_effort", "none")
+        key = (provider, model, effort)
         stamp = data.get("timestamp", path.stem)
         current = latest.get(key)
         if current is None or stamp >= current.get("timestamp", ""):
@@ -77,7 +80,9 @@ def _floor_pass_at_k(run: dict[str, Any], floor_k: int) -> float:
     return total / len(tasks)
 
 
-def _format_row(provider: str, model: str, run: dict[str, Any], floor_k: int) -> str:
+def _format_row(
+    provider: str, model: str, effort: str, run: dict[str, Any], floor_k: int
+) -> str:
     """Render one table row for a model's latest run."""
     k = run.get("k", 1)
     n_tasks = run.get("task_count", 0)
@@ -91,22 +96,24 @@ def _format_row(provider: str, model: str, run: dict[str, Any], floor_k: int) ->
     commit = run.get("git_commit") or "?"
     dirty = "*" if run.get("git_dirty") else ""
     return (
-        f"| {model} | {provider} | {k} | {n_tasks} | "
+        f"| {model} | {provider} | {effort} | {k} | {n_tasks} | "
         f"{p1:.0%} [{lo:.0%}, {hi:.0%}] | {floor_pk:.0%} | {p_overall:.2f} | "
         f"{tokens:,.0f} | {calls:.1f} | {commit}{dirty} |"
     )
 
 
-def _print_table(latest: dict[tuple[str, str], dict[str, Any]], floor_k: int) -> None:
+def _print_table(
+    latest: dict[tuple[str, str, str], dict[str, Any]], floor_k: int
+) -> None:
     """Print the markdown comparison table."""
     print(
-        f"| model | provider | k | n_tasks | pass@1 [95% CI] | "
+        f"| model | provider | effort | k | n_tasks | pass@1 [95% CI] | "
         f"pass@{floor_k} (est) | pass^{floor_k} | tokens/task | "
         f"tool_calls/task | git_commit |"
     )
-    print("|---|---|---|---|---|---|---|---|---|---|")
-    for (provider, model), run in sorted(latest.items()):
-        print(_format_row(provider, model, run, floor_k))
+    print("|---|---|---|---|---|---|---|---|---|---|---|")
+    for (provider, model, effort), run in sorted(latest.items()):
+        print(_format_row(provider, model, effort, run, floor_k))
 
 
 def _paired_delta(
@@ -137,11 +144,17 @@ def _paired_delta(
 
 
 def _print_deltas(
-    latest: dict[tuple[str, str], dict[str, Any]], baseline_model: str
+    latest: dict[tuple[str, str, str], dict[str, Any]], baseline_model: str
 ) -> None:
-    """Print paired bootstrap deltas of each non-baseline model vs baseline."""
+    """Print paired bootstrap deltas of each non-baseline run vs baseline.
+
+    The baseline is matched by model name (its own effort row is skipped from
+    the delta list). Every other run, including each OpenAI effort level, is
+    compared against it. Paired bootstrap is only valid when both runs cover
+    the same task set, so a run with a different task count is skipped.
+    """
     baseline_runs = [
-        run for (_, model), run in latest.items() if model == baseline_model
+        run for (_, model, _), run in latest.items() if model == baseline_model
     ]
     if not baseline_runs:
         print(f"\n(no baseline run for {baseline_model!r}; skipping deltas)")
@@ -149,15 +162,22 @@ def _print_deltas(
     baseline_rates = _per_task_rates(baseline_runs[0])
 
     print(f"\n### Paired delta vs baseline ({baseline_model})\n")
-    print("| model | provider | mean delta | 95% CI | excludes 0 |")
-    print("|---|---|---|---|---|")
-    for (provider, model), run in sorted(latest.items()):
+    print("| model | provider | effort | mean delta | 95% CI | excludes 0 |")
+    print("|---|---|---|---|---|---|")
+    for (provider, model, effort), run in sorted(latest.items()):
         if model == baseline_model:
             continue
-        mean_delta, lo, hi = _paired_delta(baseline_rates, _per_task_rates(run))
+        other_rates = _per_task_rates(run)
+        if len(other_rates) != len(baseline_rates):
+            print(
+                f"| {model} | {provider} | {effort} | n/a "
+                f"(task set differs) | n/a | n/a |"
+            )
+            continue
+        mean_delta, lo, hi = _paired_delta(baseline_rates, other_rates)
         excludes = "yes" if (lo > 0 or hi < 0) else "no"
         print(
-            f"| {model} | {provider} | {mean_delta:+.0%} | "
+            f"| {model} | {provider} | {effort} | {mean_delta:+.0%} | "
             f"[{lo:+.0%}, {hi:+.0%}] | {excludes} |"
         )
 

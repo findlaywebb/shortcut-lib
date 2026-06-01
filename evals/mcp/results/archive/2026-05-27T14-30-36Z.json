@@ -1,0 +1,209 @@
+{
+  "task_count": 12,
+  "k": 1,
+  "pass@1": 0.6666666666666666,
+  "tool_calls_total": 58,
+  "input_tokens_total": 228878,
+  "output_tokens_total": 7335,
+  "tasks": [
+    {
+      "id": "01-clipboard-roundtrip",
+      "passed_any": true,
+      "pass_rate": 1.0,
+      "attempts": [
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 6,
+          "input_tokens": 21918,
+          "output_tokens": 734,
+          "built_path": "/private/var/folders/sn/lkr_f2ms04v7_062fg4mv4_40000gn/T/mcp-evals-zs3x2nq1/01-clipboard-roundtrip-0-zss_0a8k/Clip Hello.shortcut",
+          "saw_recovery": false
+        }
+      ]
+    },
+    {
+      "id": "02-dictate-to-clipboard",
+      "passed_any": false,
+      "pass_rate": 0.0,
+      "attempts": [
+        {
+          "passed": false,
+          "reason": "rate limit (exhausted 8 retries): Error code: 429 - {'type': 'error', 'error': {'type': 'rate_limit_error', 'message': \"This request would exceed your organization's rate limit of 50,000 input tokens per minute (org: 8ee32086-8f48-4d3c-8312-8f67e9605cf0, model: claude-haiku-4-5-20251001). For details, refer to: https://docs.claude.com/en/api/rate-limits. You can see the response headers for current usage. Reduce the prompt length or the maximum tokens requested, or try again later. View your current limits at https://console.anthropic.com/settings/limits. To raise this limit, purchase credits to advance to the next usage tier at https://console.anthropic.com/settings/billing.\"}, 'request_id': 'req_011CbTEJARrsN8QPiYcCKm8n'}",
+          "tool_calls": 0,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "built_path": null,
+          "saw_recovery": false
+        }
+      ]
+    },
+    {
+      "id": "03-pomodoro-notification",
+      "passed_any": true,
+      "pass_rate": 1.0,
+      "attempts": [
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 4,
+          "input_tokens": 19961,
+          "output_tokens": 569,
+          "built_path": "/private/var/folders/sn/lkr_f2ms04v7_062fg4mv4_40000gn/T/mcp-evals-zs3x2nq1/03-pomodoro-notification-0-sxwx_wg9/Pomodoro Done.shortcut",
+          "saw_recovery": false
+        }
+      ]
+    },
+    {
+      "id": "04-random-number-display",
+      "passed_any": true,
+      "pass_rate": 1.0,
+      "attempts": [
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 6,
+          "input_tokens": 23134,
+          "output_tokens": 836,
+          "built_path": "/private/var/folders/sn/lkr_f2ms04v7_062fg4mv4_40000gn/T/mcp-evals-zs3x2nq1/04-random-number-display-0-m4sp714e/Dice Roll.shortcut",
+          "saw_recovery": false
+        }
+      ]
+    },
+    {
+      "id": "05-ask-and-echo",
+      "passed_any": true,
+      "pass_rate": 1.0,
+      "attempts": [
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 6,
+          "input_tokens": 24347,
+          "output_tokens": 758,
+          "built_path": "/private/var/folders/sn/lkr_f2ms04v7_062fg4mv4_40000gn/T/mcp-evals-zs3x2nq1/05-ask-and-echo-0-rmmy624p/Ask And Echo.shortcut",
+          "saw_recovery": false
+        }
+      ]
+    },
+    {
+      "id": "06-base64-clipboard",
+      "passed_any": true,
+      "pass_rate": 1.0,
+      "attempts": [
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 8,
+          "input_tokens": 23235,
+          "output_tokens": 902,
+          "built_path": "/private/var/folders/sn/lkr_f2ms04v7_062fg4mv4_40000gn/T/mcp-evals-zs3x2nq1/06-base64-clipboard-0-xrr71mnz/Base64 Clipboard.shortcut",
+          "saw_recovery": false
+        }
+      ]
+    },
+    {
+      "id": "07-formatted-date-clip",
+      "passed_any": true,
+      "pass_rate": 1.0,
+      "attempts": [
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 8,
+          "input_tokens": 25371,
+          "output_tokens": 982,
+          "built_path": "/private/var/folders/sn/lkr_f2ms04v7_062fg4mv4_40000gn/T/mcp-evals-zs3x2nq1/07-formatted-date-clip-0-_1tllpfh/Date Stamp.shortcut",
+          "saw_recovery": false
+        }
+      ]
+    },
+    {
+      "id": "08-math-result",
+      "passed_any": true,
+      "pass_rate": 1.0,
+      "attempts": [
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 8,
+          "input_tokens": 38517,
+          "output_tokens": 856,
+          "built_path": "/private/var/folders/sn/lkr_f2ms04v7_062fg4mv4_40000gn/T/mcp-evals-zs3x2nq1/08-math-result-0-fhfhuv9g/Tip Calc.shortcut",
+          "saw_recovery": false
+        }
+      ]
+    },
+    {
+      "id": "09-choose-from-list",
+      "passed_any": false,
+      "pass_rate": 0.0,
+      "attempts": [
+        {
+          "passed": false,
+          "reason": "rate limit (exhausted 8 retries): Error code: 429 - {'type': 'error', 'error': {'type': 'rate_limit_error', 'message': \"This request would exceed your organization's rate limit of 50,000 input tokens per minute (org: 8ee32086-8f48-4d3c-8312-8f67e9605cf0, model: claude-haiku-4-5-20251001). For details, refer to: https://docs.claude.com/en/api/rate-limits. You can see the response headers for current usage. Reduce the prompt length or the maximum tokens requested, or try again later. View your current limits at https://console.anthropic.com/settings/limits. To raise this limit, purchase credits to advance to the next usage tier at https://console.anthropic.com/settings/billing.\"}, 'request_id': 'req_011CbTESatVxHFL5mqawV1Bs'}",
+          "tool_calls": 0,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "built_path": null,
+          "saw_recovery": false
+        }
+      ]
+    },
+    {
+      "id": "10-share-sheet-text",
+      "passed_any": true,
+      "pass_rate": 1.0,
+      "attempts": [
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 8,
+          "input_tokens": 32556,
+          "output_tokens": 1139,
+          "built_path": "/private/var/folders/sn/lkr_f2ms04v7_062fg4mv4_40000gn/T/mcp-evals-zs3x2nq1/10-share-sheet-text-0-hhemh36f/Quick Save.shortcut",
+          "saw_recovery": false
+        }
+      ]
+    },
+    {
+      "id": "11-statistics",
+      "passed_any": false,
+      "pass_rate": 0.0,
+      "attempts": [
+        {
+          "passed": false,
+          "reason": "rate limit (exhausted 8 retries): Error code: 429 - {'type': 'error', 'error': {'type': 'rate_limit_error', 'message': \"This request would exceed your organization's rate limit of 50,000 input tokens per minute (org: 8ee32086-8f48-4d3c-8312-8f67e9605cf0, model: claude-haiku-4-5-20251001). For details, refer to: https://docs.claude.com/en/api/rate-limits. You can see the response headers for current usage. Reduce the prompt length or the maximum tokens requested, or try again later. View your current limits at https://console.anthropic.com/settings/limits. To raise this limit, purchase credits to advance to the next usage tier at https://console.anthropic.com/settings/billing.\"}, 'request_id': 'req_011CbTEUwkv8m2wNbfLiiJNb'}",
+          "tool_calls": 0,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "built_path": null,
+          "saw_recovery": false
+        }
+      ]
+    },
+    {
+      "id": "12-recovery-typo",
+      "passed_any": false,
+      "pass_rate": 0.0,
+      "attempts": [
+        {
+          "passed": false,
+          "reason": "task expected recovery from an error, but none was seen",
+          "tool_calls": 4,
+          "input_tokens": 19839,
+          "output_tokens": 559,
+          "built_path": "/private/var/folders/sn/lkr_f2ms04v7_062fg4mv4_40000gn/T/mcp-evals-zs3x2nq1/12-recovery-typo-0-w_qw60ty/Clip Greeting.shortcut",
+          "saw_recovery": false
+        }
+      ]
+    }
+  ],
+  "model": "claude-haiku-4-5-20251001",
+  "timestamp": "2026-05-27T14-30-36Z",
+  "provider": "anthropic",
+  "reasoning_effort": "none",
+  "git_commit": "611961d",
+  "git_commit_inferred": true,
+  "suite_note": "v1 baseline: 12-task suite, pre-refusal-prompt"
+}

@@ -349,6 +349,14 @@ def main() -> int:
         help="max attempts in flight at once",
     )
     parser.add_argument(
+        "--reasoning-effort",
+        type=str,
+        choices=["none", "minimal", "low", "medium", "high"],
+        default="none",
+        help="OpenAI reasoning.effort axis; recorded on every result. "
+        "'none' sends no reasoning param. Ignored by Anthropic models.",
+    )
+    parser.add_argument(
         "--dry-run", action="store_true", help="validate tasks only; no API calls"
     )
     args = parser.parse_args()
@@ -359,7 +367,7 @@ def main() -> int:
         return _dry_run(tasks)
 
     provider = args.provider or provider_for(args.model)
-    driver = build_driver(provider, args.model)
+    driver = build_driver(provider, args.model, args.reasoning_effort)
 
     _RESULTS_DIR.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix="mcp-evals-") as scratch_root:
@@ -376,6 +384,7 @@ def main() -> int:
     summary = _summarise(results, k=args.k)
     summary["model"] = args.model
     summary["provider"] = provider
+    summary["reasoning_effort"] = args.reasoning_effort
     commit, dirty = _git_stamp()
     summary["git_commit"] = commit
     summary["git_dirty"] = dirty
@@ -385,7 +394,8 @@ def main() -> int:
     print(f"\nWrote {out_path}")
     dirty_mark = " (dirty)" if dirty else ""
     print(
-        f"{provider}/{args.model} @ {commit}{dirty_mark}  "
+        f"{provider}/{args.model} (effort={args.reasoning_effort}) "
+        f"@ {commit}{dirty_mark}  "
         f"pass@1={summary['pass@1']:.2%} "
         f"[{summary['pass@1_ci_low']:.2%}, {summary['pass@1_ci_high']:.2%}]  "
         f"pass@{args.k}(est)={summary['pass@k_unbiased']:.2%}  "

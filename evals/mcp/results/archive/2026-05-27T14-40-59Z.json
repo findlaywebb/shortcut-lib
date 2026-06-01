@@ -1,0 +1,37 @@
+{
+  "task_count": 1,
+  "k": 1,
+  "pass@1": 1.0,
+  "tool_calls_total": 6,
+  "input_tokens_total": 12603,
+  "output_tokens_total": 756,
+  "cache_read_tokens_total": 0,
+  "cache_write_tokens_total": 9382,
+  "tasks": [
+    {
+      "id": "01-clipboard-roundtrip",
+      "passed_any": true,
+      "pass_rate": 1.0,
+      "attempts": [
+        {
+          "passed": true,
+          "reason": "ok",
+          "tool_calls": 6,
+          "input_tokens": 12603,
+          "output_tokens": 756,
+          "cache_read_tokens": 0,
+          "cache_write_tokens": 9382,
+          "built_path": "/private/var/folders/sn/lkr_f2ms04v7_062fg4mv4_40000gn/T/mcp-evals-r_ilvjnj/01-clipboard-roundtrip-0-bkb5oto1/Clip Hello.shortcut",
+          "saw_recovery": false
+        }
+      ]
+    }
+  ],
+  "model": "claude-haiku-4-5-20251001",
+  "timestamp": "2026-05-27T14-40-59Z",
+  "provider": "anthropic",
+  "reasoning_effort": "none",
+  "git_commit": "611961d",
+  "git_commit_inferred": true,
+  "suite_note": "v1 baseline: 12-task suite, pre-refusal-prompt"
+}
