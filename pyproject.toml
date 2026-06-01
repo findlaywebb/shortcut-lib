@@ -17,6 +17,7 @@ mcp = [
 ]
 evals = [
     "anthropic>=0.40",
+    "openai>=1.68",
 ]
 
 [project.scripts]
