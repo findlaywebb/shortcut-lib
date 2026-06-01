@@ -1,0 +1,14 @@
+{
+  "id": "18-clipboard-prefix-notify",
+  "prompt": "Make a shortcut that reads whatever is on the clipboard, sticks the prefix 'Copied: ' in front of it, and shows the combined text in a notification.",
+  "graders": {
+    "min_actions": 3,
+    "max_actions": 6,
+    "must_contain": [
+      "is.workflow.actions.getclipboard",
+      "is.workflow.actions.text.combine",
+      "is.workflow.actions.notification"
+    ],
+    "decode_succeeds": true
+  }
+}

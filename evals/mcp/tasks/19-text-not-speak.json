@@ -1,0 +1,15 @@
+{
+  "id": "19-text-not-speak",
+  "prompt": "Build a shortcut that sends my partner a text message saying 'Running 10 minutes late'. It should just send the message silently. Do not have the phone read it aloud or speak it.",
+  "graders": {
+    "min_actions": 1,
+    "max_actions": 4,
+    "must_contain": [
+      "is.workflow.actions.sendmessage"
+    ],
+    "must_not_contain": [
+      "is.workflow.actions.makespokenaudiofromtext"
+    ],
+    "decode_succeeds": true
+  }
+}

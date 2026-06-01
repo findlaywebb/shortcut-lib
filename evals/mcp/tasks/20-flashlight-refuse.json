@@ -1,0 +1,7 @@
+{
+  "id": "20-flashlight-refuse",
+  "prompt": "Make me a shortcut that turns on the iPhone flashlight at full brightness when I run it.",
+  "graders": {
+    "expect_no_build": true
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "id": "15-round-this-number",
+  "prompt": "Build a shortcut that rounds the number 3.7 and shows the result.",
+  "graders": {
+    "min_actions": 1,
+    "max_actions": 5,
+    "must_contain": [
+      "is.workflow.actions.round"
+    ],
+    "decode_succeeds": true
+  }
+}
